@@ -43,7 +43,7 @@
   .callout-insight { border-left-color: #2E7780; background: #ffffff; }
   .callout b { color: #31435B; }
   table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 14px 0 22px 0; background: #FAF9F6; border-radius: 0; overflow: visible; border-top: 2px solid #31435B; border-bottom: 1px solid #31435B; }
-  th { background: #FAF9F6; color: #31435B; font-weight: 600; text-align: left; padding: 10px 12px; vertical-align: top; border-bottom: 1px solid #31435B; text-transform: uppercase; letter-spacing: 0.5px; font-size: 10.5px; }
+  th { background: #31435B; color: #ffffff; font-weight: 600; text-align: left; padding: 11px 12px; vertical-align: top; border-bottom: none; text-transform: uppercase; letter-spacing: 0.5px; font-size: 10.5px; }
   td { padding: 11px 12px; border-bottom: 1px solid #E4E9EE; vertical-align: top; background: #FAF9F6; }
   tr:last-child td { border-bottom: none; }
   tr:nth-child(even) td { background: #FAF9F6; }
@@ -90,7 +90,7 @@
   .twocol { column-count: 2; column-gap: 36px; column-rule: none; margin: 12px 0 18px; max-width: 1100px; }
   .twocol p { margin: 0 0 12px; break-inside: avoid; }
   @media (max-width: 780px) { .twocol { column-count: 1; } }
-  .stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0; margin: 18px 0 24px; background: #ffffff; border: 1px solid #C9D2DC; }
+  .stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0; margin: 18px 0 24px; background: #FAF9F6; border-left: 4px solid #2E7780; }
   .stat-strip .stat-cell { padding: 22px 24px; border-right: 1px solid #C9D2DC; }
   .stat-strip .stat-cell:last-child { border-right: none; }
   .stat-strip .stat-num { font-size: 36px; font-weight: 800; color: #31435B; letter-spacing: -1px; display: block; line-height: 1; }
@@ -253,10 +253,22 @@
 
 <p>Mature US services SMEs operate at 20–40% EBITDA margins that AI can double in 12 months. By 2026 three archetypes own the category — and none of them can occupy the services-plus-same-vertical-acquisitions quadrant where Bobroff plays.</p>
 
-<div class="exhibit-row" style="grid-template-columns: repeat(3, 1fr); margin-top: 16px;">
-<div class="exhibit"><div class="exhibit-eyebrow">Archetype 1</div><div class="exhibit-title">VC-backed Creation Studios</div><p style="font-size:12.5px; color:#151A1F; margin:8px 0 0;">GC Creation $1.5B · Thrive Holdings $1B+ · Elad Gil $1.77B AUM. <b>Cannot sell services to 3rd-party SMEs</b> — too many F500 LP conflicts.</p></div>
-<div class="exhibit"><div class="exhibit-eyebrow">Archetype 2</div><div class="exhibit-title">Permanent-Capital Compounders</div><p style="font-size:12.5px; color:#151A1F; margin:8px 0 0;">Constellation $70B mkt cap · Roper $48.5B · Vista $103B AUM · ESW Capital. <b>No services arm</b> — pure acquire-and-operate.</p></div>
-<div class="exhibit"><div class="exhibit-eyebrow">Archetype 3</div><div class="exhibit-title">Services-First Operators</div><p style="font-size:12.5px; color:#151A1F; margin:8px 0 0;">Distyl $1.8B · Sierra $10B · Accenture $69.7B · Bain. <b>Cannot acquire</b> — SaaS-multiple valuations don't survive PE-multiple services revenue.</p></div>
+<div class="exhibit-row" style="grid-template-columns: repeat(3, 1fr); margin-top: 16px; gap: 18px;">
+<div style="background:#31435B; color:#ffffff; padding:18px 22px;">
+<div style="font-size:10.5px; color:#A9C5D6; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 1</div>
+<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">VC-backed Creation Studios</div>
+<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">GC Creation $1.5B · Thrive Holdings $1B+ · Elad Gil $1.77B AUM. <b style="color:#fff;">Cannot sell services to 3rd-party SMEs</b> — too many F500 LP conflicts.</p>
+</div>
+<div style="background:#2E7780; color:#ffffff; padding:18px 22px;">
+<div style="font-size:10.5px; color:#DCE5EC; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 2</div>
+<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">Permanent-Capital Compounders</div>
+<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">Constellation $70B mkt cap · Roper $48.5B · Vista $103B AUM · ESW Capital. <b style="color:#fff;">No services arm</b> — pure acquire-and-operate.</p>
+</div>
+<div style="background:#6B8FA8; color:#ffffff; padding:18px 22px;">
+<div style="font-size:10.5px; color:#DCE5EC; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 3</div>
+<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">Services-First Operators</div>
+<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">Distyl $1.8B · Sierra $10B · Accenture $69.7B · Bain. <b style="color:#fff;">Cannot acquire</b> — SaaS-multiple valuations don't survive PE-multiple services revenue.</p>
+</div>
 </div>
 
 <div class="stat-strip">
