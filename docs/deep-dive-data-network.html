@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Network Compounder — Archetype Deep Dive</title>
+<style>
+:root{
+  --deep-slate:#31435B;
+  --petrol-teal:#2E7780;
+  --soft-steel:#A9C5D6;
+  --silver-mist:#DCE5EC;
+  --near-black:#151A1F;
+  --cool-gray:#C9D2DC;
+  --off-white:#FAF9F6;
+  --rule:#D8DEE5;
+  --shade-1:#F4F2EE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--off-white);color:var(--near-black);font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.5;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:56px 72px 64px;border-bottom:1px solid var(--rule);background:var(--off-white)}
+.page:first-of-type{padding-top:120px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;margin-bottom:14px}
+.eyebrow .num{color:var(--deep-slate);font-weight:700;margin-right:10px}
+h1.action{font-size:30px;line-height:1.2;font-weight:700;color:var(--deep-slate);letter-spacing:-0.02em;margin-bottom:16px;max-width:980px}
+h3.sub{font-size:13px;font-weight:700;color:var(--deep-slate);text-transform:uppercase;letter-spacing:0.08em;margin:22px 0 10px}
+.lede{font-size:14px;line-height:1.55;color:var(--near-black);max-width:920px;margin-bottom:16px}
+.source{font-size:10.5px;letter-spacing:0.03em;color:#7B8590;border-top:1px solid var(--rule);padding-top:10px;margin-top:30px}
+.cover{min-height:78vh;display:flex;flex-direction:column;justify-content:space-between;padding-top:140px}
+.cover .top-mark{font-size:10px;letter-spacing:0.22em;color:var(--petrol-teal);font-weight:600;text-transform:uppercase}
+.cover h1{font-size:46px;line-height:1.1;font-weight:700;letter-spacing:-0.025em;color:var(--deep-slate);margin:54px 0 22px;max-width:980px}
+.cover .deck{font-size:18px;color:#3F4A57;max-width:880px;line-height:1.55;font-weight:400}
+.cover .meta{display:flex;gap:64px;margin-top:60px;font-size:12px;color:#5A6470}
+.cover .meta .label{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;display:block;margin-bottom:6px}
+.cover .meta .v{font-size:14px;color:var(--near-black);font-weight:600}
+.cover .palette{display:flex;gap:0;margin-top:40px;border-top:1px solid var(--rule);padding-top:18px}
+.cover .palette span{display:block;width:32px;height:6px}
+.bluf{background:var(--silver-mist);border-left:4px solid var(--petrol-teal);padding:22px 26px;margin:18px 0 24px;max-width:980px}
+.bluf .bluf-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:10px}
+.bluf p{font-size:14.5px;line-height:1.55;color:var(--near-black)}
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 6px}
+.find-card{background:#fff;border:1px solid var(--rule);padding:16px 18px;border-top:3px solid var(--deep-slate)}
+.find-card .ix{font-size:10px;letter-spacing:0.16em;color:var(--petrol-teal);font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.find-card .tt{font-size:13.5px;font-weight:700;color:var(--deep-slate);line-height:1.3;margin-bottom:8px}
+.find-card .body{font-size:12px;line-height:1.5;color:#3F4A57}
+.tree{margin:16px 0 6px;font-family:'JetBrains Mono','Menlo',monospace;font-size:12px;line-height:1.7;color:var(--near-black);background:#fff;border:1px solid var(--rule);padding:20px 24px;white-space:pre;overflow-x:auto}
+.tree .root{color:var(--deep-slate);font-weight:700}
+.tree .branch{color:var(--petrol-teal);font-weight:600}
+.tree .leaf{color:#3F4A57}
+table.mck{width:100%;border-collapse:collapse;background:#fff;font-size:12px;margin:12px 0 8px}
+table.mck th{background:var(--deep-slate);color:#fff;text-align:left;padding:10px 12px;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;border-right:1px solid #3D506B}
+table.mck th:last-child{border-right:none}
+table.mck td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+table.mck tr:nth-child(even) td{background:var(--shade-1)}
+table.mck td.idx{font-weight:700;color:var(--petrol-teal);width:38px;text-align:center;font-variant-numeric:tabular-nums}
+table.mck td.name{font-weight:700;color:var(--deep-slate);white-space:nowrap}
+table.mck td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.callout{border:1px solid var(--cool-gray);background:#FDFCFA;padding:16px 20px;margin:14px 0;border-left:3px solid var(--petrol-teal)}
+.callout .h{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:8px}
+.callout p{font-size:12.5px;line-height:1.5;color:var(--near-black);max-width:920px}
+p.body{font-size:13px;line-height:1.6;color:var(--near-black);margin-bottom:10px;max-width:920px}
+p.body b{color:var(--deep-slate)}
+ul.body{font-size:13px;line-height:1.6;color:var(--near-black);margin:8px 0 12px 0;padding-left:20px;max-width:920px}
+ul.body li{margin-bottom:5px}
+ul.body li b{color:var(--deep-slate)}
+@media print{body{font-size:10px}.page{padding:30px 36px;max-width:none;page-break-after:always}.cover{min-height:auto}table.mck th{background:var(--deep-slate)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div>
+    <div class="top-mark">Archetype Deep Dive · 4 of 4 series · Internal Strategy</div>
+    <h1>Data Network Compounder</h1>
+    <div class="deck">
+      A proprietary dataset is assembled — through a product that generates exhaust data, through acquisitions of data-producing businesses, or through aggregation of fragmented sources. Access is sold via API, dashboard, or licensed feed. The data compounds because more customers contribute more data, strengthening the position over time.
+    </div>
+  </div>
+  <div>
+    <div class="meta">
+      <div><span class="label">Prepared</span><span class="v">June 13, 2026</span></div>
+      <div><span class="label">Series</span><span class="v">Archetype Deep Dives</span></div>
+      <div><span class="label">Sources</span><span class="v">SEC filings, PitchBook, Sacra, Damodaran</span></div>
+    </div>
+    <div class="palette">
+      <span style="background:#31435B"></span><span style="background:#2E7780"></span><span style="background:#A9C5D6"></span>
+      <span style="background:#DCE5EC"></span><span style="background:#151A1F"></span><span style="background:#C9D2DC"></span>
+      <span style="background:#FAF9F6;border-right:1px solid #ddd;border-left:1px solid #ddd"></span>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">01</span>Executive Summary</div>
+  <h1 class="action">The archetype produces the strongest economics in the universe — high multiple, deep moat, moderate dilution — but only when a unique data position can be assembled before competitors.</h1>
+
+  <div class="callout" style="border-left-color:var(--deep-slate);background:#F4F2EE;margin-bottom:18px">
+    <div class="h" style="color:var(--deep-slate)">How this archetype is defined in our framework</div>
+    <p>
+      A proprietary dataset is assembled through one of three motions — exhaust from a primary product (Plaid, Snowflake), acquisition of data-producing businesses (Datavant, Verisk), or aggregation of fragmented public and contributed data (CoStar, MSCI) — and access to that dataset is sold via API, dashboard, or licensed feed. The dataset compounds because more customers and integrations contribute more data, deepening coverage, freshness, and linkage that strengthen the position over time and raise switching cost for the buyer. What the customer actually pays for is <b>decision-quality information at the moment of use</b>: coverage (the universe of records the dataset spans), freshness (how recently updated), linkage (the ability to join across silos), and trust (regulatory, fiduciary, and legal acceptance of the data as the reference). The defining structural fact is that, once assembled, the dataset is largely a fixed cost — incremental margins approach 90%, EBITDA margins for mature operators reach 50–55%, NRR runs 125–160% on consumption pricing. The two compounding asymmetries — <b>time on supply</b> (integrations take years to build, antitrust now blocks consolidation as a shortcut) and <b>switching cost on demand</b> (customers build models, regulatory filings, and downstream products on top of your schema) — produce multi-decade defensibility when combined with a regulatory or trust moat. Quantitatively: <b>exit multiples 10–25× ARR</b>, <b>capital required $50–200M for pure SaaS; $250M–$1B+ for acquisition-led</b>, <b>founder ownership at exit 10–35%</b>, <b>time horizon 6–10 years to meaningful exit</b>. The combined enabler-fit score is <b>48 out of 125</b> — high AI fit, partial SMB fit (acquisition as data-assembly tactic, not customer base).
+    </p>
+  </div>
+
+  <div class="bluf">
+    <div class="bluf-label">Bottom Line Up Front</div>
+    <p>Data Network Compounders sell decision-quality information at the moment a customer needs it — coverage, freshness, linkage, and trust. The dataset is largely a fixed cost; once assembled, incremental margins approach 90%. NRR runs 125–160% in mature operators (Snowflake 131% FY24) because consumption-based pricing scales with customer data growth and switching costs compound. The two structural asymmetries — time on supply (integrations take years to build) and switching cost on demand (customers build models on top of your schema) — produce multi-decade compounders when combined with regulatory or trust moats.</p>
+  </div>
+
+  <div class="findings">
+    <div class="find-card">
+      <div class="ix">Finding 01</div>
+      <div class="tt">Gross margins 74–90% on product revenue; EBITDA margins 50–55% in mature operators.</div>
+      <div class="body">Snowflake 74% GAAP / 78% non-GAAP Q4 FY24; CoStar 80% gross profit FY24; Verisk 54.7% adjusted EBITDA FY24; MSCI ~82% gross, ~55% adjusted EBITDA. The pattern: dataset is largely a fixed cost — incremental margins approach 90%.</div>
+    </div>
+    <div class="find-card">
+      <div class="ix">Finding 02</div>
+      <div class="tt">The replication unit is the data integration, not the customer.</div>
+      <div class="body">Plaid 12,000+ bank integrations; Datavant 70,000+ healthcare partners; CoStar ~6M physically-tracked CRE properties; MSCI 100,000s of indexed securities. Each integration unlocks data depth for existing customers and coverage that makes the product viable for new customer segments.</div>
+    </div>
+    <div class="find-card">
+      <div class="ix">Finding 03</div>
+      <div class="tt">Antitrust now blocks consolidation; standalone IPO is the dominant exit.</div>
+      <div class="body">Visa-Plaid 2020 blocked by DOJ ("nascent competitive threat" reasoning). S&amp;P-IHS Markit closed only with divestitures. LSEG-Refinitiv required EU concessions. Implication: dominant incumbents cannot acquire a sufficiently differentiated data-network competitor — forcing the standalone IPO path.</div>
+    </div>
+  </div>
+
+  <div class="source">Sources: SEC 10-K filings (Snowflake, Verisk, MSCI, CoStar); Sacra Plaid valuation history; CNBC on Visa-Plaid; Damodaran sector multiples NYU Stern January 2026.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">02</span>The Logic — Pyramid Decomposition</div>
+  <h1 class="action">Compounding occurs at three layers: data position asymmetry at the apex, integration cost at the middle, switching-cost lock-in at the base.</h1>
+
+<div class="tree">
+<span class="root">Data Network Compounder — Multi-Decade Defensibility</span>
+│
+├── <span class="branch">Apex · Unique Data Position</span>  (irreplicable for &gt;5 years)
+│        ├── <span class="leaf">Coverage — the universe of records the dataset spans</span>
+│        ├── <span class="leaf">Freshness — minutes for market data; days for credit; real-time for connectivity</span>
+│        ├── <span class="leaf">Linkage — ability to join across silos (Datavant tokens, MSCI index chain)</span>
+│        └── <span class="leaf">Trust — regulatory, legal, fiduciary acceptance</span>
+│
+├── <span class="branch">Middle · Replication Engine</span>  (integrations take years to build)
+│        ├── <span class="leaf">Source acquisition: bank deals, MLS feeds, hospital data agreements</span>
+│        ├── <span class="leaf">Normalisation: schema unification, entity resolution, deduplication</span>
+│        ├── <span class="leaf">Regulatory positioning: HIPAA Safe Harbor, GLBA, FCRA, GDPR</span>
+│        └── <span class="leaf">Linkage layer: tokens / IDs / keys joining records across silos</span>
+│
+└── <span class="branch">Base · Customer Switching Cost</span>  (the compounding mechanism)
+         ├── <span class="leaf">Customers build models on top of your schema</span>
+         ├── <span class="leaf">Customers cite your data in regulatory filings (MSCI in ETF prospectuses)</span>
+         ├── <span class="leaf">Replacing you requires rebuilding internal workflows + downstream products</span>
+         └── <span class="leaf">NRR 125–160% in mature operators (Snowflake 131%)</span>
+</div>
+
+  <div class="callout">
+    <div class="h">Reading the pyramid</div>
+    <p>The two compounding asymmetries — time on supply (integrations require years) and switching cost on demand (rebuilding customer workflows requires more years) — combined with a regulatory or trust moat produce the strongest defensibility in the universe of games. Where either is missing, the business reverts to commodity data resale where gross margins collapse below 50% and NRR falls below 105%.</p>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">03</span>Business Model</div>
+  <h1 class="action">The customer pays for decision-quality information at the moment needed — coverage, freshness, linkage, trust — delivered via API, dashboard, or licensed feed.</h1>
+
+  <h3 class="sub">What the customer pays for</h3>
+  <p class="body">Buyers are not purchasing raw bytes — they are purchasing <b>coverage</b> (the universe of records the dataset spans: every US bank, every CRE building, every public equity, every claims record), <b>freshness</b> (how recently updated — minutes for market data, days/weeks for credit, real-time for connectivity APIs), <b>linkage</b> (the ability to join this dataset to others — Datavant tokens, Plaid's account-to-identity match, MSCI's index → constituents → risk-factor chain), and <b>trust</b> (regulatory, legal, fiduciary acceptance — Verisk's ISO data is what state insurance regulators expect; MSCI indices are what pension trustees must benchmark to).</p>
+
+  <h3 class="sub">How the dataset is assembled — three motions</h3>
+  <ul class="body">
+    <li><b>Exhaust from a primary product</b> (Plaid: account-linking exhaust → identity, balance, transactions products; Snowflake: workload exhaust → Data Cloud marketplace).</li>
+    <li><b>Acquisition of data-producing businesses</b> (Datavant + Ciox 2021; Verisk's ~70 acquisitions over two decades).</li>
+    <li><b>Aggregation of fragmented public/contributed data</b> (CoStar's field researchers physically inspecting buildings; MSCI's index constituent collection).</li>
+  </ul>
+
+  <h3 class="sub">Revenue mix benchmarks</h3>
+  <table class="mck">
+    <thead><tr><th style="width:180px">Operator</th><th>Revenue mechanic</th><th style="width:180px">2024 scale</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Verisk (Insurance)</td><td>~81% from hosted subscriptions; balance advisory and transactional</td><td class="num">$2.88B FY24</td></tr>
+      <tr><td class="name">Snowflake</td><td>~100% consumption-based product revenue</td><td class="num">$2.67B product FY24</td></tr>
+      <tr><td class="name">MSCI</td><td>Subscription &gt;75%; asset-based fees ~20%; non-recurring &lt;5%</td><td class="num">FY24 disclosure</td></tr>
+      <tr><td class="name">Plaid</td><td>API-call usage plus enterprise minimum commitments</td><td class="num">$546M ARR 2025</td></tr>
+      <tr><td class="name">Bloomberg LP</td><td>~85% Terminal subscriptions</td><td class="num">~$11B revenue</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Margin structure</h3>
+  <table class="mck">
+    <thead><tr><th>Company</th><th>Product gross margin</th><th>Adjusted EBITDA margin</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Snowflake</td><td class="num">74% GAAP / 78% non-GAAP</td><td>—</td></tr>
+      <tr><td class="name">CoStar Group</td><td class="num">80%</td><td>—</td></tr>
+      <tr><td class="name">Verisk</td><td class="num">~85%+</td><td class="num">54.7%</td></tr>
+      <tr><td class="name">MSCI</td><td class="num">~82%</td><td class="num">~55%</td></tr>
+    </tbody>
+  </table>
+  <p class="body">Once the dataset is assembled, the marginal cost of serving one more customer is hosting, customer success, and minor licensing. Incremental margins approach 90%+; EBITDA margins for mature operators reach 50–55%.</p>
+
+  <h3 class="sub">Three representative compounders</h3>
+  <ul class="body">
+    <li><b>Plaid</b>. Connectivity API for 12,000+ US/CA/EU financial institutions; ~500M consumer accounts connected. Revenue $390M (2024) → ~$546M ARR (2025) per Sacra; 40% YoY growth. Pricing per-API-call or per-linked-account by product line. Profitability flipped from ~$50M operating loss (2024) to adjusted EBITDA profitability (2025). Valuation arc: $5.3B (Visa deal, 2020) → $13.4B (Series D, April 2021) → $6.1B (Series E, April 2025) → ~$8B (tender, late 2025/2026).</li>
+    <li><b>Snowflake</b>. Cloud data warehouse + Data Cloud Marketplace where third parties license curated datasets to Snowflake customers in-place. FY24 product revenue $2.67B; NRR 131%. Pricing consumption credits. Network effect: marketplace flywheel — more customers attract more data providers (Bloomberg, Experian, Weather Co.), which deepens the consumption stack. IPO Sept 2020 at $33B / day-1 close $70B; Frank Slootman held 5.9% per S-1.</li>
+    <li><b>Verisk</b>. Insurance data, modelling, analytics. Dominant in P&amp;C ratemaking via the ISO data pool. Revenue $2.88B FY24 (+7.5% YoY). Adjusted EBITDA margin 54.7% — among the highest in B2B data. Pricing multi-year (1–5 year) subscriptions paid quarterly or upfront. Network effect: insurers contribute loss data into ISO pool → Verisk produces rate filings, fraud models, cat models → carriers buy back as licensed product to defend rate filings before state insurance commissioners. Regulatory entrenchment + contributor flywheel.</li>
+  </ul>
+
+  <div class="source">Sources: Snowflake 10-K FY2024 (SEC); Verisk 10-K FY2024 (SEC); MSCI 10-K FY2024 (SEC); CoStar 10-K FY2024 (SEC); Sacra Plaid profile; TechCrunch on Plaid Series E.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">04</span>The Replication Unit</div>
+  <h1 class="action">The atomic unit is the data integration — the new bank pipe, hospital data-sharing agreement, MLS feed, or exchange data licence — not the customer.</h1>
+
+  <h3 class="sub">What gets replicated</h3>
+  <p class="body">The unit that scales is <b>not the customer</b> (which is the SaaS unit) — it is the <b>data integration</b>: the new bank pipe, the new hospital data-sharing agreement, the new MLS feed, the new exchange data licence, the new state insurance commission filing. Each integration unlocks (a) data depth for existing customers and (b) coverage that makes the product viable for a new customer segment.</p>
+
+  <table class="mck">
+    <thead><tr><th>Operator</th><th>Replication unit</th><th>Approximate cardinality</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Plaid</td><td>Bank/credit-union integration</td><td>12,000+ institutions</td></tr>
+      <tr><td class="name">Datavant</td><td>Healthcare data partner (hospital, lab, pharmacy, claims, EHR)</td><td>70,000+ hospitals, payers, life-sciences cos</td></tr>
+      <tr><td class="name">CoStar</td><td>Researched building (CRE inventory)</td><td>~6M CRE properties physically tracked</td></tr>
+      <tr><td class="name">MSCI</td><td>Indexed security / constituent</td><td>100,000s across global indices</td></tr>
+      <tr><td class="name">Verisk</td><td>Policyholder / claim contributed to ISO pool</td><td>Billions of records contributed</td></tr>
+      <tr><td class="name">Bloomberg</td><td>Instrument / exchange feed</td><td>All major global exchanges + OTC</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Cost to deploy one more unit</h3>
+  <ul class="body">
+    <li><b>Plaid bank integration</b>: legal review of bank's terms; engineering to handle bank's auth flow (OAuth where available, screen-scraping fallback); QA + monitoring; ongoing maintenance when bank UI changes. Industry-cited cost is six-figure all-in per major bank initially, declining to mid-five-figures as playbook matures. Large banks now require formal commercial agreements (the JPMorgan / Plaid / Coinbase fee dispute of 2025 reflected this shift).</li>
+    <li><b>Datavant partner</b>: HIPAA review, tokenisation deployment at partner site, data quality validation, ongoing pipeline ops — multi-quarter.</li>
+    <li><b>CoStar building</b>: physical inspection by field researcher + ongoing telephone refresh — pure labour cost.</li>
+    <li><b>MSCI index methodology</b>: research-team time to design and maintain; licensing to ETF issuers is high-leverage.</li>
+  </ul>
+
+  <h3 class="sub">Portable versus HQ-resident assets</h3>
+  <table class="mck">
+    <thead><tr><th>Portable (scales linearly with unit count)</th><th>HQ-only (does not scale)</th></tr></thead>
+    <tbody>
+      <tr><td>Connectors, normalisation pipelines, tokens</td><td>Licensing relationship with key suppliers</td></tr>
+      <tr><td>Customer-facing APIs and dashboards</td><td>Regulatory / compliance team</td></tr>
+      <tr><td>Customer success playbooks</td><td>Index methodology / actuarial science</td></tr>
+      <tr><td>Self-serve developer documentation</td><td>Government / regulator relations</td></tr>
+      <tr><td>Marketplace listings (Snowflake)</td><td>Model training and proprietary algorithms</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Diseconomies of scale</h3>
+  <ul class="body">
+    <li><b>Source-side power</b>. Once Plaid integrates JPMorgan, JPMorgan can demand pricing concessions or impose access restrictions — a contributor that becomes a gatekeeper. JPMorgan's reported 2025 moves to charge data aggregators for API access illustrate this risk.</li>
+    <li><b>Customer concentration in regulated verticals</b>. Equifax/Experian/TransUnion serve a small number of giant lenders; pricing pressure compounds at scale.</li>
+    <li><b>Long-tail integration maintenance</b>. At 12,000 bank integrations, the marginal new bank serves &lt;0.001% of users but still requires ongoing engineering. Plaid has reported significant ops cost in maintaining low-traffic integrations as bank UIs change.</li>
+  </ul>
+
+  <div class="source">Sources: Plaid Link product page; Datavant company materials; CoStar 10-K on field research operations; MSCI methodology disclosures.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">05</span>Unit Economics</div>
+  <h1 class="action">ACV ranges $25K to $10M+ depending on tier; gross margins 74–90%; NRR 125–160% in mature operators thanks to consumption-based pricing and switching cost.</h1>
+
+  <h3 class="sub">ACV by segment</h3>
+  <table class="mck">
+    <thead><tr><th>Segment</th><th style="width:24%">Typical ACV</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Enterprise data API (Plaid top, Snowflake F500)</td><td>$500K – $10M+</td><td>Multi-product, multi-team usage</td></tr>
+      <tr><td>Mid-market data API</td><td>$50K – $500K</td><td>One or two products, single team</td></tr>
+      <tr><td>Developer self-serve</td><td>$0 – $50K</td><td>Free tier → metered → enterprise</td></tr>
+      <tr><td>Bloomberg Terminal</td><td>~$28K – $32K per user/year</td><td>325,000+ subscribers worldwide</td></tr>
+      <tr><td>MSCI subscription</td><td>$50K – $5M+</td><td>Asset-manager scales with AUM</td></tr>
+      <tr><td>Verisk insurance subscription</td><td>$250K – $20M+</td><td>Multi-line carriers, multi-year</td></tr>
+      <tr><td>Datavant tokenisation</td><td>$100K – $5M+</td><td>Life-sciences sponsors; scales with trials</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">COGS structure</h3>
+  <ul class="body">
+    <li><b>Hosting and infrastructure</b> (8–15% of revenue for most data businesses; Snowflake passes through cloud-vendor COGS).</li>
+    <li><b>Data licensing fees paid out</b> (Bloomberg pays exchanges; MSCI pays index licensors; Plaid increasingly pays large banks for API access).</li>
+    <li><b>Customer success / professional services</b> (5–10% of revenue).</li>
+    <li><b>Customer-facing engineering on integrations</b> (variable).</li>
+  </ul>
+  <p class="body">Verisk's ~85% gross margin and Snowflake's 74–78% product gross margin bracket the range. Operators with heavier data-licensing cost pass-through (Bloomberg, some financial-data resellers) sit closer to 70%.</p>
+
+  <h3 class="sub">Net revenue retention — the defining metric</h3>
+  <table class="mck">
+    <thead><tr><th>Operator</th><th>NRR</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Snowflake (FY24)</td><td class="num">131%</td><td>10-K FY24</td></tr>
+      <tr><td class="name">Snowflake (FY26 mature)</td><td class="num">~125%</td><td>Investor materials</td></tr>
+      <tr><td class="name">MSCI (FY24 retention rate)</td><td class="num">93.1%</td><td>FY24 release (gross of expansion)</td></tr>
+      <tr><td class="name">Datadog (comparable data exhaust)</td><td class="num">~120%</td><td>SaaSMag summary</td></tr>
+      <tr><td class="name">Best-in-class B2B SaaS benchmark</td><td class="num">&gt;130%</td><td>SaaStr, OpenView consensus</td></tr>
+    </tbody>
+  </table>
+  <p class="body">NRR is structurally elevated because (a) consumption-based pricing scales with customer data growth, (b) more datasets in marketplace = more upsell, (c) datasets are sticky to internal models built on them.</p>
+
+  <h3 class="sub">CAC and payback</h3>
+  <ul class="body">
+    <li><b>PLG-leaning data APIs</b> (Plaid, early Snowflake): CAC payback 12–18 months at scale; bottom-up adoption reduces sales cost.</li>
+    <li><b>Enterprise field sales</b> (MSCI, Verisk, Bloomberg, CoStar): CAC payback 18–30 months for new logo; &lt;12 months for expansion in same logo.</li>
+    <li><b>LTV/CAC in mature operators</b> routinely exceeds 5× because NRR compounds while CAC stays largely on new-logo motion.</li>
+  </ul>
+
+  <h3 class="sub">Network-effect mechanics — the differentiator</h3>
+  <ul class="body">
+    <li><b>1. More customers → more data contribution → better product for all customers.</b> Verisk's ISO pool is the cleanest example: each member carrier contributes loss data; resulting actuarial tables are more accurate; each member benefits more than a non-member.</li>
+    <li><b>2. More integrations → more coverage → more customers viable.</b> Plaid: once 99% of US deposit accounts are reachable, any fintech can serve any user, making Plaid the default choice.</li>
+    <li><b>3. Marketplace effects.</b> Snowflake Data Cloud: more customers attract more data providers (Bloomberg, Experian, Weather Co. list on Snowflake Marketplace), deepening the consumption stack.</li>
+    <li><b>4. Identifier / linkage effects.</b> Datavant tokens: once the industry standardises on Datavant's tokenisation for trial-to-RWD linkage, any new data partner that does not tokenise the same way is unusable.</li>
+    <li><b>5. Regulatory entrenchment.</b> MSCI's indices are written into pension-fund mandates; replacing MSCI requires LP votes and prospectus updates — far higher friction than switching CRMs.</li>
+  </ul>
+
+  <div class="source">Sources: SEC 10-K filings; SaaSMag NRR benchmarks 2026; Growth Spree NRR / GRR by segment; Sacra Plaid economics.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">06</span>Go-to-Market</div>
+  <h1 class="action">Buyers are CDOs, heads of risk, heads of pricing; channels run from cloud marketplaces to enterprise field sales to developer-led PLG depending on the data product.</h1>
+
+  <h3 class="sub">Buyer personas</h3>
+  <table class="mck">
+    <thead><tr><th>Persona</th><th>Vertical</th><th>What they pay for</th></tr></thead>
+    <tbody>
+      <tr><td>Chief Data Officer</td><td>Banking, insurance, healthcare, retail</td><td>Single source of truth, governed access</td></tr>
+      <tr><td>Head of Pricing / Underwriting</td><td>Insurance, lending</td><td>Risk-rated decisions defensible to regulators</td></tr>
+      <tr><td>Head of Risk</td><td>Asset management, banking</td><td>Benchmarks, factor exposures, stress testing</td></tr>
+      <tr><td>Head of Strategy / M&amp;A</td><td>Cross-vertical</td><td>Market sizing, competitive intelligence</td></tr>
+      <tr><td>VP Engineering / Head of Product</td><td>Fintech, healthtech</td><td>Connectivity that ships in days, not quarters</td></tr>
+      <tr><td>Head of Clinical / RWE</td><td>Pharma, biotech</td><td>Linked patient journeys without re-IDing patients</td></tr>
+      <tr><td>Head of Investment / Index Strategy</td><td>Asset managers, ETF issuers</td><td>Benchmark licences, factor data</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Sales motion — two patterns</h3>
+  <ul class="body">
+    <li><b>Enterprise field sales</b> with data-scientist sales engineers. MSCI, Verisk, Bloomberg, CoStar, Datavant all run this — 12–24 month new-logo cycles, multi-year contracts, account managers per account.</li>
+    <li><b>Developer-led / PLG</b> for API products. Plaid in its early years was almost entirely developer-driven (sandbox → free tier → metered overages → enterprise). Modern Snowflake mid-market adoption follows a similar arc.</li>
+  </ul>
+
+  <h3 class="sub">Channels ranked by efficacy</h3>
+  <ul class="body">
+    <li><b>1. Direct enterprise sales</b> — primary revenue engine for &gt;$50M ARR companies.</li>
+    <li><b>2. Cloud marketplace</b> (AWS Marketplace, Azure Marketplace, Snowflake Marketplace itself) — fast-growing; cloud credits accelerate procurement.</li>
+    <li><b>3. Developer marketing and docs</b> — for API products, the docs ARE the sales asset.</li>
+    <li><b>4. Industry conferences</b> — HIMSS for healthcare, Money 20/20 / Finovate for fintech, RIMS for insurance, ICSC / NAREIM for CRE.</li>
+    <li><b>5. System integrators and consulting partners</b> — Accenture, Deloitte, EY drive enterprise data-platform deals.</li>
+    <li><b>6. Content marketing / thought leadership</b> — Verisk, MSCI publish research that becomes the citation in customer decks.</li>
+    <li><b>7. Partner referrals from data contributors</b> — Datavant's hospital partners refer life-sciences customers.</li>
+  </ul>
+
+  <h3 class="sub">Sales cycle length</h3>
+  <ul class="body">
+    <li>Developer self-serve: hours to days</li>
+    <li>Mid-market: 1–3 months</li>
+    <li>Enterprise new logo: 6–12 months</li>
+    <li>Regulated enterprise (insurance, healthcare): 9–18 months</li>
+    <li>Government / institutional (pension funds, sovereigns): 12–24 months</li>
+  </ul>
+
+  <h3 class="sub">Pricing models in use</h3>
+  <table class="mck">
+    <thead><tr><th>Model</th><th>Used by</th><th>When it works</th></tr></thead>
+    <tbody>
+      <tr><td>Per-API-call / per-token</td><td>Plaid, Datavant tokens</td><td>Variable customer usage; low friction to start</td></tr>
+      <tr><td>Per-user subscription</td><td>Bloomberg Terminal, Capital IQ</td><td>Fixed seat workflows</td></tr>
+      <tr><td>Per-query / per-credit (consumption)</td><td>Snowflake, Databricks</td><td>Compute-intensive workloads</td></tr>
+      <tr><td>Tiered subscription with seat allowance</td><td>MSCI, FactSet, CoStar</td><td>Mixed seat and data-volume needs</td></tr>
+      <tr><td>Asset-based fees</td><td>MSCI (ETF index licensing)</td><td>Customer revenue scales with your IP</td></tr>
+      <tr><td>Enterprise unlimited license</td><td>Verisk multi-line carriers</td><td>Customer wants budget predictability</td></tr>
+      <tr><td>Hybrid: platform fee + metered</td><td>Snowflake enterprise, Plaid enterprise</td><td>De-risks both sides</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">SMB acquisition as data-acquisition tactic</h3>
+  <p class="body">Verisk's two-decade run of ~70 acquisitions used M&amp;A as a primary data-acquisition method — buying specialty analytics shops (Argus, Wood Mackenzie energy, Maplecroft political risk) for their data, talent, customer relationships. Datavant's $7B merger with Ciox in 2021 was explicitly data-acquisition: Ciox brought the medical-records request network, Datavant brought the tokenisation linkage layer. The pattern: buy when (a) the target controls a data source you cannot build, (b) the target has regulatory permission or customer trust you cannot replicate, or (c) the target's customer relationships shorten your data-gathering timeline by years.</p>
+
+  <div class="source">Sources: SEC 10-K filings on revenue mix; New Mountain Capital release on Datavant-Ciox merger; Fierce Healthcare $7B merger analysis; Verisk acquisition history.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">07</span>Capital Structure and Founder Economics</div>
+  <h1 class="action">Capital required $5–15M for pure SaaS data API, $50–250M+ for acquisition-led plays; founders typically retain 10–20% at IPO; antitrust now forces standalone IPO.</h1>
+
+  <h3 class="sub">Capital required to start</h3>
+  <ul class="body">
+    <li><b>Pure SaaS data API</b>: $5–15M seed-Series A funds product, first integrations, design partners.</li>
+    <li><b>Acquisition-led data play</b>: $50–250M Series B/C+ needed before first scale acquisition, because the target's revenue needs to be paid for.</li>
+    <li><b>Hardware/field-data play</b> (CoStar's field researchers): heavy upfront capex for researcher network — CoStar deployed hundreds of millions cumulatively before reaching CRE coverage breadth.</li>
+  </ul>
+
+  <h3 class="sub">Capital at each milestone</h3>
+  <table class="mck">
+    <thead><tr><th>Milestone</th><th>Cumulative capital raised (typical)</th></tr></thead>
+    <tbody>
+      <tr><td>$10M ARR</td><td class="num">$25–50M raised</td></tr>
+      <tr><td>$50M ARR</td><td class="num">$75–200M raised</td></tr>
+      <tr><td>$100M ARR</td><td class="num">$150–500M raised</td></tr>
+      <tr><td>$1B EV</td><td class="num">$200–750M raised</td></tr>
+      <tr><td>IPO-ready ($300M+ ARR, 40%+ growth)</td><td class="num">$500M–$1.5B raised</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Round sequence examples</h3>
+  <ul class="body">
+    <li><b>Plaid</b>: Founded 2013 by Zach Perret and William Hockey → 2018 Series C $250M val → 2018 Series C $2.65B val → 2020 Visa offer $5.3B (blocked) → April 2021 Series D $425M raise at $13.4B → April 2025 Series E $575M raise at $6.1B (down-round) → late 2025/2026 secondary/tender at ~$8B; IPO path reopened.</li>
+    <li><b>Snowflake</b>: Founded 2012 → multiple rounds 2014–2020 (Sutter Hill, Sequoia, Altimeter, ICONIQ Growth) → February 2020 $479M at $12.4B → September 2020 IPO ~$3.4B raised, $33B at offer / $70B day-1 close.</li>
+    <li><b>Datavant</b>: Founded 2017 as Roivant healthcare data spin-out → 2020 Series B $40M → 2021 $7B merger with Ciox (backed by New Mountain Capital syndicate) → 2025–26 bolt-on of Aetion (real-world evidence).</li>
+  </ul>
+
+  <h3 class="sub">Founder retained ownership</h3>
+  <p class="body">Heavily dilutive archetype because (a) acquisition-led plays need lots of equity-funded M&amp;A and (b) long path to IPO compounds dilution:</p>
+  <ul class="body">
+    <li><b>Plaid founders</b>: estimated ~10–15% combined at $13.4B Series D peak per industry reporting; further diluted by Series E.</li>
+    <li><b>Snowflake</b>: Frank Slootman (CEO, not founder) held 5.9% at IPO; co-founders Dageville and Cruanes held single-digit percentages each.</li>
+    <li><b>Datavant</b>: Travis May, post-merger President of combined entity, holds minority stake (private; not disclosed).</li>
+    <li><b>MSCI</b> (spun from Morgan Stanley 2007): different dynamics — corporate spin-out.</li>
+    <li><b>Bloomberg LP</b>: Michael Bloomberg retains ~88% per industry reporting; founder-controlled remains the rarest and most valuable outcome in this archetype.</li>
+  </ul>
+
+  <h3 class="sub">Exit mechanics</h3>
+  <table class="mck">
+    <thead><tr><th>Path</th><th>Examples</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>IPO</td><td>Snowflake (2020), Verisk (2009), MSCI (2007 spin), Experian (2006 LSE), CoStar (1998)</td><td>Standard exit at $300M+ ARR</td></tr>
+      <tr><td>Strategic sale</td><td>Visa → Plaid blocked (2020); Symphony → Ipreo $1.9B (2018); IHS → Markit → S&amp;P $44B (2022); Refinitiv → LSEG $27B (2021)</td><td>Increasingly blocked by antitrust</td></tr>
+      <tr><td>Sponsor recapitalisation</td><td>Datavant under New Mountain</td><td>Common for sub-IPO scale</td></tr>
+      <tr><td>Continued private</td><td>Bloomberg LP, FactSet history</td><td>Cash-flow self-funding makes it viable</td></tr>
+    </tbody>
+  </table>
+
+  <p class="body">The Plaid-Visa block (2020) reshaped expectations: DOJ argued Visa was a monopolist in online debit and Plaid was "a nascent competitive threat" Visa was trying to neutralise as an "insurance policy." Implication: dominant incumbents cannot acquire a sufficiently differentiated data-network competitor, forcing the standalone IPO path.</p>
+
+  <div class="source">Sources: Sacra Plaid valuation history; TechCrunch on Plaid Series E; CNBC on Visa-Plaid block; SEC S-1 filings on Snowflake ownership; Datavant company materials.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">08</span>Risks and Failure Modes</div>
+  <h1 class="action">Seven recurring failure modes: data breach, customer disintermediation, regulatory exposure, source-side power shift, antitrust block, technology disruption, single-customer concentration.</h1>
+
+  <ul class="body">
+    <li><b>1. Data breach destroys trust and triggers regulatory penalties.</b> Equifax (2017): 143M consumers exposed, cumulative cost &gt;$1.4B including $700M settlement with FTC/CFPB/states. Reputational scar lasts a decade; competitors gain pricing room.</li>
+    <li><b>2. Customer disintermediation.</b> When data customers reach scale, they build internal alternatives. Large quant funds replaced Bloomberg modules with internal pipelines; large insurers built proprietary data assets to reduce ISO dependence; Goldman/Morgan Stanley historically considered building Bloomberg substitutes.</li>
+    <li><b>3. Regulatory exposure.</b> FCRA (credit data), HIPAA (health data), GLBA (financial privacy), GDPR/state privacy laws (consumer data), MiFID II (market data). A single enforcement action can wipe out a category.</li>
+    <li><b>4. Source-side power shift.</b> When the data supplier becomes a gatekeeper, they extract rents. JPMorgan's 2025 moves to charge aggregators for API access; LSE/ICE/CME exchange-data fee increases consistently outpacing inflation.</li>
+    <li><b>5. Antitrust block of consolidation path.</b> Plaid-Visa 2020 set the precedent; subsequent deals (S&amp;P-IHS Markit closed only after divestitures; LSEG-Refinitiv required EU concessions) face heightened scrutiny.</li>
+    <li><b>6. Technology disruption around the incumbent.</b> Open Banking regulations (UK PSD2, EU PSD3, US 1033) commoditise bank connectivity; alternative-data startups (FICO challengers using cash-flow data, climate-risk modellers attacking Verisk cat models) attack incumbents from new data angles.</li>
+    <li><b>7. Single-customer concentration.</b> Common in early-stage; FactSet's early dependence on a few asset managers; Datavant's life-sciences concentration risk.</li>
+  </ul>
+
+  <h3 class="sub">Documented historical examples</h3>
+  <ul class="body">
+    <li><b>Equifax 2017 breach</b>: $1.4B+ cumulative cost, 60%+ stock decline at trough, CEO/CIO/CSO departures, multi-year regulatory consent orders.</li>
+    <li><b>Plaid-Visa antitrust block 2020</b>: forced Plaid back to standalone path; ultimately turned out fine (now ~$8B IPO-track) but cost ~2 years.</li>
+    <li><b>Bloomberg "spy" scandal 2013</b>: revelation that Bloomberg journalists could see client activity led to backlash from Goldman, JPMorgan; required structural separation of editorial and data.</li>
+    <li><b>Dun &amp; Bradstreet</b>: serial restructuring, taken private (2018, $5.4B), re-IPO'd (2020), underperformed — illustrates difficulty when data freshness lags and customer alternatives proliferate.</li>
+    <li><b>Symphony Communications challenge to Bloomberg messaging</b>: 13-bank consortium funded alternative; took share at the margin but did not unseat Terminal.</li>
+  </ul>
+
+  <h3 class="sub">Preconditions for the archetype to work</h3>
+  <ul class="body">
+    <li>Genuinely unique data position (irreplicable for &gt;5 years).</li>
+    <li>Regulatory or operational moat sustaining that uniqueness.</li>
+    <li>Capital to fund the integration / acquisition phase (typically $50M+).</li>
+    <li>Anchor customers willing to pay before the dataset is complete.</li>
+    <li>Team capable of operating compliance and security at financial-grade.</li>
+  </ul>
+
+  <div class="source">Sources: Bitdefender summary of Equifax breach cost; PBS NewsHour Equifax $700M settlement; CNBC on Visa-Plaid; Goodwin client alert on Visa-Plaid antitrust.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">09</span>When This Game Is Playable</div>
+  <h1 class="action">The game requires data engineering at scale, regulatory leadership, and the right two compounding asymmetries — time on supply and switching cost on demand.</h1>
+
+  <h3 class="sub">Required team capabilities</h3>
+  <ul class="body">
+    <li><b>Data engineering at scale</b>: distributed pipelines, entity resolution, schema evolution. The hardest hires.</li>
+    <li><b>Regulatory and compliance leadership</b>: ex-FTC, ex-CFPB, ex-OCC, ex-HHS-OCR, ex-state-insurance-commission backgrounds dominate this role at top operators.</li>
+    <li><b>Enterprise sales with data fluency</b>: sales engineers fluent in SQL, data models, regulator-facing rate filings.</li>
+    <li><b>Partnership / BD</b>: closes the data-supply side — bank deals, hospital agreements, exchange feeds.</li>
+    <li><b>Security</b>: financial-grade infosec (SOC 2 Type II, ISO 27001, HITRUST for health data) is table stakes.</li>
+    <li><b>Product</b>: ability to package the same dataset into multiple product SKUs for different buyer personas.</li>
+  </ul>
+
+  <h3 class="sub">Required capital base</h3>
+  <ul class="body">
+    <li>$10–50M to validate position: assemble first 3–5 data partners, ship MVP, sign 5–10 design-partner customers.</li>
+    <li>$50–250M to reach $50M ARR: fund enterprise GTM and integration backlog.</li>
+    <li>$250M–$1B to reach IPO-ready scale in pure-organic mode; more if M&amp;A-led.</li>
+    <li>Acquisition-led plays require an additional $100M–$1B+ M&amp;A war chest because data assets are typically priced at 8–15× revenue.</li>
+  </ul>
+
+  <h3 class="sub">Required market conditions</h3>
+  <ul class="body">
+    <li><b>Data scarcity in target domain</b> (not commoditised public data).</li>
+    <li><b>Willingness-to-pay</b> for proprietary data above $50K/year minimum — sub-$50K markets cannot fund the integration cost structure.</li>
+    <li><b>Regulatory clarity</b> sufficient for enterprise customers to procure (HIPAA Safe Harbor framework, FCRA permissible purpose, GLBA compliance pathways must exist).</li>
+    <li><b>Customer base with repeated use cases</b> that drive recurring spend rather than one-shot data purchases.</li>
+    <li>At least one durable supply-side source of advantage: contributor pool, exclusive licence, regulator-approved methodology, or platform integration.</li>
+  </ul>
+
+  <h3 class="sub">Required time horizon</h3>
+  <ul class="body">
+    <li><b>6–10 years to meaningful exit</b> is the empirical norm.</li>
+    <li>Plaid: founded 2013, ~12 years to IPO track in 2026 (interrupted by Visa block).</li>
+    <li>Snowflake: founded 2012, IPO 2020 (8 years).</li>
+    <li>Datavant: founded 2017, $7B merger 2021 (4 years — fast, because acquisition-led).</li>
+    <li>Verisk: founded 1971 as ISO; IPO 2009 (38 years — pre-cloud era).</li>
+    <li>MSCI: spun from Morgan Stanley 2007 after decades of internal incubation.</li>
+  </ul>
+
+  <h3 class="sub">Disqualifying conditions</h3>
+  <ul class="body">
+    <li><b>Data is already commoditised</b>: weather data (post-NOAA opening), public company filings (post-SEC EDGAR), basic geographic data (post-OpenStreetMap).</li>
+    <li><b>No unique position assembly path</b>: if any well-capitalised competitor can replicate the dataset in &lt;12 months, no compounding moat forms.</li>
+    <li><b>Regulatory uncertainty making enterprise procurement impossible</b>: this is why ad-tech data brokers struggle to scale enterprise contracts as state privacy laws fragment.</li>
+    <li><b>Sub-scale willingness-to-pay</b>: SMB-only markets that cannot bear $50K+ contracts cannot fund the integration backlog.</li>
+    <li><b>Supplier power concentration before you have scale</b>: trying to build a "Plaid for X" when X has 3 dominant data sources who will each demand exclusivity or rents.</li>
+  </ul>
+
+  <div class="callout">
+    <div class="h">The structural arbitrage</div>
+    <p>The archetype's defensibility comes from two compounding asymmetries. <b>Time asymmetry on supply</b>: integrations take years to negotiate and engineer. A new entrant cannot catch up by spending money faster, only by waiting (or by acquiring an incumbent — increasingly blocked by antitrust). <b>Switching-cost asymmetry on demand</b>: once customers build internal workflows, models, regulatory filings, and downstream products on top of your data schema and identifiers, replacing you requires rebuilding all of it. NRR of 125–170% is the financial signature of this switching cost. Where these two asymmetries combine with a regulatory or trust moat — Verisk's regulator-approved actuarial methodology, MSCI's ETF benchmarks in LP mandates, Datavant's HIPAA tokenisation, Plaid's bank-side trust — the result is a multi-decade compounder. Where either is missing, the business reverts to commodity data resale.</p>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">10</span>Appendix · Sources</div>
+
+  <p class="body" style="font-size:11.5px;line-height:1.6">
+    Snowflake Inc. 10-K FY2024 (SEC) · Snowflake Q4 FY2024 earnings release (SEC 8-K) · Snowflake FY2024 press release · Verisk Analytics 10-K FY2024 (SEC) · Verisk Q4/FY2024 press release · MSCI Inc. 10-K FY2024 (SEC) · MSCI Q4/FY2024 press release · CoStar Group 10-K FY2024 (SEC) · CoStar Group FY2024 press release · Plaid Link product page · Sacra: Plaid at $546M ARR · Sacra: Plaid valuation history · TechCrunch: Plaid $575M Series E at $6.1B (April 2025) · CNBC: Visa abandons Plaid takeover (Jan 2021) · Goodwin client alert: Visa-Plaid antitrust analysis · Banking Dive: DOJ sues to block Visa-Plaid · Datavant + Ciox Health merger announcement (Jun 2021) · New Mountain Capital: Datavant-Ciox merger · Fierce Healthcare: $7B Ciox-Datavant analysis · Datavant Series B $40M release · Datavant Real-World Data Connect 2024 takeaways · Datavant trial tokenization 2025 trends · Bloomberg Terminal — Wikipedia · Equifax breach cumulative cost reporting (Bitdefender summary) · PBS NewsHour: Equifax $700M settlement · Frank Slootman — Wikipedia · Damodaran Enterprise Value Multiples by Sector (NYU Stern).
+  </p>
+
+  <div class="source">Document 4 of 4 in the Archetype Deep Dive series. Prepared June 13, 2026 for internal review.</div>
+</section>
+
+</body>
+</html>
