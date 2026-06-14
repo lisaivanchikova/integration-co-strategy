@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Horizontal AI Agent Platform — Archetype Deep Dive</title>
+<style>
+:root{
+  --deep-slate:#31435B;
+  --petrol-teal:#2E7780;
+  --soft-steel:#A9C5D6;
+  --silver-mist:#DCE5EC;
+  --near-black:#151A1F;
+  --cool-gray:#C9D2DC;
+  --off-white:#FAF9F6;
+  --rule:#D8DEE5;
+  --shade-1:#F4F2EE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--off-white);color:var(--near-black);font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.5;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:56px 72px 64px;border-bottom:1px solid var(--rule);background:var(--off-white)}
+.page:first-of-type{padding-top:120px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;margin-bottom:14px}
+.eyebrow .num{color:var(--deep-slate);font-weight:700;margin-right:10px}
+h1.action{font-size:30px;line-height:1.2;font-weight:700;color:var(--deep-slate);letter-spacing:-0.02em;margin-bottom:16px;max-width:980px}
+h2.action{font-size:22px;line-height:1.25;font-weight:700;color:var(--deep-slate);letter-spacing:-0.015em;margin-bottom:12px;max-width:920px}
+h3.sub{font-size:13px;font-weight:700;color:var(--deep-slate);text-transform:uppercase;letter-spacing:0.08em;margin:22px 0 10px}
+.lede{font-size:14px;line-height:1.55;color:var(--near-black);max-width:920px;margin-bottom:16px}
+.source{font-size:10.5px;letter-spacing:0.03em;color:#7B8590;border-top:1px solid var(--rule);padding-top:10px;margin-top:30px}
+.cover{min-height:78vh;display:flex;flex-direction:column;justify-content:space-between;padding-top:140px}
+.cover .top-mark{font-size:10px;letter-spacing:0.22em;color:var(--petrol-teal);font-weight:600;text-transform:uppercase}
+.cover h1{font-size:46px;line-height:1.1;font-weight:700;letter-spacing:-0.025em;color:var(--deep-slate);margin:54px 0 22px;max-width:980px}
+.cover .deck{font-size:18px;color:#3F4A57;max-width:880px;line-height:1.55;font-weight:400}
+.cover .meta{display:flex;gap:64px;margin-top:60px;font-size:12px;color:#5A6470}
+.cover .meta .label{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;display:block;margin-bottom:6px}
+.cover .meta .v{font-size:14px;color:var(--near-black);font-weight:600}
+.cover .palette{display:flex;gap:0;margin-top:40px;border-top:1px solid var(--rule);padding-top:18px}
+.cover .palette span{display:block;width:32px;height:6px}
+.bluf{background:var(--silver-mist);border-left:4px solid var(--petrol-teal);padding:22px 26px;margin:18px 0 24px;max-width:980px}
+.bluf .bluf-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:10px}
+.bluf p{font-size:14.5px;line-height:1.55;color:var(--near-black)}
+.findings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 6px}
+.find-card{background:#fff;border:1px solid var(--rule);padding:16px 18px;border-top:3px solid var(--deep-slate)}
+.find-card .ix{font-size:10px;letter-spacing:0.16em;color:var(--petrol-teal);font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.find-card .tt{font-size:13.5px;font-weight:700;color:var(--deep-slate);line-height:1.3;margin-bottom:8px}
+.find-card .body{font-size:12px;line-height:1.5;color:#3F4A57}
+.tree{margin:16px 0 6px;font-family:'JetBrains Mono','Menlo',monospace;font-size:12px;line-height:1.7;color:var(--near-black);background:#fff;border:1px solid var(--rule);padding:20px 24px;white-space:pre;overflow-x:auto}
+.tree .root{color:var(--deep-slate);font-weight:700}
+.tree .branch{color:var(--petrol-teal);font-weight:600}
+.tree .leaf{color:#3F4A57}
+table.mck{width:100%;border-collapse:collapse;background:#fff;font-size:12px;margin:12px 0 8px}
+table.mck th{background:var(--deep-slate);color:#fff;text-align:left;padding:10px 12px;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;border-right:1px solid #3D506B}
+table.mck th:last-child{border-right:none}
+table.mck td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+table.mck tr:nth-child(even) td{background:var(--shade-1)}
+table.mck td.idx{font-weight:700;color:var(--petrol-teal);width:38px;text-align:center;font-variant-numeric:tabular-nums}
+table.mck td.name{font-weight:700;color:var(--deep-slate);white-space:nowrap}
+table.mck td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+table.mck caption{caption-side:bottom;text-align:left;font-size:10.5px;color:#7B8590;padding-top:8px;line-height:1.5}
+.callout{border:1px solid var(--cool-gray);background:#FDFCFA;padding:16px 20px;margin:14px 0;border-left:3px solid var(--petrol-teal)}
+.callout .h{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:8px}
+.callout p{font-size:12.5px;line-height:1.5;color:var(--near-black);max-width:920px}
+.tag{display:inline-block;font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;background:var(--silver-mist);padding:3px 8px;border-radius:2px;margin-right:6px}
+p.body{font-size:13px;line-height:1.6;color:var(--near-black);margin-bottom:10px;max-width:920px}
+p.body b{color:var(--deep-slate)}
+ul.body{font-size:13px;line-height:1.6;color:var(--near-black);margin:8px 0 12px 0;padding-left:20px;max-width:920px}
+ul.body li{margin-bottom:5px}
+ul.body li b{color:var(--deep-slate)}
+@media print{body{font-size:10px}.page{padding:30px 36px;max-width:none;page-break-after:always}.cover{min-height:auto}table.mck th{background:var(--deep-slate)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div>
+    <div class="top-mark">Archetype Deep Dive · 4 of 4 series · Internal Strategy</div>
+    <h1>Horizontal AI Agent Platform</h1>
+    <div class="deck">
+      A single technology base — foundation model, agent framework, or orchestration layer — sold as agentic AI products to enterprises across many industries. This document maps the business model, replication unit, unit economics, and go-to-market mechanics through the lens of the operators currently defining the category.
+    </div>
+  </div>
+  <div>
+    <div class="meta">
+      <div><span class="label">Prepared</span><span class="v">June 13, 2026</span></div>
+      <div><span class="label">Series</span><span class="v">Archetype Deep Dives</span></div>
+      <div><span class="label">Sources</span><span class="v">Public filings, PitchBook, Sacra, news media</span></div>
+    </div>
+    <div class="palette">
+      <span style="background:#31435B"></span><span style="background:#2E7780"></span><span style="background:#A9C5D6"></span>
+      <span style="background:#DCE5EC"></span><span style="background:#151A1F"></span><span style="background:#C9D2DC"></span>
+      <span style="background:#FAF9F6;border-right:1px solid #ddd;border-left:1px solid #ddd"></span>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">01</span>Executive Summary</div>
+  <h1 class="action">The archetype produces the largest absolute enterprise values in software but extracts the smallest founder ownership share in the universe of games.</h1>
+
+  <div class="callout" style="border-left-color:var(--deep-slate);background:#F4F2EE;margin-bottom:18px">
+    <div class="h" style="color:var(--deep-slate)">How this archetype is defined in our framework</div>
+    <p>
+      A single technology base — foundation model, agent framework, or orchestration layer — is sold as agentic AI products to enterprises across multiple industries from one common code path. The category spans two sub-types under the same economics: <b>frontier model labs</b> that produce the underlying foundation models (Anthropic, OpenAI) and sell tokenised inference via API, and <b>application-layer agent platforms</b> (Sierra, Decagon, Glean, Harvey, Cresta) that wrap a foundation-model API in a vertical-agnostic orchestration layer and sell agentic products to enterprises. What unifies the archetype is horizontality — the same product serves customer service at one buyer, sales development at another, legal drafting at a third — and the resulting market narrative of foundational technology with unbounded TAM, which justifies the highest revenue multiples in software. Quantitatively: <b>exit multiples 15–40× ARR</b> (50–100× at the model-lab tier), <b>capital required to reach $100M ARR $200M–$20B+</b>, <b>founder ownership at exit 4–15%</b>, <b>scalability ceiling $10B–$100B+</b>. The combined enabler-fit score against US-market, SMB-acquisition, and AI-deployment capabilities is <b>20 out of 125</b> — high on AI fit, low on SMB fit, because the customer is the enterprise not the SMB owner.
+    </p>
+  </div>
+
+  <div class="bluf">
+    <div class="bluf-label">Bottom Line Up Front</div>
+    <p>The horizontal AI agent platform sells units of cognitive work priced against human labour cost rather than software seats. Frontier model labs (Anthropic, OpenAI) and application-layer agent platforms (Sierra, Decagon, Glean, Harvey, Cresta) clear 15–40× ARR multiples in private rounds, ten times the SaaS norm, but the capital required to reach scale produces founder dilution to single digits. The defining structural fact is the inference tax — AI-native gross margins average 52% versus 75–85% for mature SaaS, a 23–33 point compression that recovers only with hyperscaler distribution partnerships and proprietary model efficiency gains.</p>
+  </div>
+
+  <div class="findings">
+    <div class="find-card">
+      <div class="ix">Finding 01</div>
+      <div class="tt">Frontier ARR growth is unprecedented but valuation absorbs the founder's share.</div>
+      <div class="body">Anthropic went from $9B ARR end-2025 to $47B annualised in May 2026; Series H closed at $965B post-money. Sierra reached $150M ARR in 30 months at $15.8B valuation. Founder ownership at this scale typically clears under 10%, often under 5%.</div>
+    </div>
+    <div class="find-card">
+      <div class="ix">Finding 02</div>
+      <div class="tt">Only 11–14% of enterprise AI agent pilots reach production at scale.</div>
+      <div class="body">IDC reports 4 of 33 prototypes graduate. Failure modes: reliability degrades at production volume (3% pilot error becomes 300 weekly incidents at 10K volume), governance built post-hoc, unit economics flip when token cost exceeds human cost-per-task.</div>
+    </div>
+    <div class="find-card">
+      <div class="ix">Finding 03</div>
+      <div class="tt">The reverse acqui-hire is the modal failure exit.</div>
+      <div class="body">Adept ($400M raised → Amazon talent absorption), Inflection ($1.5B+ raised → Microsoft $650M payment + leadership), Character.AI (Google licensing deal). Investors recover 1–1.5× capital; founders cap out via talent absorption rather than equity outcome.</div>
+    </div>
+  </div>
+
+  <div class="source">Sources: Sacra company profiles, SEC S-1 filings, CNBC, Bloomberg, TechCrunch funding round announcements; ICONIQ 2026 AI margin dataset; IDC enterprise AI pilot research 2026.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">02</span>The Logic — Pyramid Decomposition</div>
+  <h1 class="action">Founder value in this archetype is the product of multiple expansion at the apex, capital concentration in the middle, and structural inference cost compression at the base.</h1>
+
+<div class="tree">
+<span class="root">Horizontal AI Agent Platform — Founder Value at Exit</span>
+│
+├── <span class="branch">Apex · Multiple</span>  (the highest in software economics)
+│        ├── <span class="leaf">Model lab: 50–100×+ ARR (Anthropic, OpenAI)</span>
+│        ├── <span class="leaf">Application-layer: 15–40× ARR (Sierra, Harvey)</span>
+│        └── <span class="leaf">Justified by narrative — foundational technology, unbounded TAM</span>
+│
+├── <span class="branch">Middle · Scale Engine</span>  (what converts capital into ARR)
+│        ├── <span class="leaf">Inference COGS: 8–23% of revenue depending on pricing model</span>
+│        ├── <span class="leaf">Customer success delivery: 4–10 week onboarding at enterprise tier</span>
+│        ├── <span class="leaf">Net revenue retention: 130–160% top quartile when usage-based</span>
+│        └── <span class="leaf">Channel mix: hyperscaler marketplace + direct enterprise + PLG</span>
+│
+└── <span class="branch">Base · Ownership Erosion</span>  (capital intensity dictates the founder's share)
+         ├── <span class="leaf">Capital required to $100M ARR: $200–600M application; $5–20B+ model lab</span>
+         ├── <span class="leaf">Series-by-series dilution: 75–90% by Series E</span>
+         ├── <span class="leaf">Founder retained ownership at exit: 4–15% application; 0–8% model lab</span>
+         └── <span class="leaf">Exit absolute dollars high, percentage low</span>
+</div>
+
+  <div class="callout">
+    <div class="h">Reading the pyramid</div>
+    <p>The apex compensates for the base only when enterprise value reaches the multi-billion range. A $1B exit at 6% founder ownership produces $60M; a $50B exit at 6% produces $3B. The archetype is therefore a winner-take-most game — founders who hit the top tier extract life-changing dollars, but the median outcome is the reverse acqui-hire at 1–1.5× capital returned to investors and limited founder upside.</p>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">03</span>Business Model</div>
+  <h1 class="action">The customer buys units of cognitive work; the operator produces an inference engine, an orchestration layer, or both.</h1>
+
+  <h3 class="sub">What the customer pays for</h3>
+  <p class="body">Buyers in this category are not purchasing software seats; they are purchasing a contractually-defined unit of cognitive work — a resolved support ticket (Sierra, Decagon), a drafted contract clause (Harvey), a retrieved-and-synthesised answer (Glean), or raw model inference (Anthropic, OpenAI). The value proposition crystallises as: <b>replace, augment, or accelerate a knowledge-work activity at 30–80% the fully-loaded cost of a human FTE, with measurable throughput uplift</b>.</p>
+
+  <h3 class="sub">Two production stacks coexist</h3>
+  <ul class="body">
+    <li><b>Frontier model labs (Anthropic, OpenAI)</b> produce general-purpose foundation models accessed via API, plus a thin consumer/enterprise UI layer. Output is tokenised inference sold at $3 / $15 per million input/output tokens for Claude Sonnet 4.5.</li>
+    <li><b>Application-layer agent platforms (Sierra, Decagon, Glean, Harvey, Cresta)</b> produce a vertical-agnostic orchestration layer — agent runtime, retrieval/RAG, guardrails, observability, integrations — fine-tuned per customer on top of a foundation model API.</li>
+  </ul>
+
+  <h3 class="sub">Revenue mix benchmarks</h3>
+  <table class="mck">
+    <thead><tr><th style="width:180px">Operator</th><th>Revenue mechanic</th><th style="width:180px">2026 scale</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Anthropic</td><td>API-led, ~80% revenue from business customers; 1,000+ accounts spending $1M+/yr</td><td class="num">$47B ARR May 2026</td></tr>
+      <tr><td class="name">OpenAI</td><td>Mixed: ChatGPT consumer ~60%, enterprise API ~40% and rising</td><td class="num">~$25B ARR Q1 2026</td></tr>
+      <tr><td class="name">Sierra</td><td>Pure outcomes-based — billed only on successful resolution</td><td class="num">$150M ARR Feb 2026</td></tr>
+      <tr><td class="name">Decagon</td><td>Subscription + per-conversation tiering</td><td class="num">~$35M est. 2025</td></tr>
+      <tr><td class="name">Glean</td><td>Per-seat SaaS, $45–50/user base + $15 AI add-on, 100-seat floor</td><td class="num">$300M ARR May 2026</td></tr>
+      <tr><td class="name">Harvey</td><td>Per-seat with usage overlay, 100K+ lawyers across 1,300+ orgs</td><td class="num">$190M ARR March 2026</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Margin structure — the defining constraint</h3>
+  <p class="body">ICONIQ's 2026 dataset puts the average AI-native product gross margin at <b>52%</b> versus 75–85% for mature SaaS — a 23–33 point compression. Inference consumes ~23% of revenue at scaling-stage AI companies. Three concrete trajectories:</p>
+  <ul class="body">
+    <li><b>Anthropic inference gross margin</b>: negative 2024 → 38% 2025 → mid-60s 2026, the steepest documented improvement curve in the category. Attribution: Bedrock distribution displacing direct-API serving costs, plus model efficiency gains (Anthropic spent ~4× less than OpenAI on training).</li>
+    <li><b>OpenAI gross margin</b>: 33% Q1 2026; inference cost rose from $8.4B in 2025 to $14.1B projected 2026; operating margin −122% non-GAAP. Cash burn ~$27B 2026, projected $63B 2027.</li>
+    <li><b>Application-layer</b>: best-in-class operators (Glean, Harvey) preserve 70–75% gross margins because the foundation-model lab absorbs the heaviest inference cost; Sierra's outcomes pricing internalises inference risk and produces gross margin closer to model-lab economics on heavy deployments.</li>
+  </ul>
+
+  <div class="source">Sources: Sacra company profiles for Anthropic, OpenAI; SemiAnalysis on Bedrock gross margins; SaaSMag ICONIQ 2026 dataset; TechTimes; Lorikeet on Sierra contract structure; Workativ on Glean pricing.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">04</span>The Replication Unit</div>
+  <h1 class="action">The atomic unit differs sharply by sub-archetype: tokens served for model labs, enterprise environments for application platforms, vertical playbooks for specialised plays.</h1>
+
+  <table class="mck">
+    <thead><tr><th style="width:32%">Operator</th><th style="width:18%">Atomic unit</th><th style="width:25%">Marginal deployment cost</th><th>Constraining resource</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Anthropic / OpenAI</td><td>One API call (token)</td><td>Near-zero self-serve; ~1 FTE-week solutions architect for large enterprise</td><td>GPU capacity — not labour</td></tr>
+      <tr><td class="name">Sierra</td><td>One enterprise environment</td><td>$100K–$300K loaded CS + engineering; recovered in 6–12 months</td><td>Solutions architects + customer SMEs</td></tr>
+      <tr><td class="name">Glean</td><td>One tenant indexed against M data sources</td><td>0.25–0.5 FTE-month of CS engineering</td><td>Connector library + customer IT cooperation</td></tr>
+      <tr><td class="name">Harvey</td><td>One law firm or legal department</td><td>2–6 weeks onboarding; standardised playbook approach</td><td>Domain SMEs (former lawyers on staff)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Portable versus HQ-resident assets</h3>
+  <ul class="body">
+    <li><b>Portable</b> (travels with each new unit): trained model weights, agent runtime/SDK, integration connectors, prompt/playbook library, observability dashboards.</li>
+    <li><b>HQ-bound</b>: pre-training and RLHF infrastructure, alignment and safety team (Anthropic LTBT, OpenAI safety board), GPU procurement relationships with NVIDIA and hyperscalers, model evaluation harnesses, multi-tenant data isolation engineering.</li>
+  </ul>
+
+  <h3 class="sub">Diseconomies of scale — three documented break-points</h3>
+  <ul class="body">
+    <li><b>Inference cost exceeds resolution price</b>. Production volumes reveal that agent architecture can be economically unviable at scale when LLM inference plus retrieval and orchestration overhead exceeds the human process being replaced. Pilots handling 200 test cases hit 3% failure → 300 failures/week at 10K volume → human-escalation cost spike.</li>
+    <li><b>Customer success org does not scale linearly with logo count</b>. Sierra's 4–10 week onboarding creates a structural ceiling on logo additions; doubling revenue requires doubling solutions-architect headcount.</li>
+    <li><b>Model commoditisation</b>. Inference cost per million tokens dropped ~80% from 2023 to 2025 — fatal for any platform whose moat depended on the arbitrage between API cost and customer price.</li>
+  </ul>
+
+  <div class="source">Sources: ChatForest analysis of Sierra Series E; Workativ on Glean implementation; VaaSBlock 2026 enterprise AI deployment gap report; IdeaProof on inference cost compression.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">05</span>Unit Economics</div>
+  <h1 class="action">High ACV at the enterprise tier combined with usage-based NRR above 130% produces strong LTV/CAC — when the inference tax is contained.</h1>
+
+  <h3 class="sub">ACV by segment</h3>
+  <table class="mck">
+    <thead><tr><th>Segment</th><th style="width:24%">Typical ACV</th><th>Reference points</th></tr></thead>
+    <tbody>
+      <tr><td>Enterprise (Fortune 500)</td><td>$750K – $5M+ multi-channel</td><td>Sierra multi-channel $750K–$1.5M+; Anthropic 1,000+ accounts at $1M+/yr in April 2026</td></tr>
+      <tr><td>Mid-market (1K–10K employees)</td><td>$150K – $500K</td><td>Sierra Y1 $200K–$350K; Glean scaling with seat count</td></tr>
+      <tr><td>SMB / land deal</td><td>$25K – $100K</td><td>Glean 100-seat floor at ~$50K; Harvey small-firm tier</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">COGS structure for application-layer platforms</h3>
+  <ul class="body">
+    <li><b>Foundation-model API spend</b>: 8–18% of revenue depending on pricing model. Pure usage/outcomes models (Sierra) absorb this directly; per-seat models (Glean) cap exposure via usage limits.</li>
+    <li><b>Inference infrastructure</b> (own GPUs or reserved compute, if self-hosting fine-tuned model): 5–12% of revenue.</li>
+    <li><b>Hosting and non-GPU cloud</b>: 3–6% of revenue.</li>
+    <li><b>Data and connector vendors</b> (search indexes, telephony for voice agents): 1–4%.</li>
+    <li><b>Customer-success delivery</b> (often booked as COGS for AI platforms with high implementation burden): 6–15%.</li>
+  </ul>
+  <p class="body">Stack-up: application platforms typically run 22–40% COGS, producing 60–78% gross margin. Frontier labs run 35–55% COGS in 2026, producing 45–65% inference gross margin.</p>
+
+  <h3 class="sub">Net revenue retention benchmarks</h3>
+  <ul class="body">
+    <li>B2B SaaS median NRR 2026: 105–115%; best-in-class enterprise: 130%+.</li>
+    <li>Usage-based / consumption SaaS: 125% median, 140%+ top quartile.</li>
+    <li>Reference points: Snowflake ~160% annualised, Zoom ~130%, MongoDB ~120%.</li>
+    <li>AI-native platforms with usage components (Sierra, Anthropic API) plausibly sit in the 130–160% range given expansion through new use cases per logo.</li>
+  </ul>
+
+  <h3 class="sub">CAC and payback by sales motion</h3>
+  <table class="mck">
+    <thead><tr><th>Motion</th><th style="width:22%">CAC range</th><th>Payback period</th></tr></thead>
+    <tbody>
+      <tr><td>API self-serve / PLG (Anthropic, OpenAI)</td><td>&lt;$5K per developer-led account</td><td>&lt;6 months</td></tr>
+      <tr><td>Inside sales (mid-market)</td><td>$30K – $80K</td><td>12–18 months</td></tr>
+      <tr><td>Enterprise field sales (Sierra, Harvey, Glean Fortune 500)</td><td>$200K – $600K</td><td>18–24 months</td></tr>
+    </tbody>
+  </table>
+  <p class="body">Enterprise SaaS median CAC payback was 18 months in 2024, deteriorating from 14 months the prior year (Benchmarkit / Drivetrain). Above 24 months is a red flag. Top-quartile AI agent platforms with 130%+ NRR and concrete ACV expansion plausibly clear 5:1 to 8:1 LTV/CAC at maturity — inferred from public disclosures, not directly reported.</p>
+
+  <div class="source">Sources: SaaSMag NRR benchmarks 2026; Growth Spree NRR/GRR by segment; Drivetrain CAC payback analysis; company-disclosed customer counts and ACV ranges.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">06</span>Go-to-Market</div>
+  <h1 class="action">The hyperscaler marketplace is the highest-leverage channel; enterprise field sales is the required engine for $500K+ ACV; PLG is the foundation for developer-facing products.</h1>
+
+  <h3 class="sub">Buyer personas by use case</h3>
+  <table class="mck">
+    <thead><tr><th>Use case</th><th>Economic buyer</th><th>Technical buyer</th><th>Champion</th></tr></thead>
+    <tbody>
+      <tr><td>Customer support (Sierra, Decagon)</td><td>CCO / VP CX / COO</td><td>CIO, CISO</td><td>Head of Support</td></tr>
+      <tr><td>Knowledge / search (Glean)</td><td>CIO / CTO</td><td>IT Operations</td><td>Head of Internal Tools</td></tr>
+      <tr><td>Legal (Harvey)</td><td>Managing Partner / GC</td><td>KM Director</td><td>Practice Group Lead</td></tr>
+      <tr><td>Developer (Anthropic Code, Cursor)</td><td>CTO / VPE</td><td>Eng Platform team</td><td>Staff engineers (bottom-up)</td></tr>
+      <tr><td>Horizontal / foundational (API)</td><td>CTO / Chief AI Officer</td><td>AI Platform Lead</td><td>Individual builders</td></tr>
+    </tbody>
+  </table>
+  <p class="body">Chief AI Officer is rising as a budget centre — Gartner expects 35% of CROs to have GenAI Ops on their team by 2026 — but the buying committee remains multi-stakeholder (procurement, security, legal, line-of-business).</p>
+
+  <h3 class="sub">Channels ranked by efficacy</h3>
+  <ul class="body">
+    <li><b>1. Inbound from foundation-model marketplaces</b> — AWS Bedrock alone accounted for 30% of YoY AWS gross profit dollar growth in Q1 2026 while being 4% of AWS revenue; 100K+ Bedrock customers run Claude.</li>
+    <li><b>2. Enterprise field sales / direct outbound</b> — required for $500K+ ACV deals.</li>
+    <li><b>3. System integrators</b> (Accenture, Deloitte, Cognizant) — services pull-through for change management; Accenture invested in Cresta directly.</li>
+    <li><b>4. Conferences / category events</b> — SaaStr AI, Gartner Symposium, AWS re:Invent, Dreamforce; NeurIPS for talent recruiting more than sales.</li>
+    <li><b>5. Content / SEO and thought leadership</b> — model labs publish papers; application platforms publish ROI case studies.</li>
+    <li><b>6. Referrals from logo customers</b> — Sierra publicly cites Fortune 50 references as conversion accelerant.</li>
+    <li><b>7. Hyperscaler co-sell</b> — Microsoft+OpenAI, AWS+Anthropic — large customers buy through their existing enterprise agreement.</li>
+    <li><b>8. PLG / community</b> — for developer-facing products (Cursor, Anthropic Claude Code).</li>
+  </ul>
+
+  <h3 class="sub">Sales cycle and pricing</h3>
+  <ul class="body">
+    <li>API self-serve: same-day.</li>
+    <li>Mid-market: 60–120 days.</li>
+    <li>Enterprise: 6–9 months typical; regulated industries (healthcare, financial services) extend to 9–15 months due to security review, data-residency, and model-card approval.</li>
+  </ul>
+  <p class="body">Five live pricing models in 2026: <b>per-token</b> (Anthropic, OpenAI API), <b>per-seat</b> (Glean, ChatGPT Enterprise), <b>per-agent / per-deployment</b> (Decagon enterprise contracts), <b>outcomes-based</b> (Sierra, pioneered for AI in 2024), and <b>hybrid platform-plus-usage</b> (most enterprise contracts).</p>
+
+  <h3 class="sub">The pilot-to-production cliff</h3>
+  <p class="body">Only <b>11–14% of enterprise AI agent pilots</b> reach production at scale. IDC reports 4 of 33 prototypes graduate. Top operators have mitigated this with outcomes-aligned commercial terms (Sierra), phased rollouts with explicit success-criteria gates, and embedded customer-success engineers acting as SI consultants on the platform's P&amp;L.</p>
+
+  <div class="source">Sources: SemiAnalysis on Bedrock gross profit contribution; VaaSBlock enterprise AI deployment gap 2026; Lorikeet pricing analysis; ZoomInfo / Gartner on Chief AI Officer adoption.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">07</span>Capital Structure and Founder Economics</div>
+  <h1 class="action">Capital required to reach $100M ARR is 30× higher for a model lab than an application platform; founder dilution at exit ranges from 4% to 15%.</h1>
+
+  <h3 class="sub">Capital at each milestone</h3>
+  <table class="mck">
+    <thead><tr><th>Milestone</th><th>Application-layer cumulative raised</th><th>Model lab cumulative raised</th></tr></thead>
+    <tbody>
+      <tr><td>$10M ARR</td><td>$30 – $80M (Series A + early Series B)</td><td>$1 – $5B (multiple seed tranches)</td></tr>
+      <tr><td>$50M ARR</td><td>$150 – $400M</td><td>$5 – $15B</td></tr>
+      <tr><td>$100M ARR</td><td>$300M – $1B (Sierra ~$285M pre-Series E)</td><td>$15 – $30B (Anthropic ~$18B raised)</td></tr>
+      <tr><td>$1B EV</td><td>Typical Series C – D zone</td><td>N/A — labs price at $50B+ on no revenue</td></tr>
+      <tr><td>IPO / exit reference</td><td>Sierra $15.8B at $150M ARR (105×); Glean $7.2B at $300M ARR (24×); Harvey $11B at $190M ARR (58×)</td><td>Anthropic S-1 ~$965B post on $47B ARR (~20×); OpenAI ~$852B on ~$25B ARR (~34×)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Round sequence examples</h3>
+  <ul class="body">
+    <li><b>Anthropic</b>: Series A 2021 $124M → Series B $580M → Series F September 2025 $13B at $183B → Series G Feb 2026 $380B → Series H May 2026 $65B at $965B post; total ~$64B raised; confidential S-1 filed June 1, 2026.</li>
+    <li><b>Sierra</b>: Seed/A 2024 → Series B–D in 18 months → Series E May 2026 $950M at $15.8B.</li>
+    <li><b>Harvey</b>: Series A 2023 → Series E $300M at $5B mid-2025 → $160M at $8B Dec 2025 → $200M at $11B March 2026; total &gt;$1.2B raised.</li>
+    <li><b>Decagon</b>: Series C June 2025 $131M at $1.5B → Series D Jan 2026 $250M at $4.5B; total $481M.</li>
+    <li><b>Cresta</b>: $282M total across 8 rounds; Series D $125M (a16z, Greylock, Sequoia, Tiger, WiL, QIA).</li>
+  </ul>
+
+  <h3 class="sub">Founder retained ownership at exit</h3>
+  <ul class="body">
+    <li><b>OpenAI / Altman</b>: Sam Altman holds zero equity publicly disclosed; $76K cash salary in 2023. A discussed 7% post-restructuring stake never materialised.</li>
+    <li><b>Anthropic / Amodei et al.</b>: founder pool (Dario, Daniela, 7 co-founders) believed to hold high single-digit percentages post Series H dilution; governance protected by the Long-Term Benefit Trust and Public Benefit Corp structure.</li>
+    <li><b>Sierra / Taylor</b>: not disclosed; with $1.65B+ raised, founder ownership likely 8–15% range post-Series E.</li>
+    <li><b>Harvey / Pereyra and Weinberg</b>: not disclosed but reported as still meaningful after $1.2B raised.</li>
+  </ul>
+
+  <h3 class="sub">Exit mechanics</h3>
+  <ul class="body">
+    <li><b>IPO</b>: Anthropic confidential S-1 filed June 1, 2026. OpenAI IPO trajectory active. Glean and Harvey at IPO-eligible scale.</li>
+    <li><b>Strategic acquisition</b>: Salesforce, ServiceNow, Microsoft (limited by Inflection precedent), Oracle, SAP. Salesforce acquired Convergence.</li>
+    <li><b>Reverse acqui-hire</b>: Microsoft-Inflection $650M to entity, founders to MSFT; Amazon-Adept $400M raised → 80% of team to AWS plus technology licence; Google-Character.AI. Investors typically receive 1–1.5× capital back.</li>
+    <li><b>Secondary sales</b>: common at $5B+ valuations; tender offers let founders take chips off the table without exit.</li>
+  </ul>
+
+  <div class="source">Sources: company funding announcements (TechCrunch, CNBC, Tech-Insider, Bloomberg); PYMNTS on Altman compensation; Semafor on Adept investor recovery; Heavybit on acqui-hire model.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">08</span>Risks and Failure Modes</div>
+  <h1 class="action">Five failure modes recur in the documented record: foundation-model encroachment, inference cost compression, pilot cliff, reverse acqui-hire, and capital starvation in the non-frontier tier.</h1>
+
+  <ul class="body">
+    <li><b>1. Foundation-model encroachment.</b> The model provider absorbs the use case. OpenAI's Operator, GPT Store, Tasks, Canvas, and Search cannibalised at least 200 funded GPT-wrapper startups in 2024 alone. 80% of AI startups are projected to fail by end-2026. OpenAI's own Operator product was shut down August 31, 2025 and absorbed into ChatGPT Agent — even the leader cannibalises its own products.</li>
+    <li><b>2. Inference cost compression eliminates margin arbitrage.</b> Token prices dropped ~80% from 2023 to 2025. Any business whose moat was margin between API cost and customer price evaporates.</li>
+    <li><b>3. Pilot-to-production cliff.</b> 86–89% of enterprise pilots fail to scale; reliability degrades at volume; unit economics flip negative when scaled token costs exceed human cost-per-task.</li>
+    <li><b>4. Reverse acqui-hire.</b> When a frontier-model relationship dries up or the product cannot differentiate, the cap-table-friendly outcome is a technology licence + team poach by a hyperscaler. Adept ($400M raised), Inflection ($1.5B+), Character.AI all followed this path. Investors recover capital but founder upside is capped.</li>
+    <li><b>5. Capital starvation in the non-frontier tier.</b> A handful of labs (OpenAI, Anthropic, Google DeepMind, xAI, Meta internal) can sustainably raise $10B+ tranches; the second tier (Cohere, Mistral, Reka) is structurally undercapitalised relative to compute requirements and faces strategic compression.</li>
+  </ul>
+
+  <h3 class="sub">Documented failures and root causes</h3>
+  <ul class="body">
+    <li><b>Adept AI</b> (Amazon acqui-hire July 2024): raised $400M; failed to convert action-transformer demo into PMF; Amazon hired 80% of team plus licensed technology.</li>
+    <li><b>Inflection AI</b> (Microsoft absorption March 2024): raised $1.5B+; consumer Pi lost to ChatGPT despite Reid Hoffman backing; Microsoft paid $650M and brought Mustafa Suleyman in as MS AI lead.</li>
+    <li><b>Character.AI</b> (Google licensing deal August 2024): founders + 30 staff returned to Google.</li>
+    <li><b>Failed GPT wrappers (2024–25)</b>: 3,800 AI startups shut in 2025 (27% of 2024 cohort).</li>
+  </ul>
+
+  <h3 class="sub">Preconditions for survival</h3>
+  <p class="body">To remain viable, an operator must achieve at least one of: distribution moat at enterprise (Sierra: F50 reference customers, multi-year contracts, brand-voice tuning sticky); data and integration moat (Glean's permissions-aware knowledge graph; Harvey's playbook library curated by ex-lawyers); foundation-model independence or vertical optimisation (own model layer, multi-model routing); capital scale to compete on training ($10B+ rounds with hyperscaler partnership); pricing model aligned with customer value (outcomes versus tokens passes risk to the operator that can engineer cost down).</p>
+
+  <div class="source">Sources: IdeaProof AI startup failure tracker; getcoai on Adept reverse acquihire; Heavybit acqui-hire model analysis; VaaSBlock enterprise AI deployment 2026.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">09</span>When This Game Is Playable</div>
+  <h1 class="action">The game requires either top-tier ML credentials or senior enterprise-buyer relationships (ideally both), proprietary distribution beyond cold outbound, and 5–8 years of cash-burn tolerance.</h1>
+
+  <h3 class="sub">Required team capabilities</h3>
+  <ul class="body">
+    <li><b>Frontier lab</b>: 50–200 PhD-level researchers from OpenAI / DeepMind / FAIR alumni pool; senior alignment leadership; world-class infra / distributed-systems engineering (Anthropic's compute team includes ex-Google TPU and ex-OpenAI Triton leadership); experienced enterprise CRO hired by Series C.</li>
+    <li><b>Application platform</b>: founder-CEO with operator credibility in the target buyer's world (Bret Taylor → CX/Salesforce; Harvey founders → BigLaw network; Cresta founders → Stanford ML + contact-center domain). Add 10–30 ML engineers, 20–50 forward-deployed engineers, an enterprise CRO at $5M ARR, and a security/compliance team by Series B.</li>
+  </ul>
+
+  <h3 class="sub">Required capital base</h3>
+  <table class="mck">
+    <thead><tr><th>Tier</th><th>Total capital required to reach $100M ARR</th></tr></thead>
+    <tbody>
+      <tr><td>Frontier model lab</td><td>$5 – $20B+</td></tr>
+      <tr><td>Horizontal application platform (deep CS)</td><td>$200 – $600M (Sierra ~$285M pre-Series E; Harvey ~$1B; Decagon ~$481M to $4.5B)</td></tr>
+      <tr><td>Vertical-horizontal (Glean)</td><td>$400 – $800M</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Required market conditions</h3>
+  <ul class="body">
+    <li>Capital availability at $1B+ rounds (concentrated in ~15 funds: Sequoia, a16z, Founders Fund, Lightspeed, Coatue, Tiger, GV, Khosla, ICONIQ, Thrive, Wellington, T. Rowe Price, Fidelity, Bessemer, Greylock, GIC).</li>
+    <li>Foundation-model API availability with stable pricing trajectory.</li>
+    <li>Hyperscaler distribution channel (Bedrock, Azure AI Foundry, Vertex AI) for marketplace co-sell.</li>
+    <li>Enterprise budget shift from AI-experiment line items to core-operations line items (underway in CX, legal, support; lagging in regulated verticals).</li>
+    <li>Buyer willingness to enter outcomes-based or usage-based contracts.</li>
+  </ul>
+
+  <h3 class="sub">Time horizon</h3>
+  <ul class="body">
+    <li>Frontier lab: 7–12 years founder commitment to IPO/exit; Anthropic founded 2021, IPO-ready 2026 — but only with the founders' OpenAI alumni distribution head start.</li>
+    <li>Application platform: 4–7 years from founding to $1B+ EV. Sierra hit $15.8B in ~30 months, an outlier driven by Bret Taylor's distribution.</li>
+    <li>Median expectation for a non-celebrity founder: 6 years minimum.</li>
+  </ul>
+
+  <h3 class="sub">Disqualifying conditions</h3>
+  <ul class="body">
+    <li>No proprietary distribution channel beyond cold outbound.</li>
+    <li>Founding team lacks both top-tier ML credentials and senior enterprise-buyer relationships (need at least one; ideally both).</li>
+    <li>Total addressable budget per customer &lt; $100K (SMB economics do not survive the implementation cost).</li>
+    <li>Use case fully covered by foundation-model native products (ChatGPT Tasks, Claude artifacts, GPT Store applets) — wrapper-only positioning.</li>
+    <li>Cannot defend gross margin &gt; 50% within 24 months — capital starvation will follow as growth slows.</li>
+    <li>No path to bringing inference cost-per-transaction below human cost-per-transaction at production volume.</li>
+    <li>Founders unwilling to absorb 5–8 years of cash burn before FCF positive (Anthropic projects 2027 FCF+; OpenAI pushed breakeven to 2030).</li>
+  </ul>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">10</span>Appendix · Sources</div>
+
+  <p class="body" style="font-size:11.5px;line-height:1.6">
+    Sacra (Anthropic, OpenAI, Plaid profiles) · The AI Corner (Anthropic ARR April 2026) · Tech-Insider (Anthropic Series H $965B) · TechCrunch (Anthropic Series F; Sierra $100M ARR) · SemiAnalysis (Anthropic Bedrock gross margins) · SaaStrAI (Anthropic vs OpenAI training efficiency) · Where's Your Ed At (OpenAI Q1 2026 margins) · TradingKey (OpenAI revenue trajectory) · PYMNTS (Sam Altman compensation/equity) · CMSWire (Sierra $15B valuation) · CNBC (Sierra $950M raise; Harvey $11B) · ChatForest (Sierra Series E analysis) · Sierra blog (outcomes-based pricing) · Lorikeet (Sierra pricing detail) · Bloomberg (Decagon $4.5B valuation) · BusinessWire (Decagon Series C announcement) · Phemex News (Glean $300M ARR) · Glean Press (Series F) · Workativ (Glean pricing) · Harvey blog ($11B announcement) · Cresta press release (Series D) · SaaSMag (AI gross margin compression; NRR benchmarks 2026) · TechTimes (token tax 30pt margin gap) · Growth Spree (NRR / GRR benchmarks by segment) · Drivetrain / Benchmarkit (CAC payback) · DesignRush (AI startup funding stages 2026) · Startup Stash (frontier lab seed rounds) · Pinggy (OpenAI / Anthropic funding history) · getcoai (Adept reverse acquihire) · Semafor (Adept investor recovery) · Heavybit (acqui-hire model) · IdeaProof (AI startup failures 2023–2026) · VaaSBlock (enterprise AI pilot-to-production gap 2026) · Cloudzero (Claude on AWS Bedrock pricing) · ZoomInfo / Gartner (Chief AI Officer adoption).
+  </p>
+
+  <div class="source">Document 1 of 4 in the Archetype Deep Dive series. Prepared June 13, 2026 for internal review.</div>
+</section>
+
+</body>
+</html>
