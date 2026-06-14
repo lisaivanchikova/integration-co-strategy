@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Strategic Decision Memo — Pure HoldCo Positioning</title>
+<style>
+:root{
+  --deep-slate:#31435B;
+  --petrol-teal:#2E7780;
+  --soft-steel:#A9C5D6;
+  --silver-mist:#DCE5EC;
+  --near-black:#151A1F;
+  --cool-gray:#C9D2DC;
+  --off-white:#FAF9F6;
+  --rule:#D8DEE5;
+  --shade-1:#F4F2EE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--off-white);color:var(--near-black);font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.5;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:56px 72px 64px;border-bottom:1px solid var(--rule);background:var(--off-white)}
+.page:first-of-type{padding-top:120px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;margin-bottom:14px}
+.eyebrow .num{color:var(--deep-slate);font-weight:700;margin-right:10px}
+h1.action{font-size:30px;line-height:1.2;font-weight:700;color:var(--deep-slate);letter-spacing:-0.02em;margin-bottom:16px;max-width:980px}
+h3.sub{font-size:13px;font-weight:700;color:var(--deep-slate);text-transform:uppercase;letter-spacing:0.08em;margin:22px 0 10px}
+.lede{font-size:14px;line-height:1.55;color:var(--near-black);max-width:920px;margin-bottom:16px}
+.source{font-size:10.5px;letter-spacing:0.03em;color:#7B8590;border-top:1px solid var(--rule);padding-top:10px;margin-top:30px}
+.cover{min-height:78vh;display:flex;flex-direction:column;justify-content:space-between;padding-top:140px}
+.cover .top-mark{font-size:10px;letter-spacing:0.22em;color:var(--petrol-teal);font-weight:600;text-transform:uppercase}
+.cover h1{font-size:46px;line-height:1.1;font-weight:700;letter-spacing:-0.025em;color:var(--deep-slate);margin:54px 0 22px;max-width:980px}
+.cover .deck{font-size:18px;color:#3F4A57;max-width:880px;line-height:1.55;font-weight:400}
+.cover .meta{display:flex;gap:64px;margin-top:60px;font-size:12px;color:#5A6470}
+.cover .meta .label{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;display:block;margin-bottom:6px}
+.cover .meta .v{font-size:14px;color:var(--near-black);font-weight:600}
+.cover .palette{display:flex;gap:0;margin-top:40px;border-top:1px solid var(--rule);padding-top:18px}
+.cover .palette span{display:block;width:32px;height:6px}
+.bluf{background:var(--silver-mist);border-left:4px solid var(--petrol-teal);padding:22px 26px;margin:18px 0 24px;max-width:980px}
+.bluf .bluf-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:10px}
+.bluf p{font-size:14.5px;line-height:1.55;color:var(--near-black)}
+.tree{margin:16px 0 6px;font-family:'JetBrains Mono','Menlo',monospace;font-size:12px;line-height:1.7;color:var(--near-black);background:#fff;border:1px solid var(--rule);padding:20px 24px;white-space:pre;overflow-x:auto}
+.tree .root{color:var(--deep-slate);font-weight:700}
+.tree .branch{color:var(--petrol-teal);font-weight:600}
+.tree .leaf{color:#3F4A57}
+table.mck{width:100%;border-collapse:collapse;background:#fff;font-size:12px;margin:12px 0 8px}
+table.mck th{background:var(--deep-slate);color:#fff;text-align:left;padding:10px 12px;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;border-right:1px solid #3D506B}
+table.mck th:last-child{border-right:none}
+table.mck td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+table.mck tr:nth-child(even) td{background:var(--shade-1)}
+table.mck td.idx{font-weight:700;color:var(--petrol-teal);width:38px;text-align:center;font-variant-numeric:tabular-nums}
+table.mck td.name{font-weight:700;color:var(--deep-slate);white-space:nowrap}
+table.mck td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.callout{border:1px solid var(--cool-gray);background:#FDFCFA;padding:16px 20px;margin:14px 0;border-left:3px solid var(--petrol-teal)}
+.callout .h{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:8px}
+.callout p{font-size:12.5px;line-height:1.5;color:var(--near-black);max-width:920px}
+.callout.warn{border-left-color:#b91c1c;background:#fff5f5}
+.callout.warn .h{color:#b91c1c}
+.callout.win{border-left-color:#2E7780;background:#F4F8F7}
+.callout.win .h{color:#2E7780}
+p.body{font-size:13px;line-height:1.6;color:var(--near-black);margin-bottom:10px;max-width:920px}
+p.body b{color:var(--deep-slate)}
+ul.body{font-size:13px;line-height:1.6;color:var(--near-black);margin:8px 0 12px 0;padding-left:20px;max-width:920px}
+ul.body li{margin-bottom:5px}
+ul.body li b{color:var(--deep-slate)}
+.path-card{background:#fff;border:1px solid var(--rule);padding:18px 22px;margin:10px 0;border-left:5px solid var(--cool-gray)}
+.path-card.chosen{border-left-color:var(--petrol-teal);background:#F4F8F7}
+.path-card.rejected{border-left-color:#b91c1c}
+.path-card .h{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:6px}
+.path-card.rejected .h{color:#b91c1c}
+.path-card h4{font-size:17px;font-weight:700;color:var(--deep-slate);margin-bottom:8px;letter-spacing:-0.01em}
+.path-card p{font-size:12.5px;line-height:1.55;color:var(--near-black);margin-bottom:6px}
+.path-card .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:2px;margin-right:6px;margin-top:6px}
+.tag-chosen{background:var(--petrol-teal);color:#fff}
+.tag-reject{background:#b91c1c;color:#fff}
+.tag-other{background:var(--cool-gray);color:var(--near-black)}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.cmp{background:#fff;border:1px solid var(--rule);padding:18px 22px}
+.cmp.yes{border-left:4px solid var(--petrol-teal)}
+.cmp.no{border-left:4px solid #b91c1c}
+.cmp h4{font-size:13px;font-weight:700;color:var(--deep-slate);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.cmp.yes h4 span{color:var(--petrol-teal)}
+.cmp.no h4 span{color:#b91c1c}
+.cmp ul{padding-left:18px;font-size:12.5px;line-height:1.6}
+.cmp ul li{margin-bottom:6px}
+.cmp ul li b{color:var(--deep-slate)}
+@media print{body{font-size:10px}.page{padding:30px 36px;max-width:none;page-break-after:always}.cover{min-height:auto}table.mck th{background:var(--deep-slate)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div>
+    <div class="top-mark">Strategic Decision Memo · Internal · Confidential</div>
+    <h1>Pure HoldCo Positioning — Why We Are Not a Services Firm</h1>
+    <div class="deck">
+      A structured decision memo explaining: (a) what game we chose to play, (b) what game we deliberately did not choose, (c) why the "hybrid services + acquisitions" path that initially looked attractive structurally destroys the model, (d) what our position actually is — and what it allows us to do.
+    </div>
+  </div>
+  <div>
+    <div class="meta">
+      <div><span class="label">Prepared</span><span class="v">June 14, 2026</span></div>
+      <div><span class="label">For</span><span class="v">Studio principals</span></div>
+      <div><span class="label">Decision class</span><span class="v">Foundational positioning</span></div>
+    </div>
+    <div class="palette">
+      <span style="background:#31435B"></span><span style="background:#2E7780"></span><span style="background:#A9C5D6"></span>
+      <span style="background:#DCE5EC"></span><span style="background:#151A1F"></span><span style="background:#C9D2DC"></span>
+      <span style="background:#FAF9F6;border-right:1px solid #ddd;border-left:1px solid #ddd"></span>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">01</span>The Question</div>
+  <h1 class="action">Among three structurally different paths, which game do we play — and what does the choice forbid us to do?</h1>
+
+  <p class="lede">
+    The Studio was originally framed as a three-entity structure: Fund (capital) + AI-Integration Co (sells AI services to third-party SMEs) + Holding Company (acquires SMEs in same vertical). Independent analysis through the Game Selection Framework and four archetype deep dives concluded that the highest-fit model on our three enabling capabilities (US capital markets, SMB acquisition, AI deployment) is <b>AI-Native Operating Holdco</b>. This memo answers: what does choosing that game require us to stop doing, what does it allow us to keep doing, and how do we name the position we now occupy.
+  </p>
+
+  <div class="bluf">
+    <div class="bluf-label">Bottom Line Up Front</div>
+    <p>
+      We abandoned the path of building a standing AI services firm that sells to a broad market of third-party SMEs. We did not abandon the practice of running paid pilots with one to two operator-partners per vertical as a validation gate before acquisition. The first is a different business model with structurally lower outcomes. The second is the L2 mechanic inside the AI-Native Operating Holdco model and matches what every documented operator in the category already does. Our position is therefore "AI-Native Operating Holdco with paid pre-acquisition pilots" — and the distinction between "pilot" and "services arm" is the entire memo.
+    </p>
+  </div>
+
+  <div class="source">Sources: Game Selection Framework (June 12, 2026); four archetype deep dives (June 13, 2026); Operating Model v4.0 (June 14, 2026); Business Models &amp; Replication Units doc (June 14, 2026).</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">02</span>The Three Paths Available</div>
+  <h1 class="action">Three structurally distinct business models are available to a team with our three enabling capabilities; they are not blendable.</h1>
+
+  <div class="path-card rejected">
+    <div class="h">Path A · Rejected as primary model</div>
+    <h4>Services-First Operator (the Distyl path)</h4>
+    <p>Build a standing AI services firm that sells implementation, integration, and managed AI products to a broad market of customers. Recurring revenue from N clients. Never acquires any customer.</p>
+    <p><b>Reference operators:</b> Distyl AI ($1.8B valuation on $31M ARR), Sierra ($15.8B), Harvey ($11B), Accenture, BCG-X, McKinsey QuantumBlack, Bain.</p>
+    <p><b>Why rejected:</b> exit multiple is 1–3× EBITDA on the services line (private market) or 4–8× ARR for SaaS-classified services. Founder cash-out potential $50–120M. Our $52M capital base (S16 + co-investors) is structurally HoldCo-grade, not bootstrap-grade for a services firm. Capability mismatch.</p>
+    <span class="tag tag-other">Not our game</span>
+  </div>
+
+  <div class="path-card rejected">
+    <div class="h">Path B · Initially attractive, structurally broken</div>
+    <h4>Hybrid — Standing Services Firm + Same-Vertical Acquisitions (the "Empty Quadrant")</h4>
+    <p>Run a standing AI services firm selling to many third-party SMEs in a vertical, while in parallel acquiring some of those (or adjacent) SMEs and rolling them up. The "empty quadrant" position on the original 2×2 matrix.</p>
+    <p><b>Reference operators:</b> None documented at our scale. The position is empty because every attempted hybrid collapsed on at least one of five structural points (analysis in Section 04).</p>
+    <p><b>Why rejected:</b> not because the position is novel, but because the structural mechanics that make Path B attractive on paper are exactly the mechanics that destroy enterprise value at exit.</p>
+    <span class="tag tag-reject">Rejected — see Section 04</span>
+  </div>
+
+  <div class="path-card chosen">
+    <div class="h">Path C · Chosen</div>
+    <h4>AI-Native Operating Holdco with Paid Pre-Acquisition Pilots</h4>
+    <p>Acquire operating SMBs in fragmented verticals, install AI inside, hold as decentralised opcos under a holding company. AI engineering arm housed inside the HoldCo. Before each acquisition, run a paid pilot with one to two operator-partners in the vertical to validate ≥1.5× productivity uplift on real client data. The operator pays the pilot fee; the Studio commits acquisition capital only if the gate clears.</p>
+    <p><b>Reference operators:</b> Long Lake ($1.28B raised), GC Creation ($1.5B), Shield Technology Partners ($200M, nine MSPs), Crete/Current ($428M revenue), Smarter Tech/NMC ($1B+). All five run paid pre-acquisition pilots; none runs a standing services arm.</p>
+    <p><b>Why chosen:</b> uses all three enabling capabilities at structural strength (enabler-fit score 100/125, highest of fourteen archetypes), multiple arbitrage 3–6× SMB → 8–14× platform exit, founder cash-out $200–400M, 5 documented operator references.</p>
+    <span class="tag tag-chosen">Our position</span>
+  </div>
+
+  <div class="source">Sources: Game Selection Framework Sections 03–08; archetype deep dives for AI-Native Operating Holdco, AI-Integration Services Co; PitchBook and BusinessWire data on reference operators.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">03</span>The Evaluation Framework</div>
+  <h1 class="action">A model is judged on five structural questions; Path B fails four of the five and Path C passes all five.</h1>
+
+  <p class="lede">
+    Every business model that combines services revenue with acquisition revenue must answer five structural questions. The answers determine whether the model survives to exit at the multiple its components imply. Path B and Path C answer these questions differently — the questions are not negotiable and the answers are not interchangeable.
+  </p>
+
+  <table class="mck">
+    <thead>
+      <tr><th style="width:30px">#</th><th style="width:34%">Question</th><th style="width:33%">Path B (Standing services + acquisitions)</th><th style="width:33%">Path C (HoldCo with pre-acquisition pilots)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="idx">Q1</td><td>What multiple does a strategic buyer apply at exit?</td><td>Blended — services revenue drags consolidated multiple to 4–6× EBITDA</td><td>Pure — pilot fees are diligence cost recovered from target, not services revenue. Consolidated multiple holds at 8–14× EBITDA</td></tr>
+      <tr><td class="idx">Q2</td><td>Do we create Section 206 conflict with potential acquisition targets?</td><td>Yes — every customer is a potential target; disclosure complexity compounds with every contract</td><td>No — operator at pilot stage is not yet a portfolio company; Fund is not yet a counterparty</td></tr>
+      <tr><td class="idx">Q3</td><td>Do we erode bargaining position when negotiating acquisition price?</td><td>Yes — selling AI to 10 HR agencies leaks our internal economics to 9 future competitors of acquired target</td><td>No — pilot is private, time-bounded, with explicit acquisition discussion built into terms</td></tr>
+      <tr><td class="idx">Q4</td><td>Can the AI Engineering team scale on both motions?</td><td>No — services scaling needs 50+ engineers (Sierra benchmark); HoldCo needs 5 (Long Lake benchmark). Two different teams</td><td>Yes — 5 engineers serve pre-acquisition pilot + post-acquisition deployment within same vertical, sequentially not in parallel</td></tr>
+      <tr><td class="idx">Q5</td><td>Does the LP disclosure remain manageable?</td><td>No — every related-party transaction requires arms-length pricing methodology, annual benchmark report, LPAC consent above $250K; 2016–2025 enforcement settlements range $52.7M (Apollo) to $500K+ (TZP)</td><td>Yes — pilot fees flow operator → Studio before operator is portfolio company; standard PE M&amp;A diligence disclosure applies</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="h">Reading the table</div>
+    <p>
+      The five questions are not "nice to have" — they are exit-determining. Path B's answers either reduce the exit multiple by 3–5 turns of EBITDA, create regulatory exposure with documented enforcement precedent, or constrain operating bandwidth in ways that make the model unbuildable at our capital scale. Path C's answers preserve the multiple, eliminate the regulatory friction, and operate within bandwidth we can actually staff.
+    </p>
+  </div>
+
+  <div class="source">Q1 multiples: Damodaran NYU Stern sector multiples (Jan 2026); PitchBook private market data Q4 2025. Q2/Q5 settlements: Sidley TZP Group analysis (Aug 2025), SEC press release Apollo 2016. Q4 engineering benchmarks: PitchBook (Long Lake), TechCrunch (Sierra Nov 2025).</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">04</span>Why Path B Breaks the Model — Five Concrete Mechanisms</div>
+  <h1 class="action">Path B fails not because it is novel but because five independent structural mechanisms each, on their own, are sufficient to destroy the value the model was built to capture.</h1>
+
+  <h3 class="sub">Mechanism 1 — Multiple compression on consolidated exit</h3>
+  <p class="body">
+    Public and private market data on sector multiples (Damodaran NYU Stern, January 2026 update; PitchBook Q4 2025):
+  </p>
+  <table class="mck">
+    <thead><tr><th>Revenue category</th><th>Private multiple range</th><th>Why this multiple</th></tr></thead>
+    <tbody>
+      <tr><td>AI-integrated SMB roll-up (post-AI uplift)</td><td>8–14× EBITDA</td><td>Buyer pays for verified margin uplift + scaled platform</td></tr>
+      <tr><td>Services / consulting boutique</td><td>1–3× EBITDA</td><td>Buyer applies services multiple — human capital, no recurring software lock-in</td></tr>
+      <tr><td>Hot AI-services peak (rare)</td><td>1× revenue (Distyl)</td><td>Strategic acquirer in narrow window; not repeatable for SMB-services</td></tr>
+    </tbody>
+  </table>
+  <p class="body">
+    <b>On our numbers:</b> if a Path B HoldCo arrives at exit with $50M EBITDA where $35M is roll-up margin and $15M is services revenue, the strategic buyer will not pay 12× on the $50M ($600M EV). The buyer will compute mix-weighted multiple: 8× × ($35M ÷ $50M) + 2× × ($15M ÷ $50M) ≈ 6.2× blended → $310M EV. <b>Lost enterprise value: ~$290M.</b> The mechanism is documented in Smarter Technologies / NMC: New Mountain Capital combined SmarterDx (SaaS) + Access Healthcare (services) + Thoughtful.ai (AI) into one entity; CEO Delinsky stepped down via LinkedIn after 7 months (December 2025); public reporting (Becker's Hospital Review, Modern Healthcare) frames the failure as integration of services revenue with platform revenue under acquisition-target time pressure.
+  </p>
+
+  <h3 class="sub">Mechanism 2 — Section 206 conflict of interest with future targets</h3>
+  <p class="body">
+    SEC Section 206(3) requires registered investment advisers to obtain client consent before engaging in principal transactions with affiliates. When the same Studio sells AI services to a customer and later considers acquiring that customer, every transaction history becomes a disclosure item. Documented enforcement settlements 2016–2025: <b>Apollo Global $52.7M</b> (2016, inadequate disclosure of monitoring fees), <b>Energy Capital Partners</b> settled (2022), <b>Insight Venture Management</b> settled (2023), <b>TZP Group $500K+</b> (2025, fee-offset double-counting). Sources: SEC press releases, Sidley TZP analysis (August 2025). Disclosure complexity is the documented failure mode, not the theoretical risk.
+  </p>
+
+  <h3 class="sub">Mechanism 3 — Bargaining position erosion at acquisition</h3>
+  <p class="body">
+    Selling AI services to 10 HR agencies in a vertical does two things to acquisition negotiations: (a) leaks our internal economics — every prospective target's CFO knows our pricing, margin structure, and engineering cost from product invoices; (b) creates 9 informed competitors of the 10th company we eventually buy, with detailed knowledge of our AI stack and operational rhythm. In a Pure HoldCo + private pilot model, the operator-partner signs an NDA before the pilot and the rest of the vertical learns nothing about our economics.
+  </p>
+
+  <h3 class="sub">Mechanism 4 — Engineering bandwidth split</h3>
+  <p class="body">
+    Documented engineering headcount ratios from comparable operators:
+  </p>
+  <ul class="body">
+    <li><b>Sierra (pure services-first)</b>: ~50+ engineers for $150M ARR. Engineering scales linearly with logo count, customer success, and white-glove implementations. Source: TechCrunch reporting on Sierra Series E (May 2026).</li>
+    <li><b>Long Lake (pure HoldCo)</b>: ~5 forward-deployed engineers supporting $1.28B raised and 30 acquisitions. Engineering scales with acquisition count, not customer count. Source: General Catalyst "Future of Services" essay (2026), PitchBook profile.</li>
+  </ul>
+  <p class="body">
+    Path B requires both teams operating in parallel — services scaling team to support growing customer base + acquisition deployment team to integrate acquired OpCos. Two teams of different dynamics, different management, different career paths. <b>$52M Fund cannot fund both at meaningful scale.</b> Forcing the same team to do both produces under-served customers (churn) or under-integrated acquisitions (margin uplift fails).
+  </p>
+
+  <h3 class="sub">Mechanism 5 — LP disclosure burden</h3>
+  <p class="body">
+    Path B requires the PPM to disclose (i) AI-Integration Co fee structure, (ii) related-party pricing methodology, (iii) Section 206(3) mitigations including arms-length pricing with annual third-party benchmark, (iv) audit trail for every cross-entity transaction, (v) management fee offset mechanism. The disclosure infrastructure investment is $50–100K upfront and 0.5 FTE perpetual compliance. Documented enforcement settlements show that disclosure execution failures, not structure choice, drive penalties (Sidley analysis, August 2025). Path C eliminates the disclosure surface entirely: operator at pilot stage is not yet portfolio company, Fund is not yet counterparty, no related-party transactions occur.
+  </p>
+
+  <div class="callout warn">
+    <div class="h">Compound mechanism — not five independent risks</div>
+    <p>
+      The five mechanisms are not five independent risks of which one might trigger. They are five facets of a single structural fact: <b>combining services revenue with acquisition revenue under one entity converts every relationship in the business from cooperative to adversarial</b> — customer becomes future negotiation counterparty, regulator becomes ongoing audit risk, LP becomes governance complexity, engineering becomes bandwidth conflict. Each mechanism amplifies the others.
+    </p>
+  </div>
+
+  <div class="source">Sources: Damodaran NYU Stern multiples Jan 2026; PitchBook Q4 2025; SEC enforcement press releases (Apollo 2016; TZP 2025); Sidley client alert on TZP; Becker's Hospital Review and Modern Healthcare on Smarter Technologies; TechCrunch on Sierra Series E; PitchBook Long Lake profile.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">05</span>Why Path C Works — What Pre-Acquisition Pilots Actually Do</div>
+  <h1 class="action">Paid pilots are not "selling services" — they are a documented L2 validation gate that every reference operator in the AI-Native HoldCo category runs.</h1>
+
+  <p class="lede">
+    The mechanic that confuses pilot with services arm is the fact that money flows from operator to Studio. The structural difference between pilot and services is not whether money flows, but what the money buys and what happens at the end of the engagement.
+  </p>
+
+  <div class="cmp-grid">
+    <div class="cmp yes">
+      <h4><span>Paid pilot</span> — inside our model</h4>
+      <ul>
+        <li><b>Duration:</b> 60–90 days, time-bounded</li>
+        <li><b>Counterparty:</b> 1–2 operator-partners per vertical, NDA-protected</li>
+        <li><b>Fee structure:</b> one-off $100–300K covering AI Engineering loaded cost</li>
+        <li><b>Purpose:</b> validate ≥1.5× productivity uplift on real client data</li>
+        <li><b>End state:</b> acquire operator's company OR walk away</li>
+        <li><b>P&amp;L classification:</b> acquisition diligence cost recovered from target — not recurring services revenue</li>
+        <li><b>Conferences:</b> sourcing operator-partners for L1 stage of the funnel</li>
+      </ul>
+    </div>
+    <div class="cmp no">
+      <h4><span>Standing services arm</span> — breaks the model</h4>
+      <ul>
+        <li><b>Duration:</b> ongoing, indefinite</li>
+        <li><b>Counterparty:</b> N customers in open market, multiple per vertical</li>
+        <li><b>Fee structure:</b> recurring monthly/annual subscription</li>
+        <li><b>Purpose:</b> generate recurring revenue stream</li>
+        <li><b>End state:</b> customer remains customer indefinitely</li>
+        <li><b>P&amp;L classification:</b> services revenue line item — consolidated multiple compression at exit</li>
+        <li><b>Conferences:</b> lead generation for services subscription pipeline</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub">Documented practice at reference operators</h3>
+  <p class="body">
+    Every operator in our reference set runs paid pre-acquisition engagements with operator-partners; none runs a standing external services arm. Selected evidence:
+  </p>
+  <ul class="body">
+    <li><b>Long Lake.</b> Each new vertical begins with an operator-partner engagement before HoldCo formation. AI deployment time compressed from over 12 months on early deals to days on recent deals in same vertical — the engagement is documented by General Catalyst as the validation phase, not a services line. Source: GC "Future of Services" essay (2026).</li>
+    <li><b>Shield Technology Partners.</b> MSP acquisitions structured at 60–90% stake, sellers retain leadership + local brand. Prior to acquisition Shield engages operator candidates on shared infrastructure (Sentinel, Spectre) — but does not sell these products externally to non-portfolio MSPs. Source: BusinessWire (June 2025), Channel Insider, MSP Summit.</li>
+    <li><b>Crete / Current.</b> Tax AI deployed inside acquired accounting firms, achieves 31% time savings + 98% accuracy on 7,000 returns. Tax AI is not sold as standalone SaaS to non-portfolio CPA firms. Source: BusinessWire rebrand announcement (June 2026), CPA Practice Advisor, OpenAI/Thrive joint press materials.</li>
+    <li><b>GC Creation.</b> $1.5B vehicle inside Fund XII led by MD Marc Bhargava. Creation NewCos run as portfolio companies with shared AI engineering; AI products are not licensed to operators outside the Creation portfolio. Source: Sourcery VC analysis, MobiHealthNews.</li>
+  </ul>
+
+  <h3 class="sub">Why this matches our existing practice</h3>
+  <p class="body">
+    The Studio's current activities are entirely inside Path C:
+  </p>
+  <ul class="body">
+    <li><b>Lusin × Glocap (HR Staffing, NY).</b> Paid pilot with one operator-partner (Adam Zoia / Glocap) inside their live workflow. Validation target ≥1.5×. Acquisition discussion built into engagement. Single operator per vertical at pilot stage. Matches Path C exactly.</li>
+    <li><b>HomeCare / Allan Gobbs / YCare.</b> Parallel pilot, single operator-partner per vertical, paid validation engagement, acquisition discussion built in.</li>
+    <li><b>Property Management / Sergey.</b> Config B variant — operator brings own software stack; HoldCo acquires the platform and folds software into portfolio.</li>
+    <li><b>Conference attendance.</b> Sourcing operator-partners in target verticals (Hell-Yes / Strong scores on V×C×A×B×M map). Not lead-gen for services subscription.</li>
+  </ul>
+
+  <div class="callout win">
+    <div class="h">The Studio is already running Path C</div>
+    <p>
+      Every existing engagement is consistent with Path C and inconsistent with Path B. The confusion arose from text that said "AI not sold externally" without explaining that paid pilots with operator-partners are a documented part of the model. Path C is what we are doing. The Lusin × Glocap pilot, the YCare engagement, the conferences — all of these are correct and proceed unchanged.
+    </p>
+  </div>
+
+  <div class="source">Sources: PitchBook profiles for Long Lake, GC Creation; BusinessWire announcements for Shield, Crete/Current; General Catalyst "Future of Services" essay; OpenAI / Thrive joint announcements on Tax AI.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">06</span>Final Positioning Statement</div>
+  <h1 class="action">"AI-Native Operating Holdco with paid pre-acquisition pilots" — a defined position with explicit rules of what we do and what we deliberately do not do.</h1>
+
+  <h3 class="sub">What this position allows — and what it forbids</h3>
+
+  <div class="cmp-grid">
+    <div class="cmp yes">
+      <h4><span>Allowed under our model</span></h4>
+      <ul>
+        <li>Conferences attended for sourcing operator-partners in target verticals</li>
+        <li>Paid pilots with 1–2 operator-partners per vertical at any given time</li>
+        <li>Pilot fees $100–300K covering AI Engineering loaded cost</li>
+        <li>NDA-protected validation engagements 60–90 days</li>
+        <li>Acquisition discussion built into pilot terms from day one</li>
+        <li>Walk-away at end of pilot if ≥1.5× metric fails</li>
+        <li>Acquisition of operator's company if metric clears</li>
+        <li>Post-acquisition deployment of validated AI stack across HoldCo OpCos and all subsequent tuck-in acquisitions</li>
+      </ul>
+    </div>
+    <div class="cmp no">
+      <h4><span>Forbidden under our model</span></h4>
+      <ul>
+        <li>Standing AI subscription product sold to non-portfolio customers</li>
+        <li>Recurring monthly revenue from customers without acquisition intent</li>
+        <li>More than 2 simultaneous pilots per vertical (creates competitive intelligence leak)</li>
+        <li>Pilots that have no defined acquisition decision point</li>
+        <li>Lead-generation conferences for services subscription pipeline</li>
+        <li>Licensing AI products to operators outside our acquisition pipeline</li>
+        <li>Marketing the AI product as a standalone brand external to the HoldCo</li>
+        <li>Open-ended customer relationships beyond the pilot window</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="sub">How to describe the Studio externally</h3>
+
+  <div class="callout win">
+    <div class="h">Recommended external positioning statement</div>
+    <p>
+      "We are an AI-Native Operating Holdco. We acquire operating SMBs in fragmented US service verticals — homecare, MSPs, accounting, P&amp;C insurance brokerages, property management — and install AI inside them to raise margin and productivity. Before each acquisition, we run a paid pilot with the operator-partner to validate productivity uplift on their live workflow. We do not sell AI as a standalone product to companies we are not acquiring."
+    </p>
+  </div>
+
+  <div class="callout">
+    <div class="h">Why the distinction matters for the team</div>
+    <p>
+      The same activity (operator pays the Studio, AI Engineering team builds inside their workflow) is "pilot" or "services" depending on (a) how many operators per vertical we engage, (b) whether acquisition is on the table from day one, (c) what happens at the end. Practical operating rule: <b>if at any point the team starts pursuing a third operator-partner in the same vertical at the same time, that is the moment we have drifted from Path C into Path B</b> — and we should stop and reconsolidate.
+    </p>
+  </div>
+
+  <h3 class="sub">What changes in the documents</h3>
+  <p class="body">
+    Operating Model v4.0 and the Business Models doc both refer to "AI not sold externally" in language that proved too categorical. Three targeted edits to address:
+  </p>
+  <ul class="body">
+    <li><b>v4.0 Investment Thesis lead</b>: replace "AI products are deployed exclusively across acquired portfolio OpCos; they are not sold externally" with "AI products are deployed across acquired portfolio OpCos and inside operator-partners during paid pilots leading to acquisition; AI is not sold as a standalone subscription product to customers without acquisition intent".</li>
+    <li><b>Business Models doc Section 04</b> (card "What we do not do"): replace "License AI products to operators outside our portfolio" with "License AI products as standalone subscription business or to operators outside our acquisition pipeline".</li>
+    <li><b>Business Models doc Section 05</b> (reference operators table caption): add explicit note that all reference operators run paid pre-acquisition engagements with operator-partners — this is consistent with our position.</li>
+  </ul>
+
+  <div class="source">This memo is the source document for the three edits above. All three edits preserve the pure-HoldCo posture while making explicit that paid pre-acquisition pilots are part of the documented model, not a deviation from it.</div>
+</section>
+
+<section class="page">
+  <div class="eyebrow"><span class="num">07</span>Summary Decision Tree</div>
+  <h1 class="action">One decision applied at every operating moment — pilot or subscription.</h1>
+
+<div class="tree">
+<span class="root">Activity in front of us — pilot or services subscription?</span>
+│
+├── <span class="branch">Q1 — How many operators per vertical at the same time?</span>
+│        ├── <span class="leaf">1 or 2 → pilot territory · continue</span>
+│        └── <span class="leaf">3 or more → drifting into Path B · stop and reconsolidate</span>
+│
+├── <span class="branch">Q2 — Is acquisition discussion built into the engagement?</span>
+│        ├── <span class="leaf">Yes, term sheet contemplates acquisition path → pilot · continue</span>
+│        └── <span class="leaf">No, open-ended customer relationship → services · stop</span>
+│
+├── <span class="branch">Q3 — Is the engagement time-bounded?</span>
+│        ├── <span class="leaf">60–90 days with clear decision point → pilot · continue</span>
+│        └── <span class="leaf">Ongoing without exit gate → services · stop</span>
+│
+├── <span class="branch">Q4 — How is the fee structured?</span>
+│        ├── <span class="leaf">One-off engagement fee covering AI Engineering cost → pilot · continue</span>
+│        └── <span class="leaf">Monthly recurring subscription → services · stop</span>
+│
+└── <span class="branch">Q5 — How will this appear on our consolidated P&amp;L at exit?</span>
+         ├── <span class="leaf">Acquisition diligence cost recovered from target → pilot · continue</span>
+         └── <span class="leaf">Services revenue line item → services · stop</span>
+</div>
+
+  <div class="callout win">
+    <div class="h">Operating rule for the team</div>
+    <p>
+      A "yes" on any single question to the bottom branch is enough to flag the activity for review. The model survives at exit only if all five questions answer to the top branch consistently across all activities. The single most actionable indicator is Q1: <b>if we are pursuing three operators in the same vertical at the same time, we have left the model</b>.
+    </p>
+  </div>
+
+  <div class="source">Prepared June 14, 2026 for internal review. Three targeted document edits (Section 06) bring v4.0 Operating Model and Business Models doc into alignment with this positioning.</div>
+</section>
+
+</body>
+</html>
