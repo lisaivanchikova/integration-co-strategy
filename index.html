@@ -1,992 +1,866 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Business Models & Replication Units — AI-Native Operating Holdco</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roll-up Studio · Strategy + Hypotheses + Execution</title>
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  /* AI Native Roll-up Studio brand palette
-     Deep Slate #31435B · Petrol Teal #2E7780 · Soft Steel Blue #A9C5D6
-     Silver Mist #DCE5EC · Near Black #151A1F · Cool Gray #C9D2DC · Off White #FAF9F6
-     Layout philosophy: BCG / McKinsey — generous whitespace, minimal fills,
-     typographic hierarchy beats color hierarchy, action-titled sections */
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #151A1F;
-    background: #ffffff;
-    padding: 24px 32px;
-  }
-  body > * {
-    max-width: 1640px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  header.doc-header { border-bottom: 2px solid #31435B; padding: 28px 0 16px; margin-bottom: 24px; background: transparent; border-radius: 0; }
-  h1 { font-size: 28px; font-weight: 700; margin: 0; color: #31435B; letter-spacing: -0.6px; line-height: 1.2; }
-  .meta { font-size: 11.5px; color: #6b7785; margin-top: 8px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 500; }
-  h2 { font-size: 13px; font-weight: 700; margin: 36px 0 4px 0; color: #2E7780; text-transform: uppercase; letter-spacing: 2px; padding-bottom: 0; border: none; }
-  h2 + p, h2 + .lead { margin-top: 4px; }
-  .action-title { font-size: 22px; font-weight: 700; color: #31435B; margin: 0 0 18px 0; line-height: 1.25; letter-spacing: -0.3px; max-width: 920px; }
-  h3 { font-size: 15px; font-weight: 700; margin: 22px 0 8px 0; color: #31435B; }
-  h4 { font-size: 12.5px; font-weight: 600; margin: 14px 0 4px 0; color: #2E7780; text-transform: uppercase; letter-spacing: 1px; }
-  p { margin: 8px 0; }
-  .lead { font-size: 15px; line-height: 1.5; color: #2a3340; margin: 0 0 14px 0; max-width: 900px; }
-  .context, .callout {
-    background: #ffffff; padding: 14px 18px; border-left: 3px solid #31435B;
-    font-size: 13.5px; margin: 14px 0; border-radius: 0;
-  }
-  .callout-warn { border-left-color: #b91c1c; background: #fff5f5; }
-  .callout-key { border-left-color: #2E7780; background: #ffffff; }
-  .callout-insight { border-left-color: #2E7780; background: #ffffff; }
-  .callout b { color: #31435B; }
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 14px 0 22px 0; background: #FAF9F6; border-radius: 0; overflow: visible; border-top: 2px solid #31435B; border-bottom: 1px solid #31435B; }
-  th { background: #31435B; color: #ffffff; font-weight: 600; text-align: left; padding: 11px 12px; vertical-align: top; border-bottom: none; text-transform: uppercase; letter-spacing: 0.5px; font-size: 10.5px; }
-  td { padding: 11px 12px; border-bottom: 1px solid #E4E9EE; vertical-align: top; background: #FAF9F6; }
-  tr:last-child td { border-bottom: none; }
-  tr:nth-child(even) td { background: #FAF9F6; }
-  tbody tr:hover td { background: #ffffff; }
-  .archetype-name { font-weight: 700; color: #31435B; }
-  .archetype-sub { font-size: 11px; color: #6b7785; font-style: italic; display: block; margin-top: 2px; }
-  .pro { color: #2E7780; font-weight: 600; }
-  .risk { color: #b91c1c; font-weight: 600; }
-  .num { text-align: center; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
-  .src { font-size: 11px; color: #6b7785; font-style: italic; }
-  .src a { color: #2E7780; text-decoration: none; }
-  ul { margin: 6px 0; padding-left: 22px; }
-  li { margin-bottom: 4px; }
-  .page-break { display: none; }
-  main, section, .page-content { background: transparent; padding: 0; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 14px 0; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 14px 0; }
-  .card { background: #FAF9F6; border: 0; padding: 18px 22px; border-radius: 0; font-size: 13px; }
-  .card b { color: #31435B; display: block; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; }
-
-  /* Exhibit — BCG/McKinsey-style schema as inline page element, no panel/box */
-  .exhibit { margin: 18px 0 28px; }
-  .exhibit-eyebrow { font-size: 10.5px; color: #2E7780; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 4px; }
-  .exhibit-title { font-size: 14px; font-weight: 700; color: #31435B; margin-bottom: 12px; line-height: 1.3; max-width: 100%; }
-  .exhibit-art { background: transparent; padding: 0; border: none; }
-  .exhibit-art svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
-  .exhibit-source { font-size: 10.5px; color: #6b7785; margin-top: 10px; font-style: normal; border-top: 1px solid #C9D2DC; padding-top: 6px; }
-
-  /* Exhibit row — three schemas side by side, BCG style */
-  .exhibit-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin: 20px 0 28px; clear: both; align-items: start; }
-  .exhibit-row .exhibit { margin: 0; }
-  .exhibit-row .exhibit-title { font-size: 13px; min-height: 52px; line-height: 1.35; }
-  .exhibit-row .exhibit-art { display: flex; align-items: center; justify-content: center; min-height: 380px; }
-  .exhibit-row .exhibit-art svg { width: 100%; max-width: 100%; height: auto; max-height: 420px; }
-  h2, h3 { clear: both; }
-  @media (max-width: 1080px) {
-    .exhibit-row { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 720px) {
-    .exhibit-row { grid-template-columns: 1fr; }
-  }
-
-  /* Two-column text — newspaper/report style for long-form prose */
-  .twocol { column-count: 2; column-gap: 36px; column-rule: none; margin: 12px 0 18px; max-width: 1100px; }
-  .twocol p { margin: 0 0 12px; break-inside: avoid; }
-  @media (max-width: 780px) { .twocol { column-count: 1; } }
-  .stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0; margin: 18px 0 24px; background: #FAF9F6; border-left: 4px solid #2E7780; }
-  .stat-strip .stat-cell { padding: 22px 24px; border-right: 1px solid #C9D2DC; }
-  .stat-strip .stat-cell:last-child { border-right: none; }
-  .stat-strip .stat-num { font-size: 36px; font-weight: 800; color: #31435B; letter-spacing: -1px; display: block; line-height: 1; }
-  .stat-strip .stat-num.teal { color: #2E7780; }
-  .stat-strip .stat-label { font-size: 10.5px; color: #6b7785; text-transform: uppercase; letter-spacing: 1.2px; margin-top: 8px; display: block; line-height: 1.4; }
-
-  /* Filled colored cards — BCG/McKinsey style hierarchy */
-  .card-filled { padding: 18px 20px; border: none; border-top: none; border-radius: 0; }
-  .card-filled b { color: inherit; display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.85; }
-  .card-filled.slate { background: #31435B; color: #fff; }
-  .card-filled.teal { background: #2E7780; color: #fff; }
-  .card-filled.steel { background: #A9C5D6; color: #151A1F; }
-  .card-filled.mist { background: #DCE5EC; color: #151A1F; }
-  .card-filled p { margin: 0; font-size: 13px; line-height: 1.5; }
-
-  /* Hero callout — Deep Slate filled block for headline insights */
-  .hero { background: #31435B; color: #fff; padding: 28px 36px; margin: 18px 0 22px; }
-  .hero .hero-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: #A9C5D6; font-weight: 600; margin-bottom: 10px; display: block; }
-  .hero .hero-text { font-size: 17px; line-height: 1.5; color: #fff; font-weight: 500; }
-  .hero b { color: #fff; }
-  .hero a { color: #DCE5EC; }
-
-  /* Takeaway — Petrol Teal end-of-section box */
-  .takeaway { background: #2E7780; color: #fff; padding: 20px 28px; margin: 16px 0 8px; }
-  .takeaway.blue { background: #6B8FA8; }
-  .takeaway-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 2px; color: #DCE5EC; font-weight: 700; margin-bottom: 6px; display: block; }
-  .takeaway-text { font-size: 15.5px; line-height: 1.45; font-weight: 500; color: #fff; }
-  .takeaway b { color: #fff; }
-
-  /* Tier rows — for ranked / categorical lists with color intensity */
-  .tier-stack { margin: 14px 0 20px; display: flex; flex-direction: column; gap: 4px; }
-  .tier-row { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; padding: 14px 22px; }
-  .tier-row .tier-label { font-weight: 600; font-size: 14px; }
-  .tier-row .tier-val { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .tier-row.t1 { background: #31435B; color: #fff; }
-  .tier-row.t2 { background: #2E7780; color: #fff; }
-  .tier-row.t3 { background: #A9C5D6; color: #151A1F; }
-  .tier-row.t4 { background: #DCE5EC; color: #151A1F; }
-
-  /* Blue accent box — Soft Steel Blue (lighter, friendly accent) */
-  .blue-box { background: #6B8FA8; color: #ffffff; padding: 18px 22px; margin: 12px 0; }
-  .blue-box b { color: #ffffff; }
-  .blue-box .blue-eyebrow { font-size: 10.5px; text-transform: uppercase; letter-spacing: 2px; color: #DCE5EC; font-weight: 700; margin-bottom: 6px; display: block; }
-
-  /* Card variant — blue filled */
-  .card-filled.blue { background: #6B8FA8; color: #ffffff; }
-
-  /* Numbered insight — Petrol Teal numbered box */
-  .insight-block { display: grid; grid-template-columns: 60px 1fr; gap: 0; margin: 10px 0; align-items: stretch; }
-  .insight-block .insight-n { background: #31435B; color: #fff; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-  .insight-block .insight-body { background: #ffffff; border: 1px solid #C9D2DC; border-left: none; padding: 16px 22px; font-size: 13.5px; line-height: 1.55; }
-  .insight-block .insight-body b { color: #31435B; }
-  .quadrant {
-    display: grid; grid-template-columns: 140px 1fr 1fr; gap: 0;
-    margin: 14px 0; border: 1px solid #C9D2DC; border-radius: 4px; overflow: hidden;
-  }
-  .q-cell { padding: 14px 16px; border: 1px solid #C9D2DC; font-size: 13px; min-height: 110px; background: #fff; }
-  .q-header { background: #31435B; color: #fff; font-weight: 600; text-align: center; padding: 10px; }
-  .q-axis { background: #DCE5EC; font-weight: 600; text-align: center; padding: 14px 8px; font-size: 13px; color: #31435B; }
-  .q-empty { background: rgba(46,119,128,0.12); border: 2px solid #2E7780; }
-  .q-empty b { color: #2E7780; }
-  .insight-num {
-    display: inline-block; background: #31435B; color: #fff;
-    width: 24px; height: 24px; line-height: 24px; text-align: center;
-    border-radius: 50%; font-weight: 700; font-size: 12px; margin-right: 8px;
-  }
-  .src-list { font-size: 11.5px; color: #6b7785; line-height: 1.7; padding: 0; list-style: none; margin: 0; }
-  .src-list li { display: inline; }
-  .src-list li::after { content: " · "; color: #C9D2DC; }
-  .src-list li:last-child::after { content: ""; }
-  .src-list a { color: #2E7780; text-decoration: none; }
-  .src-list a:hover { text-decoration: underline; }
-  .hl { background: #DCE5EC; padding: 0 3px; color: #31435B; font-weight: 600; }
-  @media (max-width: 720px) {
-    .grid-2, .grid-3 { grid-template-columns: 1fr; }
-    .quadrant { grid-template-columns: 1fr; }
-    body { padding: 16px 8px; }
-    table { font-size: 11.5px; }
-  }
-  details {
-    background: #FAF9F6;
-    border: 1px solid #C9D2DC;
-    border-radius: 0;
-    margin: 12px 0;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-  details[open] { border-color: #31435B; }
-  details > summary {
-    cursor: pointer;
-    padding: 14px 20px;
-    background: #FAF9F6;
-    font-weight: 700;
-    font-size: 15px;
-    color: #31435B;
-    list-style: none;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: background 0.15s;
-  }
-  details > summary:hover { background: #A9C5D6; }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary::before {
-    content: "▶";
-    display: inline-block;
-    color: #2E7780;
-    font-size: 11px;
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-  details[open] > summary::before { transform: rotate(90deg); }
-  details > summary .badge {
-    margin-left: auto;
-    font-size: 12px;
-    font-weight: 500;
-    color: #6b7785;
-    background: #fff;
-    padding: 2px 10px;
-    border-radius: 12px;
-    border: 1px solid #C9D2DC;
-  }
-  details > .details-body {
-    padding: 4px 22px 18px 22px;
-  }
-  details.appendix-master {
-    border: 2px solid #31435B;
-    margin-top: 24px;
-  }
-  details.appendix-master > summary {
-    background: #31435B;
-    color: #fff;
-    font-size: 17px;
-    padding: 18px 22px;
-  }
-  details.appendix-master > summary:hover { background: #2a3a4f; }
-  details.appendix-master > summary::before { color: #A9C5D6; }
-  details.appendix-master > summary .badge {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    border-color: transparent;
-  }
-  details.appendix-master > .details-body {
-    background: #FAF9F6;
-    padding: 16px 18px 22px 18px;
-  }
+:root{
+  --deep-slate:#31435B;
+  --petrol-teal:#2E7780;
+  --soft-steel:#A9C5D6;
+  --silver-mist:#DCE5EC;
+  --near-black:#151A1F;
+  --cool-gray:#C9D2DC;
+  --off-white:#FAF9F6;
+  --rule:#D8DEE5;
+  --shade-1:#F4F2EE;
+  --accent:#2E7780;
+  --warn:#C5874A;
+  --reject:#7A3030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--off-white);color:var(--near-black);font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.55;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased}
+a{color:var(--petrol-teal);text-decoration:none;border-bottom:1px solid rgba(46,119,128,0.3)}
+a:hover{border-bottom-color:var(--petrol-teal)}
+.page{max-width:1180px;margin:0 auto;padding:48px 72px 56px;border-bottom:1px solid var(--rule);background:var(--off-white)}
+.page:first-of-type{padding-top:110px}
+.eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;margin-bottom:12px}
+.eyebrow .num{color:var(--deep-slate);font-weight:700;margin-right:10px}
+.eyebrow .part{display:inline-block;background:var(--silver-mist);color:var(--deep-slate);padding:2px 8px;border-radius:2px;margin-right:10px;font-size:9.5px;letter-spacing:0.14em}
+h1.action{font-size:26px;line-height:1.22;font-weight:700;color:var(--deep-slate);letter-spacing:-0.018em;margin-bottom:14px;max-width:980px}
+h2.subhead{font-size:18px;font-weight:700;color:var(--deep-slate);margin:18px 0 8px;line-height:1.3}
+h3.sub{font-size:12px;font-weight:700;color:var(--deep-slate);text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 8px}
+p.body{font-size:13.5px;line-height:1.6;color:var(--near-black);margin-bottom:8px;max-width:960px}
+p.body b{color:var(--deep-slate)}
+ul.body{font-size:13.5px;line-height:1.6;color:var(--near-black);margin:6px 0 12px 20px;max-width:960px}
+ul.body li{margin-bottom:4px}
+ul.body li b{color:var(--deep-slate)}
+.lead{font-size:14.5px;line-height:1.55;color:var(--near-black);margin-bottom:14px;max-width:980px}
+.lead b{color:var(--deep-slate)}
+.src{font-size:10.5px;letter-spacing:0.02em;color:#7B8590;margin-top:8px;line-height:1.45;max-width:960px}
+.src a{color:#5A6A78;border-bottom-color:rgba(90,106,120,0.4)}
+.cover{min-height:78vh;display:flex;flex-direction:column;justify-content:space-between;padding-top:130px}
+.cover .top-mark{font-size:10px;letter-spacing:0.22em;color:var(--petrol-teal);font-weight:600;text-transform:uppercase}
+.cover h1{font-size:40px;line-height:1.1;font-weight:700;letter-spacing:-0.022em;color:var(--deep-slate);margin:48px 0 18px;max-width:980px}
+.cover .deck{font-size:16.5px;color:#3F4A57;max-width:880px;line-height:1.55;font-weight:400}
+.cover .meta{display:flex;gap:60px;margin-top:50px;font-size:12px;color:#5A6470}
+.cover .meta .label{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:600;display:block;margin-bottom:4px}
+.cover .meta .v{font-size:13.5px;color:var(--near-black);font-weight:600}
+.cover .palette{display:flex;gap:0;margin-top:36px;border-top:1px solid var(--rule);padding-top:14px}
+.cover .palette span{display:block;width:30px;height:5px}
+.summary-box{background:var(--silver-mist);border-left:3px solid var(--petrol-teal);padding:18px 22px;margin:14px 0;max-width:980px}
+.summary-box h3{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:8px}
+.summary-box ul{font-size:13px;line-height:1.55;color:var(--near-black);margin:0 0 0 18px}
+.summary-box li{margin-bottom:3px}
+.summary-box li b{color:var(--deep-slate)}
+.callout{border:1px solid var(--cool-gray);background:#FDFCFA;padding:14px 20px;margin:12px 0;border-left:3px solid var(--petrol-teal);max-width:980px}
+.callout .h{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:6px}
+.callout p{font-size:12.5px;line-height:1.55;color:var(--near-black)}
+.callout.warn{border-left-color:var(--warn)}
+.callout.warn .h{color:var(--warn)}
+.callout.reject{border-left-color:var(--reject)}
+.callout.reject .h{color:var(--reject)}
+table.mck{width:100%;border-collapse:collapse;background:#fff;font-size:11.5px;margin:10px 0 8px}
+table.mck th{background:var(--deep-slate);color:#fff;text-align:left;padding:8px 10px;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;border-right:1px solid #3D506B;vertical-align:top}
+table.mck th:last-child{border-right:none}
+table.mck td{padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+table.mck tr:nth-child(even) td{background:var(--shade-1)}
+table.mck td.idx{font-weight:700;color:var(--petrol-teal);width:32px;text-align:center}
+table.mck td.name{font-weight:700;color:var(--deep-slate)}
+table.mck td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.mck td.center{text-align:center;font-weight:600}
+table.mck caption{caption-side:top;text-align:left;font-size:11px;color:var(--deep-slate);font-weight:700;margin-bottom:4px}
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 12px}
+.kpi{background:#fff;border:1px solid var(--rule);padding:10px 14px;border-left:3px solid var(--deep-slate);min-width:150px;flex:1}
+.kpi .l{font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:#6B7785;font-weight:600;margin-bottom:3px}
+.kpi .v{font-size:15px;font-weight:700;color:var(--deep-slate)}
+.kpi .v.sm{font-size:12px}
+.tag-pass{display:inline-block;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:700;background:#E1F0EE;color:var(--accent)}
+.tag-warn{display:inline-block;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:700;background:#F5E8D5;color:var(--warn)}
+.tag-rej{display:inline-block;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:700;background:#EDD4D4;color:var(--reject)}
+.tree{margin:12px 0 4px;font-family:'JetBrains Mono','Menlo',monospace;font-size:11.5px;line-height:1.65;color:var(--near-black);background:#fff;border:1px solid var(--rule);padding:16px 20px;white-space:pre;overflow-x:auto}
+.tree .root{color:var(--deep-slate);font-weight:700}
+.tree .branch{color:var(--petrol-teal);font-weight:600}
+.tree .leaf{color:#3F4A57}
+.toc{background:#fff;border:1px solid var(--rule);padding:18px 22px;margin:12px 0 16px;max-width:980px}
+.toc h3{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--petrol-teal);font-weight:700;margin-bottom:10px}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;font-size:12.5px;line-height:1.5}
+.toc-grid div{border-left:3px solid var(--soft-steel);padding-left:12px}
+.toc-grid h4{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--deep-slate);font-weight:700;margin-bottom:6px}
+.toc-grid ul{margin:0;list-style:none;padding:0}
+.toc-grid li{margin-bottom:3px;color:#3F4A57}
+.toc-grid li a{color:#3F4A57;border-bottom:none}
+.toc-grid li a:hover{color:var(--petrol-teal)}
+@media print{body{font-size:10px}.page{padding:26px 32px;max-width:none;page-break-after:always}.cover{min-height:auto}table.mck th{background:var(--deep-slate)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.summary-box,.callout{page-break-inside:avoid}}
 </style>
 </head>
 <body>
 
-<!-- ========================================= PAGE 1 ========================================= -->
-<header class="doc-header">
-  <h1>Business Models & Replication Units — AI-Native Operating Holdco</h1>
-  <div class="meta">Strategic Analysis · 2026-06-14 · Pure HoldCo posture aligned with Game Selection Framework + archetype deep dives</div>
-</header>
+<section class="page cover">
+  <div>
+    <div class="top-mark">Working Strategy & Operating Document · Internal · v1.0</div>
+    <h1>Roll-up Studio · Strategy + Hypotheses + Execution</h1>
+    <div class="deck">
+      A consolidated working document. Strategy: which game we play and why. Hypotheses: what we are validating in the next two weeks across NYC, s16vc, and domain experts. Execution: the operating model under which the chosen game runs. Each block is a working position grounded in our analysis trail; references and full analyses are linked inline.
+    </div>
+  </div>
+  <div>
+    <div class="meta">
+      <div><span class="label">Prepared</span><span class="v">June 14, 2026</span></div>
+      <div><span class="label">Status</span><span class="v">Working — open to revision after hypothesis validation</span></div>
+      <div><span class="label">Audience</span><span class="v">Internal team + fund partners</span></div>
+    </div>
+    <div class="palette">
+      <span style="background:#31435B"></span><span style="background:#2E7780"></span><span style="background:#A9C5D6"></span>
+      <span style="background:#DCE5EC"></span><span style="background:#151A1F"></span><span style="background:#C9D2DC"></span>
+      <span style="background:#FAF9F6;border-right:1px solid #ddd;border-left:1px solid #ddd"></span>
+    </div>
+  </div>
+</section>
 
-<h2>01 · The Category</h2>
-<p class="action-title">Of fourteen game archetypes available on the US market with our three enablers, only one — AI-Native Operating Holdco — engages all three at structural strength.</p>
+<section class="page">
+  <div class="eyebrow"><span class="num">00</span>Executive Summary</div>
+  <h1 class="action">One game chosen (AI-Native Operating HoldCo, solo). Five hypotheses to validate in the next two weeks. Operating model is the working version pending validation.</h1>
 
-<p>Mature US services SMEs operate at 20–40% EBITDA margins that AI can lift 200–500 bps in 12 months. The Game Selection Framework scored fourteen archetypes against three capabilities (US capital markets, SMB acquisition, AI deployment); only one — <b>AI-Native Operating Holdco</b> — uses all three at structural strength. This document specifies the business model and replication unit that follow from that choice: Fund → Holding Company → acquired OpCos, with the AI Engineering arm housed inside the Holding Company serving only portfolio companies, never external customers.</p>
+  <div class="summary-box">
+    <h3>What is decided</h3>
+    <ul>
+      <li><b>Game:</b> AI-Native Operating HoldCo, solo. Scored 100/125 across enabler-fit and 4.30/5 versus alternatives among acquisition-plus-AI archetypes; only archetype using US market, SMB-acquisition and AI-deployment enablers at structural strength.</li>
+      <li><b>Posture:</b> Pure HoldCo — internal AI deployment across portfolio OpCos plus paid pre-acquisition pilots leading to acquisition. No standing services arm sold to non-portfolio operators.</li>
+      <li><b>Capital envelope (fund input):</b> s16vc Fund 3 = $100M total; AI roll-up bucket = $25.2M; structured to fund through Series A inclusive, then self-fund acquisitions from operating cash flow.</li>
+      <li><b>Vertical method:</b> V×C×A×B×M scoring map across 1,012 NAICS 6-digit cells; Hell-Yes set narrows to five candidates; sensitivity ranking computed.</li>
+      <li><b>Horizontal AI:</b> reserve-only alternative. Treated as a different game in the appendix, not as Stage 2 enhancement to HoldCo.</li>
+    </ul>
+  </div>
 
-<div class="exhibit-row" style="grid-template-columns: repeat(3, 1fr); margin-top: 16px; gap: 18px;">
-<div style="background:#31435B; color:#ffffff; padding:18px 22px;">
-<div style="font-size:10.5px; color:#A9C5D6; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 1 — our reference set</div>
-<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">AI-Native Operating Holdcos</div>
-<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">GC Creation $1.5B · Long Lake $1.28B · Shield Tech $200M · Crete/Current ($428M rev) · Smarter Tech/NMC. <b style="color:#fff;">Pure HoldCo</b> — buy SMBs, install AI internally, hold as decentralised opcos.</p>
-</div>
-<div style="background:#2E7780; color:#ffffff; padding:18px 22px;">
-<div style="font-size:10.5px; color:#DCE5EC; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 2</div>
-<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">Permanent-Capital Compounders</div>
-<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">Constellation $80B mkt cap · Roper $60B · Berkshire · Markel · Brookfield. <b style="color:#fff;">No exit</b> — wealth compounds as paper share value across decades, not as cash event.</p>
-</div>
-<div style="background:#6B8FA8; color:#ffffff; padding:18px 22px;">
-<div style="font-size:10.5px; color:#DCE5EC; text-transform:uppercase; letter-spacing:2px; font-weight:700; margin-bottom:6px;">Archetype 3</div>
-<div style="font-size:15px; font-weight:700; margin-bottom:10px; line-height:1.3;">Services-First Operators</div>
-<p style="font-size:12.5px; color:#ffffff; margin:0; line-height:1.5;">Distyl $1.8B · Sierra $15.8B · Harvey $11B · Accenture · BCG-X. <b style="color:#fff;">Cannot acquire</b> — services multiple (1–3× EBITDA) collapses if mixed with roll-up revenue on consolidated P&amp;L.</p>
-</div>
-</div>
+  <div class="summary-box" style="background:#F5E8D5;border-left-color:var(--warn)">
+    <h3 style="color:var(--warn)">What is being validated in the next two weeks</h3>
+    <ul>
+      <li><b>Entry multiples</b> — can we acquire at 3–5× EBITDA (search-fund range)? Killer: PE-overheated 6–8× cuts bet count by half.</li>
+      <li><b>Debt / SBA availability</b> — do banks lend on cash-flowing SME targets, at what leverage? Killer: no debt → no fund multiplication.</li>
+      <li><b>Searcher-CEO economics</b> — will strong operators come for share + carry, not salary? Killer: salaried hires only → every bet too heavy.</li>
+      <li><b>Co-invest appetite</b> — will LPs and investors top up specific deals? Killer: no co-invest → fund ceiling = fund size.</li>
+      <li><b>Bolt-on self-funding</b> — does anchor OpCo cash flow fund next bolt-ons? Killer: no → every bolt-on eats fund equity.</li>
+    </ul>
+  </div>
 
-<div class="stat-strip">
-  <div class="stat-cell"><span class="stat-num">$25.5M</span><span class="stat-label">S16VC equity through Series A</span></div>
-  <div class="stat-cell"><span class="stat-num">$26.5M</span><span class="stat-label">Pre-Series B co-investors</span></div>
-  <div class="stat-cell"><span class="stat-num teal">$52M</span><span class="stat-label">Total equity · 3–5 verticals</span></div>
-  <div class="stat-cell"><span class="stat-num">~$95M</span><span class="stat-label">Total firepower w/ vendor + debt</span></div>
-</div>
+  <h2 class="subhead">Document map</h2>
+  <div class="toc">
+    <div class="toc-grid">
+      <div>
+        <h4>Part I · Strategy</h4>
+        <ul>
+          <li><a href="#s01">01 · The question</a></li>
+          <li><a href="#s02">02 · Landscape of games</a></li>
+          <li><a href="#s03">03 · The chosen game</a></li>
+          <li><a href="#s04">04 · Pure HoldCo posture</a></li>
+          <li><a href="#s05">05 · Capital architecture</a></li>
+          <li><a href="#s06">06 · Vertical methodology</a></li>
+          <li><a href="#s07">07 · Right to win</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Part II · Hypotheses</h4>
+        <ul>
+          <li><a href="#s08">08 · Five killer questions</a></li>
+          <li><a href="#s09">09 · Test plan & thresholds</a></li>
+        </ul>
+        <h4 style="margin-top:14px">Part III · Operating Model</h4>
+        <ul>
+          <li><a href="#s10">10 · Legal architecture</a></li>
+          <li><a href="#s11">11 · Roles</a></li>
+          <li><a href="#s12">12 · Studio mechanic & capital stack</a></li>
+          <li><a href="#s13">13 · Deal pipeline & gates</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="visibility:hidden">_</h4>
+        <ul>
+          <li><a href="#s14">14 · AI operations</a></li>
+          <li><a href="#s15">15 · Seven Day-Zero levers</a></li>
+          <li><a href="#s16">16 · Financial model</a></li>
+          <li><a href="#s17">17 · 90-day plan</a></li>
+        </ul>
+        <h4 style="margin-top:14px">Appendices</h4>
+        <ul>
+          <li><a href="#sA">A · Other 12 games dismissed</a></li>
+          <li><a href="#sB">B · Horizontal AI alternative</a></li>
+          <li><a href="#sC">C · Reference operator profiles</a></li>
+          <li><a href="#sD">D · Glossary</a></li>
+          <li><a href="#sE">E · Sources & downloads</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="callout callout-key">
-<b>Why pure HoldCo, not hybrid.</b> Every documented operator in our reference set — Long Lake, GC Creation, Shield, Crete/Current, NMC — runs <b>without an external AI-services arm</b>. AI engineering is an internal capability that serves only acquired OpCos. Mixing external services revenue into the consolidated P&amp;L applies a services multiple (1–3× EBITDA) to the whole platform on exit — destroying the multiple arbitrage (3–6× SMB → 8–14× holdco) that the model exists to capture. The choice is structurally one or the other; this document specifies the pure-HoldCo path.
-</div>
+<section class="page" id="s01">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">01</span>The Question</div>
+  <h1 class="action">Among the games available to operators with US market, SMB-acquisition and AI-deployment capabilities, which maximises probability-weighted founder cash-out at exit?</h1>
 
-<h2>02 · The Filter</h2>
-<p class="action-title">Acquired OpCos keep their existing customer pricing — AI deployment changes their cost structure, not how they price to their end customers.</p>
+  <p class="body">The question is asked working backwards from founder cash-out at exit, the only number that exists with certainty after the fact. Cash-out decomposes into <b>Exit Multiple × Scale × Retained Ownership × Probability of Exit on Horizon</b>. Software-economics games maximise the first; acquisition-plus-AI games maximise the product weighted by probability. The choice is a preference declaration, not a ranking exercise.</p>
 
-<p>The HoldCo does not change how acquired companies price to their end customers; their multi-year contracts, regulatory pricing constraints, and customer relationships are preserved. AI improves cost-to-deliver, throughput per FTE, and quality — the margin uplift accrues to the OpCo P&amp;L. The eight pricing models below describe the spectrum of how AI-augmented services price in the broader market; the SMB verticals we acquire typically use models <b>#6, #7, or #8</b>.</p>
+  <div class="callout">
+    <div class="h">Why this framing matters</div>
+    <p>Founder ownership at exit varies by 8× across archetypes. Bootstrapped software founders retain 40–60%; VC-backed vertical SaaS founders retain 15–25%; frontier AI founders retain 4–10%. Ranking by absolute cash-out diverges sharply from ranking by enterprise value when dilution is included. The same operator playing two different games receives wildly different outcomes — the game choice is upstream of every other decision.</p>
+  </div>
 
-<table>
-<thead>
-<tr>
-<th style="width:14%">Archetype</th>
-<th style="width:22%">Pricing mechanic</th>
-<th style="width:11%">Deal size</th>
-<th style="width:9%">Gross margin</th>
-<th style="width:14%">Replication unit</th>
-<th style="width:18%">Best fit</th>
-<th style="width:12%">SME viable?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span class="archetype-name">1. Time & Materials</span><span class="archetype-sub">Big-4 consulting</span></td>
-<td>Hourly rate × consultants. McKinsey QuantumBlack $500-700/hr; BCG X $400-600/hr</td>
-<td class="num">$500K-$50M+</td>
-<td class="num">50-60%</td>
-<td>Billable consultants (linear, headcount-bound)</td>
-<td>F1000 enterprise; multi-year transformations</td>
-<td class="risk">No — floor exceeds SME budget</td>
-</tr>
-<tr>
-<td><span class="archetype-name">2. Enterprise Platform</span><span class="archetype-sub">Palantir, Mendix</span></td>
-<td>Annual subscription bundled with implementation. Palantir $1M-$100M+ TCV; Mendix $30-500K ACV</td>
-<td class="num">$30K-$100M</td>
-<td class="num">75-85%</td>
-<td>Software licenses + modules + environments</td>
-<td>Enterprise + mid-market upper end</td>
-<td class="risk">Low — too complex, too slow</td>
-</tr>
-<tr>
-<td><span class="archetype-name">3. Consumption</span><span class="archetype-sub">Snowflake, Bedrock</span></td>
-<td>Credits/tokens consumed; capacity commits give discounts. Min $25K/year</td>
-<td class="num">$25K-$10M+</td>
-<td class="num">65-75%</td>
-<td>Compute consumption (infinite scale, no headcount)</td>
-<td>Tech-mature mid-market & enterprise</td>
-<td class="risk">Medium — only via wrapped/managed</td>
-</tr>
-<tr>
-<td><span class="archetype-name">4. AI Outcome-Native</span><span class="archetype-sub">Sierra, Distyl</span></td>
-<td>Multi-year platform + embedded engineers + fees tied to specific KPIs. Sierra: per resolved ticket ($1-2.50). $100M ARR in &lt;2 yrs</td>
-<td class="num">$150K-tens of $M</td>
-<td class="num">70%+ platform</td>
-<td>Vertical playbook + reusable engineering squads</td>
-<td>Enterprise; sophisticated mid-market</td>
-<td class="risk">Low — floor &gt;$1M excludes SME</td>
-</tr>
-<tr>
-<td><span class="archetype-name">5. Vertical SaaS+AI</span><span class="archetype-sub">Cresta, Forethought</span></td>
-<td>Per-seat annual + tiered features. Custom by agent seat</td>
-<td class="num">$100K-$5M</td>
-<td class="num">70-80%</td>
-<td>Software seats / call volume processed</td>
-<td>Mid-market & enterprise contact centers</td>
-<td class="risk">Low — too vertical-specific</td>
-</tr>
-<tr style="background:rgba(46,119,128,0.08);">
-<td><span class="archetype-name">6. Productized Consulting</span><span class="archetype-sub">SME boutiques (2026 standard)</span></td>
-<td>Discovery $1.5-3K + Build $5-15K + Retainer $1-3K/mo. Templatized — ~70% reuse</td>
-<td class="num">$10-60K Y1</td>
-<td class="num">50-65%</td>
-<td>Pre-built playbooks (reuse compounds)</td>
-<td><b>SMB / lower mid-market — SME sweet spot</b></td>
-<td class="pro">Yes — current best practice</td>
-</tr>
-<tr style="background:rgba(46,119,128,0.08);">
-<td><span class="archetype-name">7. Gainshare / % Savings</span><span class="archetype-sub">GainShare AI, McKinsey 25%</span></td>
-<td>Baseline measured → AI deployed → vendor takes 10-40% of confirmed savings. Often + small setup fee</td>
-<td class="num">$5K-$500K</td>
-<td class="num">60-80% on wins<br>losses on misses</td>
-<td>Verified-savings instrumentation + playbooks</td>
-<td>SMB-mid where measurable cost centers exist</td>
-<td class="pro">Yes — white space for SME</td>
-</tr>
-<tr style="background:rgba(46,119,128,0.08);">
-<td><span class="archetype-name">8. Per-Unit-of-Value</span><span class="archetype-sub">AppFolio per-door, Datto per-endpoint, Procore per-$construction</span></td>
-<td>Price scales with customer's business size, not seats. Min commits + per-unit overage</td>
-<td class="num">$5K-$500K ACV</td>
-<td class="num">75-83%</td>
-<td>Customer-business-unit (door, endpoint, $)</td>
-<td>SME vertical specialists, scalable distribution</td>
-<td class="pro">Yes — strongest SME unit economics</td>
-</tr>
-</tbody>
-</table>
+  <div class="src">Full derivation in Game Selection Framework (June 12, 2026) → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-analysis-game-selection-2026-06-12.html">download HTML</a>.</div>
+</section>
 
-<div class="takeaway">
-<span class="takeaway-label">Implication for acquired OpCos</span>
-<div class="takeaway-text">SMB targets we acquire typically already price under <b>#6 (productized fees)</b> or <b>#8 (per-unit-of-value)</b>. Post-acquisition AI deployment changes their <i>cost structure</i>, not their pricing — preserving customer relationships and lifting EBITDA margin through internal productivity rather than price increases.</div>
-</div>
+<section class="page" id="s02">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">02</span>Landscape of Games</div>
+  <h1 class="action">Fourteen archetypes available to an operator with three enablers (US market, SMB acquisition, AI deployment). Triple-product score isolates the archetype where all three enablers operate at structural strength.</h1>
 
-<div class="callout callout-warn">
-<b>Klarna warning.</b> AI agent replaced 853 FTEs and saved $60M/yr. CEO walked back in May 2025 — quality forced rehiring. <b>Lesson:</b> outcome models need a human-equivalent quality floor with SLA, or they collapse on the 15–20% complex-ticket tail.
-</div>
+  <table class="mck">
+    <caption>Fourteen archetypes scored on US (1–5), SMB-acquisition (1–5), AI-deployment (1–5); triple product flags structural-enabler fit</caption>
+    <thead><tr><th style="width:5%">#</th><th style="width:32%">Archetype</th><th class="num" style="width:8%">US</th><th class="num" style="width:8%">SMB acq</th><th class="num" style="width:10%">AI deploy</th><th class="num" style="width:12%">Triple ×</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">01</td><td class="name">Vertical SaaS</td><td class="center">4</td><td class="center">1</td><td class="center">5</td><td class="num">20</td><td>SMB customers, not acquired</td></tr>
+      <tr><td class="idx">02</td><td class="name">Horizontal AI Platform</td><td class="center">4</td><td class="center">1</td><td class="center">5</td><td class="num">20</td><td>Global enterprise; SMB unused</td></tr>
+      <tr><td class="idx">03</td><td class="name">AI Agents-as-Workforce</td><td class="center">4</td><td class="center">2</td><td class="center">5</td><td class="num">40</td><td>Mid-market preferred</td></tr>
+      <tr><td class="idx">04</td><td class="name">Data Network Compounder</td><td class="center">4</td><td class="center">3</td><td class="center">4</td><td class="num">48</td><td>SMB acquisition assembles data</td></tr>
+      <tr><td class="idx">05</td><td class="name">Serial Software Acquirer</td><td class="center">5</td><td class="center">3</td><td class="center">3</td><td class="num">45</td><td>SMB software cos, not operators</td></tr>
+      <tr style="background:#E1F0EE"><td class="idx"><b>06</b></td><td class="name"><b>AI-Native Operating Holdco</b></td><td class="center"><b>5</b></td><td class="center"><b>5</b></td><td class="center"><b>4</b></td><td class="num"><b>100</b></td><td><b>All three engaged structurally</b></td></tr>
+      <tr><td class="idx">07</td><td class="name">Permanent Capital Compounder</td><td class="center">5</td><td class="center">5</td><td class="center">3</td><td class="num">75</td><td>No exit event</td></tr>
+      <tr><td class="idx">08</td><td class="name">Classic PE Buy-Improve-Sell</td><td class="center">4</td><td class="center">5</td><td class="center">3</td><td class="num">60</td><td>AI not structural thesis</td></tr>
+      <tr><td class="idx">09</td><td class="name">AI-Integration Services Co</td><td class="center">4</td><td class="center">2</td><td class="center">4</td><td class="num">32</td><td>Multiple capped by services category</td></tr>
+      <tr><td class="idx">10</td><td class="name">Tech-Enabled Services Roll-Up</td><td class="center">4</td><td class="center">5</td><td class="center">3</td><td class="num">60</td><td>High enabler use; documented failure pattern</td></tr>
+      <tr><td class="idx">11</td><td class="name">Vertical Marketplace + AI</td><td class="center">4</td><td class="center">4</td><td class="center">4</td><td class="num">64</td><td>Balanced use of all three</td></tr>
+      <tr><td class="idx">12</td><td class="name">Franchise Operator Network</td><td class="center">5</td><td class="center">3</td><td class="center">3</td><td class="num">45</td><td>Brand is the lever</td></tr>
+      <tr><td class="idx">13</td><td class="name">Venture Studio</td><td class="center">4</td><td class="center">3</td><td class="center">4</td><td class="num">48</td><td>Variable per new co</td></tr>
+      <tr><td class="idx">14</td><td class="name">Search Fund</td><td class="center">4</td><td class="center">5</td><td class="center">3</td><td class="num">60</td><td>Single asset limits AI scale</td></tr>
+    </tbody>
+  </table>
 
-<h2>03 · The Replication Unit</h2>
-<p class="action-title">The unit that scales is the vertical-specific deployment playbook applied to each acquired OpCo — not the engineer, the customer, or the dollar.</p>
+  <p class="body"><b>AI-Native Operating Holdco is the only archetype scoring 4 or 5 on all three enablers.</b> The next two — Permanent Capital and Vertical Marketplace + AI — leave at least one enabler partially idle.</p>
 
-<p>Each business model has a different replication unit with a different bottleneck and ceiling. The HoldCo's primary replication unit is the <b>acquired company</b>; the engine that compresses time-to-uplift on each new acquisition is the <b>vertical-specific playbook</b>. Long Lake's deployment time compressed from over a year on early deals to days on recent acquisitions in the same vertical — the playbook itself became the compounding asset.</p>
+  <div class="src">Full 14-archetype analysis with capitalisation per archetype, founder ownership ranges, exit multiples, time horizons, winners and cautionary cases in Game Selection Framework → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-analysis-game-selection-2026-06-12.html">download HTML</a>. Brief per-archetype profiles in <a href="#sA">Appendix A</a>.</div>
+</section>
 
-<table>
-<thead><tr><th style="width:22%">Unit</th><th style="width:34%">Examples</th><th style="width:22%">Scaling speed</th><th style="width:22%">Ceiling</th></tr></thead>
-<tbody>
-<tr><td><b>Billable engineer FTE</b></td><td>Accenture, Big-4, T&M consultancies</td><td>Linear, headcount-bound</td><td>Partner pyramid math</td></tr>
-<tr><td><b>Customer seat / module</b></td><td>HubSpot, Karbon, vertical SaaS</td><td>Linear, sales cycle-bound</td><td>Customer headcount growth</td></tr>
-<tr><td><b>Customer-business-unit</b></td><td>AppFolio per-door, Datto per-endpoint, Toast per-location</td><td>Compounds with customer's growth</td><td>Vertical TAM</td></tr>
-<tr style="background:rgba(46,119,128,0.08);"><td><b>★ Playbook × engagement</b></td><td>Sierra, Distyl, Pioneer Square Labs</td><td><b>Step-function</b> — 50–70% reuse after first build</td><td>~5–10 verticals before dilution</td></tr>
-<tr><td><b>Acquired company</b></td><td>Constellation 1,000+ businesses, Roper 30, Long Lake 31</td><td>Capital-bound</td><td>Operator availability</td></tr>
-</tbody>
-</table>
+<section class="page" id="s03">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">03</span>The Chosen Game</div>
+  <h1 class="action">AI-Native Operating Holdco — solo. Horizontal AI Platform held as reserve alternative in the appendix. No multi-archetype mix at the start; enhancement options are Stage 2+, not core to the thesis.</h1>
 
-<h3>The playbook in six components</h3>
-<p>The strategic question is which unit scales the operating company. The answer is <b>the playbook</b> — a pre-built vertical-specific package the team plugs into each engagement. The playbook is what makes a 5-day customizer beat a 30-day bespoke build. Six components:</p>
+  <h3 class="sub">Why this game</h3>
+  <table class="mck">
+    <thead><tr><th style="width:30%">Dimension</th><th>AI-Native Operating Holdco — selected</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Enabler fit</td><td>Score 100/125; only archetype using all three at structural strength</td></tr>
+      <tr><td class="name">Exit multiple</td><td>8–14× EBITDA post-AI uplift on the consolidated platform</td></tr>
+      <tr><td class="name">Time horizon</td><td>7–12 years per fund vintage envelope; target window 4–7 years for the cycle we are running</td></tr>
+      <tr><td class="name">Founder ownership</td><td>20–35% blended via sponsor equity + GP carry — materially higher than software-economics archetypes (4–15%)</td></tr>
+      <tr><td class="name">Realistic absolute founder cash-out</td><td>$200–400M probability-weighted median</td></tr>
+      <tr><td class="name">Documented winners</td><td>Long Lake ($1.28B raised → Amex GBT $6.3B take-private May 2026); GC Creation ($1.5B allocation in GC Fund XII); Shield Technology Partners ($200M, 9 MSPs, $100M+ ARR); Crete / Current ($428M revenue, ~30 CPA firms)</td></tr>
+      <tr><td class="name">Documented failure</td><td>Smarter Technologies / NMC — $1B+ raised, CEO out at 7 months ("buy first, AI later")</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Profile detail in AI-Native Operating Holdco Archetype Deep Dive (June 13, 2026) → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-ai-native-operating-holdco-2026-06-13.html">download HTML</a>.</div>
 
-<div class="grid-3" style="gap:14px;">
-<div class="card"><b>01 · Vertical thesis</b>Why this vertical's SMEs deserve AI integration, what AI can actually move (labor cost, error rate, ticket volume).</div>
-<div class="card"><b>02 · Baseline kit</b>Pre-built measurement infrastructure for L1 diagnostic — KPIs, data taps, comparison benchmarks.</div>
-<div class="card"><b>03 · Reference architecture</b>Stack of agents / workflows / integrations validated in prior engagements — 70% reusable, 30% customized.</div>
-<div class="card"><b>04 · Pricing template</b>L1 fee / L2 gainshare cap / L3 warrant terms calibrated for vertical-specific EBITDA and exit-multiple ranges.</div>
-<div class="card"><b>05 · Operations runbook</b>30/60/90 day deployment checklist, escalation paths, SLA monitoring.</div>
-<div class="card"><b>06 · Acquisition due-diligence pack</b>Pre-completed financial / tech-debt / customer-concentration audit format for L3 conversion candidates.</div>
-</div>
+  <h3 class="sub">Why solo, not mixed</h3>
+  <p class="body">Our combinatorial analysis evaluated six paths spanning HoldCo + Permanent Capital migration, HoldCo + Data Network Stage 2 productisation, HoldCo + Horizontal AI flavours, and Horizontal-only. Outcome: <b>Path A (Solo HoldCo) is the recommended starting position</b>. Permanent Capital and Data Network are <b>optional Stage 2+ enhancements</b> with explicit triggers (track record, data accumulation, LP base evolution), not part of the core thesis at the start. Horizontal AI mixed with HoldCo is rejected as a standing services arm by five documented mechanisms. Horizontal-only without HoldCo is a different game requiring different capital and team.</p>
+  <div class="src">Full path-by-path analysis in Archetype Combinations and Sequencing Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-archetype-combinations-2026-06-14.html">download HTML</a>.</div>
 
-<p><b>Leverage hierarchy:</b> Engineer (linear) &lt; Customer-unit (compounding) &lt; Playbook (step-function) ≈ Acquired-Co (capital-bound). The HoldCo stacks playbook + acquired-Co — the playbook compresses each new acquisition's integration time toward zero, while acquired-Co is the primary unit on which capital is deployed.</p>
+  <h3 class="sub">Horizontal AI — reserve alternative, not enhancement</h3>
+  <p class="body">Horizontal AI Platform is treated as an alternative game with distinct economics (15–40× ARR multiples; $200M–$20B+ capital; 4–15% founder ownership) and a different team profile. Brief operating-model description in <a href="#sB">Appendix B</a>. The warning embedded in that appendix: a roll-up that drifts into selling AI services to non-portfolio operators converges to a low-multiple consulting category and risks turning into an undercapitalised SaaS with no acquisition pipeline.</p>
+</section>
 
-<h2>04 · The Single Motion</h2>
-<p class="action-title">One motion — vertical roll-ups gated by AI productivity validation on an operator-partner before any acquisition capital is committed.</p>
+<section class="page" id="s04">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">04</span>Pure HoldCo Posture</div>
+  <h1 class="action">AI is deployed across acquired portfolio OpCos and inside operator-partners during paid pre-acquisition pilots that lead to acquisition. AI is not sold as a standalone subscription product to customers without acquisition intent.</h1>
 
-<p>The HoldCo runs one motion: select a vertical, find an operator-partner inside it, run a paid pilot where the AI Engineering arm validates ≥1.5× productivity uplift inside the operator's live workflow, then commit acquisition capital and roll up the vertical with the validated AI stack deployed from day one. The acquired operator becomes the platform; subsequent SMBs are tucked in under the same playbook. AI capability never leaves the portfolio — it is not sold externally and not licensed to any third party.</p>
+  <h3 class="sub">What we do</h3>
+  <ul class="body">
+    <li>Acquire operating SMBs in fragmented service verticals at SMB multiples; install AI inside each OpCo to compress integration and raise margins.</li>
+    <li>Run <b>paid pre-acquisition pilots</b> (typically 60–90 days, $100–300K fees) with operator-partners as the L2 stage of the M&amp;A funnel. Pilot fee is credited against acquisition price; ends with acquire or walk away.</li>
+    <li>Hold the AI Engineering team as an <b>internal department of the HoldCo</b>, not a separate legal entity transacting with portfolio cos.</li>
+    <li>Sell the consolidated platform at platform multiples through PE-to-PE recap or strategic sale.</li>
+  </ul>
 
-<div class="grid-2">
-<div class="card-filled slate">
-<b>What we do</b>
-<p style="color:#fff;">Select Hell-Yes / Strong verticals from the V×C×A×B×M scoring map (1,012 NAICS 6-digit codes). Find an industry-insider operator in the selected vertical. Run a paid pilot inside their workflow. Validate ≥1.5× productivity. Acquire the operator's company. Roll up the vertical.</p>
-</div>
-<div class="card-filled teal">
-<b>What we do not do</b>
-<p style="color:#fff;">Sell AI services to third-party SMEs. License AI products to operators outside our portfolio. Run a services arm with external customer revenue. These actions trigger services-multiple compression at exit and create Section 206 conflicts with future portfolio acquisitions.</p>
-</div>
-</div>
+  <h3 class="sub">What we do not do</h3>
+  <ul class="body">
+    <li>License AI products as a standalone subscription business or to operators outside the acquisition pipeline.</li>
+    <li>Maintain a standing services arm sold to N customers in the broad market.</li>
+    <li>Engage in recurring services contracts unbounded by acquisition intent.</li>
+  </ul>
 
-<h3>Initial vertical watchlist — Hell-Yes and Strong scores from V×C×A×B×M map</h3>
-<p>Verticals are selected from the live rollup-economy/6digit/ scoring map, which scores 1,012 US NAICS 6-digit codes × 13 APQC process categories ≈ 13,000 cells. A vertical qualifies for paid-pilot launch when (i) sub-sector aggregate Σ S clears Strong threshold ≥ 58,320, (ii) at least one cell scores Hell-Yes ≥ 21,600, (iii) sub-50 SMB roll-up fragmentation, (iv) no Tier-1 incumbent already consolidating at scale. Initial watchlist from prior verification:</p>
+  <h3 class="sub">Why this posture, not a hybrid services arm</h3>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:32%">Mechanism breaking a hybrid services arm</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">1</td><td class="name">Multiple compression on consolidated P&amp;L</td><td>Services line in the P&amp;L drags the blended platform multiple down. Smarter Tech / NMC example: blended healthcare-services valuation pulled to mid-tier multiples (Becker's, Modern Healthcare Dec 2025)</td></tr>
+      <tr><td class="idx">2</td><td class="name">Section 206(3) related-party conflict</td><td>Apollo $52.7M (2016); TZP $500K+ (2025); Energy Capital and Insight Venture settled — all on related-party transaction issues (SEC press releases; Sidley)</td></tr>
+      <tr><td class="idx">3</td><td class="name">Bargaining position erosion</td><td>Selling AI to 10 competitors of a portfolio target leaks our economic edge to nine of them before the next acquisition</td></tr>
+      <tr><td class="idx">4</td><td class="name">Engineering bandwidth split</td><td>Sierra 50+ engineers @ $150M ARR vs Long Lake 5 engineers @ $1.28B raised — 10× ratio; $25.2M roll-up bucket cannot fund both teams</td></tr>
+      <tr><td class="idx">5</td><td class="name">LP disclosure and governance burden</td><td>Separate P&amp;L, separate legal entity, separate IR — $50–100K setup, 0.5 FTE perpetual, ongoing enforcement settlement risk</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Full mechanism analysis with citations and reference operator comparison in Pure HoldCo Decision Memo (June 14, 2026) → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-pure-holdco-positioning-2026-06-14.html">download HTML</a>.</div>
 
-<table>
-<thead><tr><th style="width:16%">Vertical</th><th style="width:14%">Verdict</th><th style="width:30%">Why it qualifies</th><th style="width:22%">Multiple arbitrage spread</th><th style="width:18%">Operator-partner</th></tr></thead>
-<tbody>
-<tr><td><b>HomeCare</b></td><td><span class="pro">Hell-Yes</span></td><td>Verified May 2026. Boomer-led, fragmented, labour-intensive — AI absorbs scheduling + matching + RCM</td><td>4–8× SMB → 7.5–9.5× certified platform</td><td>Allan Gobbs / YCare</td></tr>
-<tr><td><b>P&amp;C Insurance Tier-2</b></td><td><span class="pro">Strong</span></td><td>Sub-$1M EBITDA segment under-consolidated; Tier-1 brokers concentrate above $5M</td><td>7.5–12× sub-$5M → 16–18× platform</td><td>Sourcing in progress</td></tr>
-<tr><td><b>Property Management</b></td><td><span class="pro">Strong</span></td><td>AppFolio per-door precedent; AI handles leasing, ops, ticket triage</td><td>5–7× SMB → 10× platform</td><td>Sergey (Config B)</td></tr>
-<tr><td><b>HR Staffing</b></td><td><span class="pro">Strong</span></td><td>Cyborg HR pilot already running (Glocap × Lusin, NY)</td><td>5–8× SMB → 11–14× platform</td><td>Adam Zoia / Glocap</td></tr>
-</tbody>
-</table>
+  <div class="callout">
+    <div class="h">Paid pre-acquisition pilots are not a services arm</div>
+    <p>The five mechanisms above target a standing services business with N customers and recurring subscription revenue. Paid pre-acquisition pilots are 1–2 operator-partners per vertical, time-bounded 60–90 days, single fee credited against acquisition price, ending with acquire or walk away. All five documented reference operators (Long Lake, GC Creation, Shield, Crete / Current, NMC) run paid pre-acquisition engagements. The distinction is duration, counterparty count, fee structure, purpose, and end state.</p>
+  </div>
+</section>
 
-<h3>The funnel — how 1,012 NAICS codes become 3–5 roll-ups</h3>
-<p>The funnel is single-track, not two-stream. The V×C×A×B×M scoring map filters the 1,012 NAICS 6-digit codes down to a handful that justify pilot capital. Each subsequent gate increases commitment only after the previous gate proved out. <b>The 3-stage filter:</b></p>
+<section class="page" id="s05">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">05</span>Capital Architecture</div>
+  <h1 class="action">Fund-side inputs (s16vc Fund 3): $100M total, 30% AI roll-up bucket = $25.2M, fund coverage through Series A inclusive, then self-funding from operating cash flow. Capital efficiency is the fourth lever alongside Multiple × Scale × Retained Ownership.</h1>
 
-<div class="tier-stack">
-<div class="tier-row t1"><span class="tier-label">1,012 NAICS 6-digit codes scored on V×C×A×B×M (continuous)</span><span class="tier-val">Top of funnel</span></div>
-<div class="tier-row t2"><span class="tier-label">5–10 verticals — Hell-Yes or Strong score + operator-partner identified + paid pilot launched</span><span class="tier-val">Pilot active</span></div>
-<div class="tier-row t3"><span class="tier-label">3–5 verticals — ≥1.5× productivity validated → Fund commits acquisition capital → HoldCo rolls up</span><span class="tier-val">Fund deploys</span></div>
-</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="l">Fund total (s16vc Fund 3)</div><div class="v">$100M</div></div>
+    <div class="kpi"><div class="l">AI roll-up bucket</div><div class="v">$25.2M</div></div>
+    <div class="kpi"><div class="l">Roll-up verticals modelled</div><div class="v">5</div></div>
+    <div class="kpi"><div class="l">Pre-Series B cash invested (fund + co-invest)</div><div class="v">$52M</div></div>
+    <div class="kpi"><div class="l">Coverage to</div><div class="v sm">Series A inclusive</div></div>
+    <div class="kpi"><div class="l">After Series A</div><div class="v sm">Self-fund from cashflow</div></div>
+  </div>
 
-<div class="takeaway">
-<span class="takeaway-label">The core insight</span>
-<div class="takeaway-text">Without an operator-partner paid pilot, vertical selection is a guess — the same guess that costs Tier-1 roll-up funds 4–7 years to validate a vertical. The paid-pilot mechanic compresses validation to 60–90 days and de-risks fund deployment without exposing the HoldCo to services-multiple compression on exit.</div>
-</div>
+  <h3 class="sub">Capital sources and uses</h3>
+  <table class="mck">
+    <thead><tr><th style="width:24%">Source</th><th style="width:24%">Role</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Fund equity (s16vc + co-invest)</td><td>Pre-Series B</td><td>$52M total across portfolio (~$10M per vertical to Series A)</td></tr>
+      <tr><td class="name">Senior debt / SBA</td><td>Acquisition leverage at OpCo level</td><td>Mid-market PE norm 50–70% of EV; conservative 50–55% for Vintage 1 risk profile; <b>availability is a killer hypothesis</b></td></tr>
+      <tr><td class="name">Co-invest from LPs / investors</td><td>Top-up specific deals</td><td>Sized to specific opportunity; structurally lifts fund ceiling above committed capital</td></tr>
+      <tr><td class="name">Operating cash flow</td><td>Bolt-on self-funding post-Series A</td><td>Anchor OpCo throws cash; subsequent acquisitions recycled out of accumulated cashflow; <b>also a killer hypothesis</b></td></tr>
+    </tbody>
+  </table>
+  <div class="src">Fund-side parameters from s16vc Fund 3 Portfolio Construction → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/s16vc-Fund-3-Portfolio-Construction-vF-2026-06-14.xlsx">download XLSX</a>. Scenario analysis for the AI roll-up bucket in AI Roll-Up Case Analysis → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/AI-Roll-Up-Case-Analysis-vF-2026-06-14.xlsx">download XLSX</a>.</div>
 
-<h2>05 · Reference Operators</h2>
-<p class="action-title">Five documented operators run the pure AI-Native HoldCo playbook at our scale; one — Shield — is also the largest 12-month competitive watch.</p>
+  <h3 class="sub">Returns scenario envelope (fund-side model)</h3>
+  <table class="mck">
+    <thead><tr><th style="width:18%">Scenario</th><th class="num" style="width:18%">Roll-up bucket return</th><th class="num" style="width:18%">Fund 3 gross</th><th class="num" style="width:18%">Fund 3 net of carry</th><th>Outcome assumption</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Bear</td><td class="num">0.7×</td><td class="num">1.6×</td><td class="num">1.48×</td><td>4 of 5 roll-ups fail; 1 returns 3×</td></tr>
+      <tr style="background:#E1F0EE"><td class="name"><b>Base</b></td><td class="num"><b>8.4×</b></td><td class="num"><b>4.9×</b></td><td class="num"><b>4.13×</b></td><td>2 of 5 fail; 3 succeed</td></tr>
+      <tr><td class="name">Upside</td><td class="num">24.7×</td><td class="num">13.2×</td><td class="num">10.78×</td><td>All 5 succeed</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Scenarios from AI Roll-Up Case Analysis (Bear / Base / Upside sheets) — fund-side hypothesis treated as input. Holding-layer and Agency-layer toggles set to zero in the headline returns; they remain optional upside contingent on our research conclusion that solo HoldCo is the primary thesis.</div>
 
-<p>The reference set is documented and public. Each operator below runs without an external AI-services arm: AI engineering is internal, deployed only to acquired OpCos. The HoldCo enters this category as the fifth (or sixth) operator, not the first to fill a gap.</p>
+  <h3 class="sub">Capital efficiency — the fourth lever</h3>
+  <p class="body">Beyond Multiple, Scale, and Retained Ownership, capital efficiency determines <b>how many bets the bucket actually supports</b>. The dominant killer is entry-multiple inflation: at 4× the bucket supports 5+ anchor platforms; at 8× it supports 2. This is the single largest swing factor and the highest-priority validation question.</p>
+  <div class="src">Capital-efficiency reasoning aligned with Starting Position Maximization Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<table>
-<thead><tr><th style="width:18%">Operator</th><th style="width:14%">Capital base</th><th style="width:24%">Vertical(s)</th><th style="width:14%">AI posture</th><th style="width:30%">Notes</th></tr></thead>
-<tbody>
-<tr><td><b>Long Lake</b></td><td>$1.28B raised</td><td>HOA + adjacent residential / business / infrastructure services</td><td>Internal only</td><td>30 acquisitions since 2023. Amex GBT take-private $6.3B (60% premium) May 2026. AI deployment compressed from &gt;12 months to days.</td></tr>
-<tr><td><b>GC Creation</b></td><td>$1.5B allocation inside Fund XII</td><td>Multi-vertical NewCos in services economy</td><td>Internal only</td><td>Led by MD Marc Bhargava. Long Lake is flagship Creation portfolio company. Targets $16T global services economy.</td></tr>
-<tr><td><b>Shield Tech Partners</b></td><td>$200M ($100M Jun 2025 + $100M Feb 2026)</td><td>MSP — nine partners, &gt;1,500 customers, $100M+ ARR</td><td>Internal only — OpenAI talent embedded</td><td>Thrive + ZBS Partners. 60–90% acquisition stakes, sellers retain leadership + local brand. Largest 12-month competitive threat.</td></tr>
-<tr><td><b>Crete / Current</b></td><td>$500M deployment</td><td>Accounting — ~30 CPA firms via alliance model</td><td>Internal only — Tax AI (98% accuracy, 31% time savings)</td><td>$428M revenue across portfolio. Tax AI accuracy improved from 25% to 97% in weeks via reinforcement on human corrections.</td></tr>
-<tr><td><b>Smarter Tech / NMC</b></td><td>$1B+ raised</td><td>Healthcare RCM (combined SmarterDx + Thoughtful.ai + Access Healthcare)</td><td>Internal only</td><td>New Mountain Capital backed. CEO Delinsky stepped down Dec 2025 (7 months) — "buy first AI later" failure mode.</td></tr>
-</tbody>
-</table>
+<section class="page" id="s06">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">06</span>Vertical Methodology</div>
+  <h1 class="action">Verticals are scored on V×C×A×B×M (Value × Capture × Speed × Buyability × Multiple) across 1,012 NAICS 6-digit cells. Hell-Yes set surfaces five candidates; sensitivity ranking changes the top pick under different weight schemes.</h1>
 
-<p>The structural observation: none of these operators sells AI services to third-party customers. Services-first operators (Distyl, Sierra, Harvey, BCG-X) cannot acquire SMBs without collapsing their SaaS-multiple valuations. Permanent-capital compounders (Constellation, Roper, Vista) do not run dedicated AI engineering teams at the vertical level. The pure AI-Native HoldCo lane is the only structure that combines all three of our capabilities.</p>
+  <h3 class="sub">Scoring formula</h3>
+  <p class="body"><b>S = V × C × A × B × M</b>, where V = replaceability of human labour, C = fragmentation, A = AI adoption speed, B = industry size, M = multiple-arbitrage spread. Thresholds: Hell-Yes cell ≥21,600; sum across processes ≥90,000 strong, ≥58,320 conditional, ≥21,600 pass, below = kill.</p>
+  <div class="src">Live methodology and 1,012-NAICS scoring map → <a href="https://lisaivanchikova.github.io/rollup-economy/6digit/">rollup-economy.com/6digit</a>.</div>
 
-<h3>Closest competitor — Shield Technology Partners</h3>
-<p>Per June 2026 verification: <b>Shield Technology Partners</b> is the operator we are closest to in posture and timing. Three structural factors define the competitive overlap:</p>
+  <h3 class="sub">Hell-Yes candidates — ranked under default weight scheme</h3>
+  <table class="mck">
+    <thead><tr><th style="width:22%">Vertical</th><th class="num" style="width:12%">Default score</th><th>Why it lands here</th></tr></thead>
+    <tbody>
+      <tr><td class="name">HOA / Property Management</td><td class="num">4.30</td><td>Long Lake direct reference (25–30% per-FTE productivity); light regulatory close; deep fragmentation supply</td></tr>
+      <tr><td class="name">CPA / Accounting</td><td class="num">4.05</td><td>Strongest documented AI uplift (Tax AI 25→97% accuracy; Current 31% time savings; Citrin sold at ~15×); alliance model required by state-board rules</td></tr>
+      <tr><td class="name">MSP</td><td class="num">3.85</td><td>Shield Technology Partners direct reference at $100M+ ARR; cyber liability is regulatory cost</td></tr>
+      <tr><td class="name">P&amp;C brokerage tier-2 (sub-$1M EBITDA)</td><td class="num">3.50</td><td>Largest arbitrage gap in the universe (6–8 turns) but no direct AI-Holdco operator at scale documented</td></tr>
+      <tr><td class="name">Home care (certified)</td><td class="num">2.90</td><td>Lowest arbitrage (2–4 turns); no direct AI-Holdco reference; CMS reimbursement friction</td></tr>
+    </tbody>
+  </table>
 
-<table>
-<thead><tr><th style="width:24%">Threat factor</th><th style="width:38%">Shield's position</th><th style="width:38%">Our structural defense</th></tr></thead>
-<tbody>
-<tr><td><b>Capital + speed</b></td><td>$200M from Thrive Holdings ($100M June 2025 + $100M Feb 2026). ZBS Partners team has executed 200+ acquisitions across prior platforms. 4→9 MSPs in 8 months; 1,500+ end clients.</td><td>$52M is 1/4 of Shield's firepower. Speed-to-revenue on services arm + 2–3 acquisitions in 12 months is the only durable answer.</td></tr>
-<tr><td><b>OpenAI privileged access</b></td><td>Only roll-up with OpenAI researchers embedded in product. Sentinel (ticket triage) + Spectre (autonomous resolution) = 60% ticket automation, co-built with OpenAI.</td><td>No private fund of our size can match OpenAI co-build. We compete on disclosure cleanliness — Shield's Section 206 conflict if they sell Sentinel to MSPs they later acquire is real.</td></tr>
-<tr><td><b>Trigger to Empty Quadrant</b></td><td>If Shield announces "Sentinel for MSPs" SaaS for non-portfolio MSPs, they enter the quadrant immediately with a product no competitor can match in 12 months.</td><td>Pre-empt with our MSP-vertical IEC launch + explicit arms-length disclosure structure that Shield cannot replicate without breaking Thrive's LP mandate.</td></tr>
-</tbody>
-</table>
+  <h3 class="sub">Sensitivity — top pick shifts under different weight schemes</h3>
+  <table class="mck">
+    <thead><tr><th style="width:36%">Weight scheme</th><th>Top vertical</th><th>Second</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Default (balanced)</td><td>HOA / PM (4.30)</td><td>CPA / Accounting (4.05)</td></tr>
+      <tr><td class="name">Multiple-arbitrage 50%</td><td>P&amp;C tier-2</td><td>MSP</td></tr>
+      <tr><td class="name">AI-uplift evidence 50%</td><td>CPA / Accounting</td><td>HOA / PM</td></tr>
+      <tr><td class="name">Reference-operator de-risking 50%</td><td>HOA / PM, CPA, MSP (tied)</td><td>—</td></tr>
+      <tr><td class="name">Regulatory simplicity 50%</td><td>HOA / PM</td><td>MSP, P&amp;C tied</td></tr>
+    </tbody>
+  </table>
 
-<p><b>90-day watchlist:</b> (1) <b>Shield announces "Sentinel for MSPs"</b> SaaS for non-portfolio MSPs — confirms a hybrid-services pivot we structurally avoid; we accelerate our own MSP vertical if Shield exposes itself to multiple compression; (2) <b>Thrive Holdings 3rd platform announcement</b> in Veterinary, HVAC/Residential Trades, or P&amp;C Insurance Tier-2 (high overlap with our Hell-Yes verticals) → re-rank vertical sequencing; (3) <b>Long Lake announces 2nd vertical outside residential/services</b> → potential collision with our roadmap, re-evaluate.</p>
+  <div class="callout">
+    <div class="h">No vertical pre-committed</div>
+    <p>The default weighting produces HOA / Property Management as the top score; CPA / Accounting is the second-most robust pick across schemes. Final vertical choice is contingent on (a) team-held expertise that shifts criterion weights, (b) validation outcomes from the hypotheses in Part II — entry multiples, debt availability, operator economics — which differ materially by vertical.</p>
+  </div>
+  <div class="src">Full 5-vertical scoring, sensitivity matrix, and source data per vertical in Starting Position Maximization Decision Memo Section 04 → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<h2>06 · The M&amp;A Funnel</h2>
-<p class="action-title">SOURCE → PILOT → ACQUIRE — three gates that compress vertical validation to 60–90 days and defer capital risk until after technical proof.</p>
+<section class="page" id="s07">
+  <div class="eyebrow"><span class="part">PART I · STRATEGY</span><span class="num">07</span>Right to Win — Differentiation vs Reference Operators</div>
+  <h1 class="action">Five operators run the AI-Native Operating HoldCo archetype at adjacent scale. Our differentiation is not category-defining; it is the disciplined application of four levers where reference operators leave structural gaps.</h1>
 
-<p>The M&amp;A funnel runs in three gates. <b>SOURCE</b> identifies an operator-partner in a Hell-Yes / Strong vertical from the V×C×A×B×M scoring map. <b>PILOT</b> runs a paid engagement where the AI Engineering arm builds and validates ≥1.5× productivity inside the operator's workflow on real client data — the operator pays the pilot fee; capital and integration risk stay outside the HoldCo balance sheet at this stage. <b>ACQUIRE</b> commits Fund capital only after the productivity gate clears, buying the operator's company at 4–6× EBITDA and deploying the validated stack from day one.</p>
+  <h3 class="sub">The five reference operators and where they sit</h3>
+  <table class="mck">
+    <thead><tr><th style="width:18%">Operator</th><th style="width:14%">Capital raised</th><th style="width:20%">Vertical(s)</th><th>What they prove and what they leave open</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Long Lake Management</td><td class="num">$1.28B</td><td>HOA + adjacent residential / business services</td><td>Proves: AI uplift documented (25–30% per-FTE); compressed integration (years → days); take-private exit at $6.3B. Leaves open: 85% concentration risk in single vertical (per PitchBook)</td></tr>
+      <tr><td class="name">GC Creation</td><td class="num">$1.5B</td><td>Multi-vertical (legal, IT, services)</td><td>Proves: GC-anchored capital model; AI-native NewCo template. Leaves open: multi-vertical playbook dilution (one engineering team across legal + IT)</td></tr>
+      <tr><td class="name">Shield Technology Partners</td><td class="num">$200M</td><td>MSP</td><td>Proves: 60–90% acquired + sub-brand retention + operator continuity at $100M+ ARR scale in 8 months. Leaves open: AI uplift not yet publicly verified per OpCo</td></tr>
+      <tr><td class="name">Crete / Current</td><td class="num">$500M</td><td>CPA / Accounting</td><td>Proves: alliance model navigates state-board ownership rules; Tax AI 31% time savings, 98% accuracy; $428M revenue. Leaves open: alliance economics differ from majority-acquired model</td></tr>
+      <tr><td class="name">Smarter Technologies / NMC <span class="tag-rej">FAILURE</span></td><td class="num">$1B+</td><td>Healthcare RCM</td><td>Documents: "buy first, AI later" pattern. CEO out at 7 months (Becker's, Modern Healthcare Dec 2025). Multi-asset combination of pre-existing AI tools without integration discipline</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Profile detail and citations in <a href="#sC">Appendix C</a> and AI-Native Operating Holdco Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-ai-native-operating-holdco-2026-06-13.html">download HTML</a>.</div>
 
-<table>
-<thead>
-<tr><th style="width:14%">Gate</th><th style="width:22%">Mechanic</th><th style="width:18%">Commercial structure</th><th style="width:18%">Purpose</th><th style="width:28%">Risk-gating outcome</th></tr>
-</thead>
-<tbody>
-<tr>
-<td><b>L1 · SOURCE</b><br>Vertical + operator</td>
-<td>V×C×A×B×M scoring identifies vertical; sourcing through vertical trade associations + M&amp;A advisors + founder networks identifies an industry-insider operator</td>
-<td>No commercial obligation between Studio and operator at this gate</td>
-<td>Confirms vertical economics; confirms operator fit</td>
-<td>If no operator emerges or scoring downgrades, vertical is parked. Capital not at risk.</td>
-</tr>
-<tr>
-<td><b>L2 · PILOT</b><br>Paid validation</td>
-<td>60–90 day paid pilot. AI Engineering arm builds Vertical AI Product inside operator's live workflow. Measures ≥1.5× productivity against documented baseline.</td>
-<td>Operator pays pilot fee <b>$100–300K</b> (covers AI Engineering loaded cost); no equity exchanged</td>
-<td>Validates AI thesis on real client data; surfaces integration friction; tests operator alignment</td>
-<td>If &lt;1.5× metric fails, parties separate; operator keeps work product, Studio absorbs zero downside. Acquisition capital not yet committed.</td>
-</tr>
-<tr>
-<td><b>L3 · ACQUIRE</b><br>HoldCo buys company</td>
-<td>Fund underwrites acquisition of operator's company at <b>4–6× EBITDA</b> (SBA leverage available). Validated AI stack deploys from day one. HoldCo begins rolling up add-ons in same vertical.</td>
-<td>Cash + rollover equity; operator becomes platform CEO with HoldCo equity stake</td>
-<td>Captures multiple arbitrage: 4–6× SMB → 8–14× post-AI platform exit</td>
-<td>Acquisition capital committed only after L2 productivity gate cleared. Downside contained to a single platform.</td>
-</tr>
-</tbody>
-</table>
+  <h3 class="sub">Four levers where we engineer the position</h3>
+  <ul class="body">
+    <li><b>Vertical discipline.</b> Single vertical at Vintage 1 (stagger second vertical to Year 3+) avoids the GC Creation multi-vertical engineering split; avoids the Long Lake concentration risk at fund-level through balanced allocation across OpCos.</li>
+    <li><b>AI Engineering Lead with enterprise productisation track record</b> at Day-Zero — not researcher, not generalist. Direct counter to the Smarter Tech failure mechanism: engineering capability without productisation discipline produces no uplift.</li>
+    <li><b>Two-gate operator earn-out</b> tied to EBITDA retention + AI uplift KPI. Differentiates from standard PE earn-out (EBITDA-only) where operators can coast on legacy without engaging the AI thesis; the AI gate makes the multiple-arbitrage thesis structural, not contingent on operator goodwill.</li>
+    <li><b>QSBS Section 1202 architecture from formation.</b> Delaware C-corp HoldCo at Day-Zero unlocks up to 100% federal capital gains exclusion on first $10M per shareholder — materially preserves founder economics in a way a later restructuring cannot.</li>
+  </ul>
+  <div class="src">Day-Zero lever analysis and competitive scoring against reference operator practice in Starting Position Maximization Decision Memo Sections 04–10 → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<p><b>Why this works on pure HoldCo posture:</b> the L2 pilot fee covers the AI Engineering arm's loaded cost on a one-off basis — it does not create an ongoing services line. No warrants, no ROFR, no licensing — the operator simply pays for the build and is free to walk if the metric fails. The Studio is free to walk too. Both sides benefit from the validation regardless of acquisition outcome. Section 206 conflict does not arise because the Fund is not yet a counterparty at L2.</p>
+<section class="page" id="s08">
+  <div class="eyebrow"><span class="part">PART II · HYPOTHESES</span><span class="num">08</span>Five Killer Questions</div>
+  <h1 class="action">Five questions to validate or kill the studio thesis on a two-week window. Each frames the killer that breaks the model if the answer trends wrong.</h1>
 
-<h3>The same gates filter verticals</h3>
-<p>The same three gates apply to vertical selection. L1 sourcing scans all 1,012 NAICS 6-digit codes via the scoring map. L2 pilots run only in 5–10 verticals where Hell-Yes / Strong scoring plus an identified operator-partner intersect. L3 acquisitions trigger only in 3–5 verticals where the ≥1.5× pilot gate clears and Fund underwriting confirms the platform thesis.</p>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:24%">Question</th><th style="width:30%">Validation target</th><th>Killer if answer trends wrong</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="idx">1</td>
+        <td class="name">Entry multiples — can we acquire at 3–5× EBITDA in bookkeeping / HR / MSP?</td>
+        <td>Search-fund / SBA-comp ranges in target verticals; conversation with vertical M&amp;A advisors and bankers</td>
+        <td>If PE has overheated to 6–8×, anchor equity per platform doubles; $25.2M roll-up bucket supports 2 anchors, not 5. Studio mechanic breaks.</td>
+      </tr>
+      <tr>
+        <td class="idx">2</td>
+        <td class="name">Debt / SBA — do banks lend on cash-flowing SMEs, at what leverage?</td>
+        <td>Direct conversations with SBA lenders and mid-market acquisition financers on our specific vertical / EV range</td>
+        <td>No debt → fund equity carries 100% of EV → capacity collapses by 2×; the multiplication that makes the model work disappears.</td>
+      </tr>
+      <tr>
+        <td class="idx">3</td>
+        <td class="name">Searcher-CEO economics — will strong operators come for share + carry, not salary?</td>
+        <td>Conversations with searcher-CEO candidates and search-fund alumni at NYC roundtables and conferences</td>
+        <td>If only salaried hires are available, each platform requires $300K+ comp pre-acquisition vs equity-only — every bet becomes too capital-heavy and we cannot run 5.</td>
+      </tr>
+      <tr>
+        <td class="idx">4</td>
+        <td class="name">Co-invest appetite — will LPs and HNW top up specific deals?</td>
+        <td>Direct conversations at NYC events, s16vc network, family-office introductions</td>
+        <td>No co-invest → fund ceiling = committed capital; cannot stretch beyond $25.2M on roll-up side; loses the structural lever that lets emerging managers compete with $200M+ players.</td>
+      </tr>
+      <tr>
+        <td class="idx">5</td>
+        <td class="name">Bolt-on self-funding — does anchor OpCo cash flow fund next bolt-ons?</td>
+        <td>Financial modelling on candidate platform targets at current EBITDA + post-AI uplift; cross-check with reference operator disclosures</td>
+        <td>If post-acquisition operating cash flow is insufficient to fund bolt-on equity contributions, every bolt-on draws fresh fund equity; recycling does not work; cadence collapses.</td>
+      </tr>
+    </tbody>
+  </table>
 
-<div class="tier-stack">
-<div class="tier-row t1"><span class="tier-label">L1 · SOURCE — 1,012 NAICS codes scored continuously; sourcing in top Hell-Yes / Strong subset</span><span class="tier-val">Wide</span></div>
-<div class="tier-row t2"><span class="tier-label">L2 · PILOT — 5–10 verticals where Hell-Yes scoring meets an operator-partner ready for paid pilot</span><span class="tier-val">Filtered</span></div>
-<div class="tier-row t3"><span class="tier-label">L3 · ACQUIRE — 3–5 verticals where ≥1.5× pilot clears and Fund commits acquisition capital</span><span class="tier-val">Concentrated</span></div>
-</div>
+  <div class="callout warn">
+    <div class="h">Why these five and not others</div>
+    <p>Each question targets one of the four profit-math factors plus capital efficiency. Entry multiples (Multiple); debt and co-invest (Capital efficiency, indirectly Scale); searcher economics (Probability via team); bolt-on self-funding (Scale via recycling). A "no" on any one of these collapses the studio mechanic. Other questions exist (LP fundraising velocity, vertical-specific AI uplift, regulatory transfer time) but are structurally downstream of these five.</p>
+  </div>
+  <div class="src">Hypotheses framework adapted from Nicolas's June 14 conference-test brief; killer-mechanism reasoning aligned with Combinations and Starting Position decision memos.</div>
+</section>
 
-<p>The single-track funnel replaces the prior two-stream model. There is no parallel services pipeline; the only path to a vertical is through the scoring map → operator-partner pilot → acquisition.</p>
+<section class="page" id="s09">
+  <div class="eyebrow"><span class="part">PART II · HYPOTHESES</span><span class="num">09</span>Test Plan and Thresholds</div>
+  <h1 class="action">Two-week validation across NYC trip, s16vc network, and domain experts. Each question has a measurement, a green threshold, a yellow caution band, and a red kill threshold.</h1>
 
-<h3>Risk anatomy — verified failure cases and required pilot terms</h3>
-<table>
-<thead><tr><th style="width:22%">Failure case</th><th style="width:36%">What broke</th><th style="width:42%">Required contract language</th></tr></thead>
-<tbody>
-<tr><td><b>11x AI</b> (Mar 2025)</td><td>Counted full ACV in reported ARR including customers who exercised 90-day break clause → 78% gap ($14M claimed / $3M retained)</td><td><b>L2 verification clause:</b> ≥1.5× productivity measured against documented baseline only; clawback if pilot metric does not hold for 30 consecutive days at handoff to acquisition diligence</td></tr>
-<tr><td><b>Klarna</b> (May 2025)</td><td>Measured cost savings ≠ accepted savings: NPS dropped 22% on dispute resolution, refunds, financial advice. CEO publicly reversed.</td><td><b>L2 quality floor:</b> pilot productivity gate requires AND condition — cost-per-task drop AND customer-side quality threshold (NPS / retention / error rate above baseline). Either failure invalidates pilot for acquisition purposes.</td></tr>
-</tbody>
-</table>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:22%">Question</th><th style="width:24%">Measurement</th><th class="center" style="width:10%">Green</th><th class="center" style="width:12%">Yellow</th><th>Red — kill or pivot</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="idx">1</td><td class="name">Entry multiples</td>
+        <td>Quoted SMB multiples by 3+ vertical M&amp;A advisors in chosen vertical</td>
+        <td class="center"><span class="tag-pass">3–5×</span></td>
+        <td class="center"><span class="tag-warn">5–6×</span></td>
+        <td>≥6× sustained → drop vertical or shift to <a href="#sB">Appendix B</a> alternative game</td>
+      </tr>
+      <tr>
+        <td class="idx">2</td><td class="name">Debt / SBA availability</td>
+        <td>Term sheets or indicative quotes from 2+ SBA lenders or mid-market financers</td>
+        <td class="center"><span class="tag-pass">≥55% LTV</span></td>
+        <td class="center"><span class="tag-warn">45–55%</span></td>
+        <td>&lt;45% LTV → bucket capacity drops to 2 bets; studio mechanic does not run</td>
+      </tr>
+      <tr>
+        <td class="idx">3</td><td class="name">Searcher-CEO economics</td>
+        <td>2+ qualified candidates accepting equity + carry, no salary, with documented credentials</td>
+        <td class="center"><span class="tag-pass">2+ accept</span></td>
+        <td class="center"><span class="tag-warn">1 accept</span></td>
+        <td>0 accept → reverts to salaried hires; cost per bet rises; 5-bet capacity collapses</td>
+      </tr>
+      <tr>
+        <td class="idx">4</td><td class="name">Co-invest appetite</td>
+        <td>Soft commitments from 3+ LPs / family offices to top up specific deals up to fund pro-rata</td>
+        <td class="center"><span class="tag-pass">3+ soft</span></td>
+        <td class="center"><span class="tag-warn">1–2</span></td>
+        <td>0 → fund ceiling = bucket; expand-or-pivot decision</td>
+      </tr>
+      <tr>
+        <td class="idx">5</td><td class="name">Bolt-on self-funding</td>
+        <td>Financial model on 2–3 candidate platform targets showing post-AI cashflow ≥ bolt-on equity per quarter</td>
+        <td class="center"><span class="tag-pass">≥100%</span></td>
+        <td class="center"><span class="tag-warn">75–100%</span></td>
+        <td>&lt;75% → recycling does not work; every bolt-on draws fund equity</td>
+      </tr>
+    </tbody>
+  </table>
 
-<h3>HARP — the category we own</h3>
-<p>We name the methodology <b>HARP — Human-Augmented Resource Planning</b>: the post-ERP discipline of designing a company as a coordinated stack of humans and AI agents, in the support functions first. The architecture mirrors Bain's <b>NPS — the only management framework in 50 years that durably combined cultural ownership with monetized economics</b>. Trademark "Net Promoter," "NPS," "NPS Prism" all federally registered; NPSx certification arm launched July 2022; NPS Prism benchmark data product is Bain's largest data subscription business. The naming window for the AI-organization category is ~12–18 months — McKinsey, PwC, Deloitte, EY have all published 2025–2026 thought pieces but none has trademarked a memorable acronym yet.</p>
+  <h3 class="sub">Two-week sequence</h3>
+  <ul class="body">
+    <li><b>Week 1 — discovery:</b> Vertical M&amp;A advisors (Q1), SBA / acquisition financers (Q2), searcher-CEO candidates (Q3) — opens conversations and gathers raw quotes.</li>
+    <li><b>Week 2 — pressure-testing:</b> Co-invest LPs (Q4) brief on specific opportunities; financial model on 2–3 candidate platforms (Q5); cross-check responses.</li>
+    <li><b>Decision gate at end of Week 2:</b> if 4 of 5 questions clear green or yellow, proceed to execution; if 2+ are red, return to vertical reselection or game reselection.</li>
+  </ul>
 
-<table>
-<thead><tr><th style="width:18%">Layer</th><th style="width:24%">NPS analog</th><th style="width:28%">HARP version</th><th style="width:30%">Revenue mechanic</th></tr></thead>
-<tbody>
-<tr><td><b>1 · Open methodology</b></td><td>Free NPS score, attribution requested</td><td>Free HARP framework + body of knowledge under Creative Commons attribution-noncommercial</td><td>$0 — drives adoption; attribution = free marketing</td></tr>
-<tr><td><b>2 · Trademark + certification</b></td><td>NPSx training (2022)</td><td>HARP Practitioner / Architect / Master tiers</td><td><b>$495 / $2,495 / $9,995</b> per practitioner; cohort scaling</td></tr>
-<tr><td><b>3 · Implementation firm</b></td><td>Bain CX practice</td><td>AI-Integration Co — "the people who wrote the standard"</td><td>Premium hourly/project consulting margin</td></tr>
-<tr><td><b>4 · Data product (moat)</b></td><td>NPS Prism subscription</td><td><b>The HARP Index</b> — quarterly benchmark of human/agent ratios, cost-per-outcome, agent-leverage scores by function/industry</td><td><b>$25K–$150K/yr</b> enterprise subscription; network effect = more subscribers → better benchmark</td></tr>
-</tbody>
-</table>
+  <div class="src">Decision-gate logic adapted from Combinations Memo Section 13 trigger structure and Starting Position Memo Section 13 → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-archetype-combinations-2026-06-14.html">download Combinations</a>, <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download Starting Position</a>.</div>
+</section>
 
-<p><b>Launch:</b> HARP passes the "memorable acronym + 1-sentence definition" and "incremental adoption (one function before company-wide)" conditions. Three conditions need closing in next 12 months: <b>(1)</b> canonical artifact (HBR article + HBR Press book), <b>(2)</b> academic co-author (HBS / Stanford / INSEAD), <b>(3)</b> commercial infrastructure — certification + Index data product within 18 months of book launch. USPTO trademark Class 35 + 41 = $700 base + $1.5–3K attorney; file Month 0. Naming window closes when Big-4 trademark their own AI-organization acronym — 12–18 months estimated.</p>
+<section class="page" id="s10">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">10</span>Legal Architecture</div>
+  <h1 class="action">Three-entity skeleton: Fund (Delaware LP) → Holding Company (Delaware C-corp, QSBS Section 1202 eligible) → wholly-owned OpCos (LLCs except where state regulation requires alliance). AI Engineering team sits inside the HoldCo as an internal department.</h1>
 
-<div class="callout callout-warn">
-<b>Three failure modes — verified precedents</b><br>
-<b>(1) BPR trap</b> — Hammer/Champy/Davenport publicly apologized that BPR "forgot about people"; 50–70% failure rate. Never frame HARP as headcount reduction.<br>
-<b>(2) Holacracy trap</b> — Medium publicly abandoned Holacracy 2016; Zappos quietly walked back, 18% staff took severance. Value at single-function level in 90 days, never require company-wide adoption.<br>
-<b>(3) Teal trap</b> — 1M+ copies of <i>Reinventing Organizations</i> over 10 years, still fringe. Books without certification + data product = perpetual fringe. Ship certification + Index within 18 months of book or HARP dies in the same trap.
-</div>
-
-<h3>Worked example — M&amp;A funnel economics on a verified vertical (HomeCare)</h3>
-<p>HomeCare is verified Hell-Yes per the V×C×A×B×M scoring map. The math below shows what a single platform acquisition produces once the L2 pilot gate clears.</p>
-<div class="grid-2">
-<div class="card">
-<b>L2 paid pilot economics</b>
-<ul>
-<li>Operator-partner runs $1.5M EBITDA HomeCare agency</li>
-<li>60–90 day paid pilot: operator pays <b>$150–250K</b> (covers AI Engineering loaded cost)</li>
-<li>AI Engineering arm builds matching + scheduling + RCM stack inside operator's workflow</li>
-<li>Measure: hours per case, no-show rate, RCM days-to-collect</li>
-<li><b>Pass: ≥1.5× productivity. Fail: parties separate, operator keeps work product.</b></li>
-</ul>
-</div>
-<div class="card">
-<b>L3 platform acquisition math</b>
-<ul>
-<li>HoldCo acquires operator's company at <b>5× EBITDA = $7.5M EV</b></li>
-<li>SBA 7(a) leverage 60% = $4.5M debt + $3M Fund equity</li>
-<li>Post-AI margin uplift 300–500 bps in 12 months → EBITDA $1.8M</li>
-<li>3–7 tuck-in acquisitions at 3–4× EBITDA over 18–24 months</li>
-<li>Platform exit at <b>10–13× EBITDA</b> (post-AI verified) → <b>4–5× MOIC on equity</b></li>
-</ul>
-</div>
-</div>
-
-<div class="page-break"></div>
-
-<!-- ========================================= PAGE 7 ========================================= -->
-<h2>07 · Legal Structure</h2>
-<p class="action-title">Fund → Holding Company → Acquired OpCos — clean three-layer structure with QSBS-eligible C-corp wrapper and zero Section 206 friction.</p>
-
-<p>Pure-HoldCo posture simplifies the legal structure dramatically. There is no AI-Integration Co with external customers, so Section 206(3) related-party services friction does not arise. The AI Engineering arm is a function inside the Holding Company, not a separate entity transacting with portfolio cos. The four-entity skeleton collapses to three: Fund, HoldCo (QSBS C-corp), and acquired OpCos.</p>
-
-<h3>The single chosen structure</h3>
-
-<table>
-<thead>
-<tr>
-<th style="width:24%">Dimension</th>
-<th style="width:76%">Pure HoldCo structure (no AI-Integration Co entity)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><b>Closest precedent</b></td>
-<td>Vista Consulting Group ($107B AUM, 100+ FTE captive); General Catalyst HATCo (Summa Health $485M acquisition outside fund cycle); Bain Capital Portfolio Group (115+ FTE)</td>
-<td>KKR Capstone (10-Q verbatim: "not a subsidiary or affiliate of KKR, operates under consulting agreements, uses KKR name under license"). 25+ years, no SEC enforcement</td>
-</tr>
-<tr>
-<td><b>Setup time + cost</b></td>
-<td>30–60 days; $50–100K legal (single LPA + ERA filing)</td>
-<td>3–6 months; $50–100K legal + separate C-corp formation $5–15K + board/operating agreements $10–25K</td>
-</tr>
-<tr>
-<td><b>Section 206(3) exposure</b></td>
-<td><span class="risk">High when affiliate threshold (&gt;25% control) crossed.</span> Each warrant from portco needs documented arms-length pricing + annual valuation</td>
-<td><span class="pro">Materially weakened</span> if fund stays sub-25% and no control indicia (no board majority, no shared employees). KKR Capstone precedent holds</td>
-</tr>
-<tr>
-<td><b>Talent equity</b></td>
-<td>Operators are fund partners; no separate ISO grants. Top operators prefer equity in the operating co specifically</td>
-<td><span class="pro">ISO grants enabled</span>; critical at $260K+ base + $50K equity for Vertical Lead per 2026 AI-startup benchmarks (Carta, Sentiro Partners)</td>
-</tr>
-<tr>
-<td><b>Outside capital</b></td>
-<td><span class="risk">Closed.</span> Cannot take SaaS-strategic checks or growth equity without restructuring</td>
-<td><span class="pro">Open.</span> Eudia-style contingent capital available ($30M upfront + $75M on milestone acquisitions GC approves)</td>
-</tr>
-<tr>
-<td><b>Acquisition pipeline cleanliness</b></td>
-<td>Each AI-Integration Co → portco transaction is intra-fund related-party</td>
-<td>Arms-length by default; no 206(3) trip wire on entry</td>
-</tr>
-<tr>
-<td><b>Exit optionality</b></td>
-<td>Single — through fund liquidation; LP approval required</td>
-<td><span class="pro">Double exit:</span> roll-up portfolio + AI-Integration Co itself sold to SaaS strategic / growth equity at SaaS multiples (4–6× ARR)</td>
-</tr>
-<tr>
-<td><b>LP narrative</b></td>
-<td>"We built the operating arm." Cleanest single story</td>
-<td>Two governance stories to maintain (fund LPA + AI-Integration Co board); reporting/IR overhead doubles</td>
-</tr>
-<tr>
-<td><b>Fund return capture</b></td>
-<td>100% of AI-Integration Co value (consolidated)</td>
-<td>Sub-25% of AI-Integration Co terminal value flows to fund; rest to operators + outside investors</td>
-</tr>
-</tbody>
-</table>
-
-<div class="takeaway">
-<span class="takeaway-label">Why pure-HoldCo structure simplifies governance</span>
-<div class="takeaway-text">Without an external AI-services arm, the Model A vs Model B services-entity dichotomy is obviated. The AI Engineering team sits inside the Holding Company as a department, not a separate legal entity. No related-party services contracts between Fund and portfolio cos. No ISO grants needed for "AI-Integration Co" employees — instead, AI engineers receive HoldCo equity participation. Single LPA, single governance story, single P&amp;L narrative for LPs.</div>
-</div>
-
-<h3>Why this matters — the 2024 Fifth Circuit window</h3>
-<div class="callout">
-<b>Current regulatory regime is materially more permissive than 2023.</b> On June 5, 2024, the Fifth Circuit vacated all five SEC Private Fund Adviser Rules of 2023 in <i>National Association of Private Fund Managers v. SEC</i>. The binding framework today is the pre-2023 baseline: Section 206 anti-fraud + general fiduciary duty (<i>SEC v. Capital Gains Research Bureau</i> 1963) + the 2019 SEC Fiduciary Duty Interpretation (IA-5248) + customary side-letter disclosure practice. The Fund at $52M committed sits below the $150M Rule 203(m)-1 threshold — <b>Exempt Reporting Adviser (ERA) status</b>, partial Form ADV, Section 206 applies but full registration not required. <span class="src">Sources: <a href="https://www.morganlewis.com/pubs/2024/06/fifth-circuit-vacates-sec-private-fund-adviser-rules-in-full">Morgan Lewis</a> · <a href="https://www.sec.gov/announcement-regarding-private-fund-advisers-rules">SEC announcement</a> · <a href="https://www.law.cornell.edu/cfr/text/17/275.203(m)-1">17 CFR § 275.203(m)-1</a></span>
-</div>
-
-<h3>Enforcement pattern — disclosure execution matters more than structure choice</h3>
-<table>
-<thead>
-<tr><th style="width:18%">Adviser</th><th style="width:10%">Year</th><th style="width:42%">Charge</th><th style="width:30%">Settlement</th></tr>
-</thead>
-<tbody>
-<tr><td><b>Apollo Global</b></td><td>2016</td><td>Inadequate disclosure of accelerated monitoring fees from portcos</td><td>$52.7M</td></tr>
-<tr><td><b>Energy Capital Partners</b></td><td>2022</td><td>Undisclosed expense allocations to fund</td><td>Settled (terms not public)</td></tr>
-<tr><td><b>Insight Venture Mgmt</b></td><td>2023</td><td>Failed to disclose conflict in fee calculations; overcharged management fees</td><td>Settled</td></tr>
-<tr><td><b>TZP Group</b></td><td>2025</td><td>$500K+ excess management fees from fee-offset double-counting (206(2))</td><td>Settled</td></tr>
-</tbody>
-</table>
-
-<div class="hero">
-<span class="hero-eyebrow">The real moat is disclosure execution, not structure choice</span>
-<div class="hero-text">Every recent SEC enforcement against funds with services arms turned on inadequate disclosure of fee flows, <b>never on the structural choice itself</b>. The implication: investing $50–100K upfront in disclosure infrastructure (LPA language + quarterly statements template + arms-length pricing methodology + audit trail system) before Day 1 of L1 sales is the actual moat — not the Model A vs Model B decision.</div>
-<div style="margin-top:10px;"><span class="src" style="color:#A9C5D6;">Source: <a href="https://www.sidley.com/en/insights/newsupdates/2025/08/sec-brings-enforcement-action-against-private-fund-adviser-for-fee-offset-related-conduct">Sidley TZP analysis</a> · <a href="https://www.sec.gov/newsroom/press-releases/2016-165">SEC Apollo Press Release</a></span></div>
+<div class="tree">
+<span class="root">Three-entity skeleton</span>
+│
+├── <span class="branch">Fund</span> — Delaware Limited Partnership (LP)
+│        ├── <span class="leaf">ERA-exempt SEC status if AUM under $150M</span>
+│        ├── <span class="leaf">European (whole-fund) waterfall; 8% pref; 20% carry; 100% catch-up</span>
+│        └── <span class="leaf">LPA provisions: Vintage 2 conversion option, anchor LP ROFR, co-invest rights, key-person</span>
+│
+├── <span class="branch">Holding Company</span> — Delaware C-corp, QSBS Section 1202 eligible at formation
+│        ├── <span class="leaf">AI Engineering as <b>internal department</b>, not separate legal entity</span>
+│        ├── <span class="leaf">QSBS: up to 100% federal exclusion on first $10M / shareholder; ~$2.38M federal tax saved per shareholder at top LTCG + NIIT rate</span>
+│        ├── <span class="leaf">Founders + AI engineers participate via HoldCo equity (QSBS-eligible)</span>
+│        └── <span class="leaf">No related-party services contracts with portfolio cos; Section 206(3) trip wire does not arise</span>
+│
+└── <span class="branch">Operating Companies (OpCos)</span> — wholly-owned LLCs
+         ├── <span class="leaf">Acquired SMBs in chosen vertical; retain local brand, customer relationships, regulatory licensing</span>
+         ├── <span class="leaf">Operator-CEO retained 24+ months under earn-out; sub-brand retention</span>
+         └── <span class="leaf">Alliance model substitution where state regulation requires (CPA vertical — Crete precedent)</span>
 </div>
 
-<h3>Financing the L2 pilot fee — how operator-partners without $200K cash run pilots</h3>
-<p>The operator-partner often does not have $200K of discretionary cash for a pilot. We solve it by financing the pilot fee against the acquisition consideration we will pay if the pilot succeeds. Four paths, used in a blend:</p>
+  <div class="src">Full posture rationale, Section 206 enforcement precedents, and QSBS quantification in Pure HoldCo Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-pure-holdco-positioning-2026-06-14.html">download HTML</a>. Legal architecture lever in Starting Position Memo Section 08 → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<table>
-<thead><tr><th style="width:18%">Path</th><th style="width:30%">Mechanic</th><th style="width:18%">Cost</th><th style="width:34%">When to use</th></tr></thead>
-<tbody>
-<tr><td><b>A · Self-financed by operator</b></td><td>Operators with adequate cash pay pilot fee upfront from operating cash flow</td><td>0% — operator capital</td><td>Default. Anchor at 60% of pilots.</td></tr>
-<tr><td><b>B · Pilot-to-acquisition credit</b></td><td>Pilot fee credited 100% against acquisition consideration if L2 gate clears and HoldCo buys the company</td><td>0% effective if acquisition closes</td><td>~25% of pilots. Aligns operator + HoldCo incentives.</td></tr>
-<tr><td><b>C · Fund bridge loan</b></td><td>Fund extends short-term bridge to operator secured against future acquisition consideration</td><td>8–10% (treasury + spread)</td><td>~15% of pilots. Requires LPA-level disclosure.</td></tr>
-<tr><td><b>D · Operator-side RBF</b></td><td>Operator borrows from Capchase / Pipe / Lighter Capital against own receivables to fund pilot</td><td>10–12% flat (operator-side)</td><td>Backup only — operator-financed and external to Studio.</td></tr>
-</tbody>
-</table>
+<section class="page" id="s11">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">11</span>Roles</div>
+  <h1 class="action">Studio team: GP + studio-lead, AI Engineering Lead, searcher-CEO per platform, shared AI Engineering team across portfolio, operator-in-residence per vertical, vertical M&amp;A advisor, independent board director with Holdco PE precedent.</h1>
 
-<p><b>Operator selection mechanic:</b> a $25K paid scoping engagement (credited 100% against pilot fee if operator proceeds) filters operators who are not serious about acquisition. Operators who pay the scoping fee convert to full pilot at <b>40–60%</b> vs <b>10–15%</b> for free scoping calls.</p>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:22%">Role</th><th style="width:12%">FTE</th><th>Function</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">1</td><td class="name">GP + studio-lead</td><td>1</td><td>Capital allocation, LP relationships, M&amp;A negotiation, governance across studio portfolio</td></tr>
+      <tr><td class="idx">2</td><td class="name">GP partner</td><td>1</td><td>Operating-side counterbalance; integration discipline; vertical strategy</td></tr>
+      <tr><td class="idx">3</td><td class="name">AI Engineering Lead</td><td>1</td><td>Enterprise-productisation background (Sierra / Glean / Harvey / Anthropic enterprise track); production-grade evals, observability, integration patterns. Heads shared AI Engineering team across portfolio</td></tr>
+      <tr><td class="idx">4</td><td class="name">Searcher-CEO per platform</td><td>1 per vertical</td><td>Anchor operator inside the platform; equity + carry compensation; runs OpCo day-to-day; orchestrates bolt-ons</td></tr>
+      <tr><td class="idx">5</td><td class="name">Vertical Lead (operator-in-residence)</td><td>1 per active vertical</td><td>Ex-CEO from $20–80M revenue OpCo in vertical; AI uplift KPI definition; seller credibility; pilot delivery</td></tr>
+      <tr><td class="idx">6</td><td class="name">M&amp;A diligence + integration ops</td><td>2–3</td><td>Sourcing, QofE, 90-day post-close integration playbook execution</td></tr>
+      <tr><td class="idx">7</td><td class="name">Data Analyst</td><td>1</td><td>Cross-OpCo measurement, AI uplift verification, dashboards</td></tr>
+      <tr><td class="idx">8</td><td class="name">Vertical M&amp;A advisor</td><td>External retainer</td><td>Proprietary deal flow; market intelligence; co-exclusive arrangement</td></tr>
+      <tr><td class="idx">9</td><td class="name">Independent board director</td><td>External</td><td>Ex-partner from documented operating-Holdco PE firm; PE-to-PE recap intelligence</td></tr>
+    </tbody>
+  </table>
 
-<h3>The three-entity skeleton</h3>
+  <p class="body">Shared AI Engineering team is centralised across the studio portfolio — one team designs playbooks; each searcher-CEO deploys per OpCo. Centralisation captures the marginal economics of AI infrastructure: $500K–$3M upfront engineering per playbook, near-zero marginal cost per OpCo once playbook exists.</p>
+  <div class="src">Role inventory and compensation benchmarks from Starting Position Memo Section 10 → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>. AI Engineering scaling economics from AI-Native Operating Holdco deep dive.</div>
+</section>
 
-<p>Pure-HoldCo posture means the legal skeleton has three entities, not four: Fund (Delaware LP, ERA, capital allocator), Holding Company (Delaware C-corp, QSBS Section 1202 eligible, contains AI Engineering arm as internal department), and acquired OpCos (existing LLCs or C-corps wrapped under HoldCo). Founder + AI engineers participate via HoldCo equity. No separate AI-Integration Co entity. No related-party services contracts. Setup time 30–60 days, single LPA, single board.</p>
+<section class="page" id="s12">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">12</span>Studio Mechanic and Capital Stack per Deal</div>
+  <h1 class="action">Anchor operator → leverage → AI at acquisition → bolt-ons on cash flow. Capital stack per deal mixes fund equity, debt, and co-invest sized to specific opportunity. Capital recycling is the multiplier that converts $25.2M bucket into 5-platform capacity.</h1>
 
-<div class="exhibit-row">
+  <h3 class="sub">Per-deal capital stack — illustrative anchor platform</h3>
+  <table class="mck">
+    <caption>Illustrative anchor platform: $4M EBITDA target at 5× EV multiple = $20M EV</caption>
+    <thead><tr><th style="width:28%">Layer</th><th class="num" style="width:14%">Amount</th><th class="num" style="width:14%">% of EV</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Senior debt (SBA / mid-market)</td><td class="num">$11M</td><td class="num">55%</td><td>Bank or unitranche; <b>availability is killer Q2</b></td></tr>
+      <tr><td class="name">Fund equity (s16vc)</td><td class="num">$5M</td><td class="num">25%</td><td>From $25.2M roll-up bucket; first-time equity into platform</td></tr>
+      <tr><td class="name">Co-invest (LPs / HNW)</td><td class="num">$3M</td><td class="num">15%</td><td>Top-up sized to opportunity; <b>availability is killer Q4</b></td></tr>
+      <tr><td class="name">Seller rollover</td><td class="num">$1M</td><td class="num">5%</td><td>Operator equity in HoldCo / platform LLC; alignment mechanism</td></tr>
+      <tr><td class="name"><b>Total EV</b></td><td class="num"><b>$20M</b></td><td class="num"><b>100%</b></td><td>Acquisition closes; AI Engineering deploys within 90 days</td></tr>
+    </tbody>
+  </table>
+  <p class="body">At 5× entry multiple and 55% debt, $5M of fund equity per anchor supports a $20M EV transaction. With $25.2M roll-up bucket: <b>5 anchor platforms theoretically supported</b>. Margin shrinks as entry multiple inflates: at 6× the same $5M equity supports a $14M EV — capacity drops; at 4× it supports $25M — capacity grows.</p>
+  <div class="src">Capital stack scenario sensitivities in Roll-Up Case Analysis Roll-ups Base sheet → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/AI-Roll-Up-Case-Analysis-vF-2026-06-14.xlsx">download XLSX</a>.</div>
 
-<div class="exhibit">
-<div class="exhibit-eyebrow">Exhibit 1</div>
-<div class="exhibit-title">Model A — AI-Integration Co inside the fund as wholly-owned subsidiary</div>
-<div class="exhibit-art">
-<svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#31435B"/></marker>
-  </defs>
-  <!-- LP Investors -->
-  <rect x="60" y="10" width="240" height="34" fill="#FAF9F6" stroke="#31435B" stroke-width="1"/>
-  <text x="180" y="27" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#31435B">LP Investors</text>
-  <text x="180" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#6b7785">$25.5M S16 + $26.5M co-investors</text>
-  <line x1="180" y1="44" x2="180" y2="62" stroke="#31435B" stroke-width="1" marker-end="url(#arrA)"/>
-  <!-- Fund -->
-  <rect x="80" y="62" width="200" height="36" fill="#31435B" stroke="#31435B" stroke-width="1"/>
-  <text x="180" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" font-weight="700" fill="#fff">Fund</text>
-  <text x="180" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#A9C5D6">Delaware LP · GP + 20% carry</text>
-  <!-- left arrow to HoldCo -->
-  <line x1="130" y1="98" x2="100" y2="125" stroke="#31435B" stroke-width="1" marker-end="url(#arrA)"/>
-  <!-- right arrow to OpCos -->
-  <line x1="230" y1="98" x2="260" y2="125" stroke="#31435B" stroke-width="1" marker-end="url(#arrA)"/>
-  <!-- HoldCo -->
-  <rect x="22" y="125" width="160" height="36" fill="#fff" stroke="#31435B" stroke-width="1"/>
-  <text x="102" y="143" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#31435B">HoldCo LLC</text>
-  <text x="102" y="155" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">US C-corp · QSBS-eligible</text>
-  <!-- OpCos -->
-  <rect x="190" y="125" width="148" height="36" fill="#fff" stroke="#31435B" stroke-width="1"/>
-  <text x="264" y="143" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#31435B">SME OpCos 1–5</text>
-  <text x="264" y="155" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">acquired services SMEs</text>
-  <!-- HoldCo down to IntCo -->
-  <line x1="102" y1="161" x2="102" y2="195" stroke="#31435B" stroke-width="1" marker-end="url(#arrA)"/>
-  <text x="106" y="180" font-family="Inter,sans-serif" font-size="8.5" fill="#6b7785">owns 100%</text>
-  <!-- IntCo -->
-  <rect x="22" y="195" width="316" height="48" fill="#2E7780" stroke="#2E7780" stroke-width="1.5"/>
-  <text x="180" y="216" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">AI-Integration Co</text>
-  <text x="180" y="231" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#DCE5EC">wholly-owned subsidiary · C-corp</text>
-  <!-- IntCo to OpCos (services arrow) -->
-  <path d="M 264 161 L 264 175 L 264 175" stroke="#2E7780" stroke-width="1" fill="none"/>
-  <line x1="264" y1="161" x2="264" y2="195" stroke="#2E7780" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="270" y="178" font-family="Inter,sans-serif" font-size="8.5" fill="#2E7780" font-style="italic">arm's-length</text>
-  <text x="270" y="188" font-family="Inter,sans-serif" font-size="8.5" fill="#2E7780" font-style="italic">services</text>
-  <!-- Services to 3rd party SMEs -->
-  <rect x="22" y="265" width="316" height="34" fill="#fff" stroke="#C9D2DC" stroke-width="1" stroke-dasharray="4,3"/>
-  <text x="180" y="282" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="600" fill="#31435B">3rd-party SME customers (non-portfolio)</text>
-  <text x="180" y="294" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">L1 fees + L2 gainshare + L3 warrants</text>
-  <line x1="180" y1="243" x2="180" y2="263" stroke="#2E7780" stroke-width="1" marker-end="url(#arrA)"/>
-</svg>
-</div>
-<div class="exhibit-source">Source: Vista Consulting Group precedent</div>
-</div>
+  <h3 class="sub">Studio mechanic — four-phase cycle per platform</h3>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:18%">Phase</th><th style="width:14%">Capital draw</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">1</td><td class="name">Anchor acquisition</td><td>Fund + debt + co-invest</td><td>Operating SMB acquired; searcher-CEO installed or retained; AI playbook deployment begins</td></tr>
+      <tr><td class="idx">2</td><td class="name">AI deployment 90 days</td><td>AI Engineering arm budget</td><td>Margin uplift documented; pilot KPI gate cleared on first OpCo (target ≥1.5× productivity)</td></tr>
+      <tr><td class="idx">3</td><td class="name">Bolt-on cadence 1 per quarter</td><td>Operating cash flow + selective fund top-up</td><td>3–5 bolt-on OpCos integrated; consolidated EBITDA scales toward platform exit threshold</td></tr>
+      <tr><td class="idx">4</td><td class="name">Platform exit</td><td>—</td><td>PE-to-PE recap or strategic sale at 10–15× consolidated EBITDA; equity proceeds reduce bucket draw, freeing capacity for next platform</td></tr>
+    </tbody>
+  </table>
 
-<div class="exhibit">
-<div class="exhibit-eyebrow">Exhibit 2</div>
-<div class="exhibit-title">Model B — AI-Integration Co as independent Delaware C-corp, fund as sub-25% anchor</div>
-<div class="exhibit-art">
-<svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" data-skip-close="1">
-  <defs>
-    <marker id="arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#31435B"/></marker>
-  </defs>
-  <!-- Three investor blocks -->
-  <rect x="10" y="10" width="105" height="40" fill="#FAF9F6" stroke="#31435B" stroke-width="1"/>
-  <text x="62" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#31435B">Fund</text>
-  <text x="62" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">anchor &lt;25%</text>
-  <rect x="127" y="10" width="105" height="40" fill="#FAF9F6" stroke="#2E7780" stroke-width="1"/>
-  <text x="180" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#2E7780">Operating Founders</text>
-  <text x="180" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">management 35–45%</text>
-  <rect x="244" y="10" width="105" height="40" fill="#FAF9F6" stroke="#31435B" stroke-width="1"/>
-  <text x="296" y="26" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="600" fill="#31435B">Strategic Investors</text>
-  <text x="296" y="40" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">Adam · OpenAI · 30–40%</text>
-  <!-- arrows down to IntCo -->
-  <line x1="62" y1="50" x2="120" y2="92" stroke="#31435B" stroke-width="1" marker-end="url(#arrB)"/>
-  <line x1="180" y1="50" x2="180" y2="92" stroke="#2E7780" stroke-width="1" marker-end="url(#arrB)"/>
-  <line x1="296" y1="50" x2="238" y2="92" stroke="#31435B" stroke-width="1" marker-end="url(#arrB)"/>
-  <!-- IntCo (the star) -->
-  <rect x="40" y="92" width="280" height="48" fill="#2E7780" stroke="#2E7780" stroke-width="1.5"/>
-  <text x="180" y="113" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">AI-Integration Co</text>
-  <text x="180" y="128" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#DCE5EC">independent Delaware C-corp · own board · own cap table</text>
-  <!-- Arrows down to Fund holdings + customers -->
-  <line x1="100" y1="140" x2="80" y2="175" stroke="#31435B" stroke-width="1" marker-end="url(#arrB)"/>
-  <line x1="260" y1="140" x2="280" y2="175" stroke="#2E7780" stroke-width="1" marker-end="url(#arrB)"/>
-  <text x="160" y="160" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#6b7785" font-style="italic">services + warrants flow at arm's-length on both sides</text>
-  <!-- Left: Fund-acquired portfolio -->
-  <rect x="10" y="175" width="170" height="40" fill="#fff" stroke="#31435B" stroke-width="1"/>
-  <text x="95" y="192" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="600" fill="#31435B">Fund-acquired OpCos</text>
-  <text x="95" y="205" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">via HoldCo · 5 verticals</text>
-  <!-- Right: 3rd party SMEs -->
-  <rect x="190" y="175" width="160" height="40" fill="#fff" stroke="#2E7780" stroke-width="1" stroke-dasharray="4,3"/>
-  <text x="270" y="192" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="600" fill="#2E7780">3rd-party SME customers</text>
-  <text x="270" y="205" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">L1 + L2 + L3 warrants</text>
-  <!-- Outside capital callout -->
-  <rect x="40" y="240" width="280" height="60" fill="#FAF9F6" stroke="#C9D2DC" stroke-width="1"/>
-  <text x="180" y="258" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" font-weight="600" fill="#31435B">Eudia-style contingent capital unlocked</text>
-  <text x="180" y="273" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">$5–10M upfront + $20–40M on milestone</text>
-  <text x="180" y="285" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">acquisitions the Fund approves</text>
-  <text x="180" y="297" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-style="italic" fill="#2E7780">SaaS-strategic + growth equity + ISO grants ENABLED</text>
-</svg>
-</div>
-<div class="exhibit-source">Source: KKR Capstone precedent · Eudia Series A mechanic</div>
-</div>
+  <div class="callout">
+    <div class="h">The recycling lever</div>
+    <p>Cash flow from anchor OpCo plus partial early exits (or partial recap) frees fund equity for the next anchor before bucket exhausts. <b>Killer Q5: if anchor cash flow does not cover bolt-on equity contributions, recycling does not function and each bolt-on draws fresh fund equity</b>. This is the structural difference between a search-fund model that supports 5 bets and a single-platform PE-style fund that supports 1.</p>
+  </div>
+</section>
 
-<div class="exhibit">
-<div class="exhibit-eyebrow">Exhibit 3</div>
-<div class="exhibit-title">The 4-entity operating skeleton plugs together via documented arm's-length flows</div>
-<div class="exhibit-art">
-<svg viewBox="0 0 380 440" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#31435B"/></marker>
-    <marker id="arr4t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2E7780"/></marker>
-  </defs>
-  <!-- Layer 1: LP Investors -->
-  <rect x="80" y="10" width="220" height="42" fill="#FAF9F6" stroke="#31435B" stroke-width="1.5"/>
-  <text x="190" y="28" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#31435B">LP Investors</text>
-  <text x="190" y="44" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">$25.5M S16 + $26.5M co-investors = $52M</text>
-  <line x1="190" y1="52" x2="190" y2="82" stroke="#31435B" stroke-width="1.5" marker-end="url(#arr4)"/>
-  <!-- Layer 2: Fund -->
-  <rect x="50" y="82" width="280" height="46" fill="#31435B" stroke="#31435B" stroke-width="1.5"/>
-  <text x="190" y="103" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#fff">Fund</text>
-  <text x="190" y="119" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#A9C5D6">Delaware LP · GP + 20% carry · ERA</text>
-  <!-- Arrows down -->
-  <line x1="120" y1="128" x2="100" y2="170" stroke="#31435B" stroke-width="1.5" marker-end="url(#arr4)"/>
-  <text x="65" y="155" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">owns 100%</text>
-  <line x1="260" y1="128" x2="280" y2="170" stroke="#31435B" stroke-width="1.5" marker-end="url(#arr4)"/>
-  <text x="285" y="155" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">acquires</text>
-  <!-- Layer 3: HoldCo + OpCos -->
-  <rect x="20" y="170" width="160" height="46" fill="#FAF9F6" stroke="#31435B" stroke-width="1.5"/>
-  <text x="100" y="191" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#31435B">HoldCo LLC</text>
-  <text x="100" y="206" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">US C-corp · QSBS 1202</text>
-  <rect x="200" y="170" width="160" height="46" fill="#FAF9F6" stroke="#31435B" stroke-width="1.5"/>
-  <text x="280" y="191" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#31435B">SME OpCos 1–5</text>
-  <text x="280" y="206" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">acquired services SMEs</text>
-  <!-- Arrows down to IntCo -->
-  <line x1="100" y1="216" x2="140" y2="262" stroke="#31435B" stroke-width="1.5" marker-end="url(#arr4)"/>
-  <text x="40" y="240" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">owns 100%</text>
-  <line x1="280" y1="216" x2="240" y2="262" stroke="#2E7780" stroke-width="1.5" marker-end="url(#arr4t)" stroke-dasharray="4,3"/>
-  <text x="290" y="240" font-family="Inter,sans-serif" font-size="9" fill="#2E7780" font-style="italic">arm's-length</text>
-  <text x="290" y="252" font-family="Inter,sans-serif" font-size="9" fill="#2E7780" font-style="italic">services</text>
-  <!-- Layer 4: IntCo -->
-  <rect x="40" y="262" width="300" height="56" fill="#2E7780" stroke="#2E7780" stroke-width="1.5"/>
-  <text x="190" y="285" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#fff">AI-Integration Co</text>
-  <text x="190" y="302" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#DCE5EC">C-corp · services to portfolio + 3rd-party</text>
-  <!-- Arrow down -->
-  <line x1="190" y1="318" x2="190" y2="358" stroke="#2E7780" stroke-width="1.5" marker-end="url(#arr4t)"/>
-  <!-- Layer 5: 3rd-party SMEs -->
-  <rect x="40" y="358" width="300" height="44" fill="#FAF9F6" stroke="#C9D2DC" stroke-width="1.2" stroke-dasharray="4,3"/>
-  <text x="190" y="378" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="#31435B">3rd-party SME customers</text>
-  <text x="190" y="392" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="#6b7785">L1 fees + L2 gainshare + L3 warrants → fund pipeline</text>
-</svg>
-</div>
-<div class="exhibit-source">Source: synthesized from Vista, HATCo, Capstone precedents</div>
-</div>
+<section class="page" id="s13">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">13</span>Deal Pipeline and Gates</div>
+  <h1 class="action">Three-stage M&amp;A funnel: source (L1) → paid pre-acquisition pilot (L2) → acquire (L3). Bet N+1 opens only when bet N proves self-funding from operating cash flow.</h1>
 
-</div>
+  <h3 class="sub">M&amp;A funnel by stage</h3>
+  <table class="mck">
+    <thead><tr><th style="width:8%">Stage</th><th style="width:22%">Function</th><th style="width:22%">Counterparty count</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td class="name">L1 · Source</td><td>Identify operator-partners via vertical advisor + trade-association networks + warm referral</td><td>Wide (~50–100 per quarter at active vertical)</td><td>Qualified pipeline; preliminary fit assessment</td></tr>
+      <tr><td class="name">L2 · Paid pilot</td><td>60–90 days, $100–300K fees credited against acquisition price; ends with acquire or walk away</td><td>1–2 per vertical at any time</td><td>AI uplift verified or falsified; operator alignment confirmed; pilot KPI clear</td></tr>
+      <tr><td class="name">L3 · Acquire</td><td>LOI → diligence → close in 4–8 months</td><td>1 anchor + 3–5 bolt-on per platform over Vintage 1 cycle</td><td>OpCo wholly-owned; searcher-CEO in place; AI Engineering deployment begins</td></tr>
+    </tbody>
+  </table>
 
-<div class="grid-2" style="margin-top:14px;">
-<div class="card">
-<b>Key principles</b>
-<ul>
-<li>Fund and HoldCo are <b>legally separate</b>; Fund owns equity in HoldCo, HoldCo owns OpCos</li>
-<li>AI Engineering is a <b>department inside HoldCo</b>, not an independent legal entity; no inter-entity services contracts</li>
-<li>HoldCo as C-corp preserves <b>QSBS Section 1202</b> for founders/LPs on platform exit (up to $15M per founder under OBBBA 2025)</li>
-<li>AI products deployed to acquired OpCos only; never sold, licensed, or sublicensed outside the portfolio</li>
-</ul>
-</div>
-<div class="card">
-<b>Section 206 simplifications</b>
-<ul>
-<li>No related-party services contracts because no separate services entity exists</li>
-<li>Fund acquires OpCo equity directly through HoldCo at arm's-length M&amp;A pricing (standard PE practice)</li>
-<li>Pilot fees flow operator → HoldCo before Fund is counterparty (operator is not yet a portfolio company at L2)</li>
-<li>Disclosure in PPM at fund formation: paid-pilot mechanic + acquisition pipeline transparency</li>
-<li>2022 SEC Private Fund Adviser Rule was vacated by 5th Circuit Aug 2024 → back to principles-based Section 206 enforcement = <b>more permissive. Window is open.</b></li>
-</ul>
-</div>
-</div>
+  <h3 class="sub">Gates between stages</h3>
+  <table class="mck">
+    <thead><tr><th style="width:22%">Gate</th><th>Triggering conditions</th><th style="width:18%">Outcome if cleared</th></tr></thead>
+    <tbody>
+      <tr><td class="name">L2 → L3 (acquire gate)</td><td>Pilot delivers ≥1.5× productivity uplift on operator-partner workflows; operator agrees to standard LOI structure (65/20/15 cash/rollover/earn-out with two-gate); regulatory diligence clears</td><td>LOI signed; close in 4–8 months</td></tr>
+      <tr><td class="name">Bet N → Bet N+1 (capacity gate)</td><td>Bet N anchor OpCo demonstrates positive operating cash flow ≥ next bolt-on equity contribution within 2 quarters; AI playbook v1 stable</td><td>Studio team begins Bet N+1 sourcing in parallel; bucket equity allocated</td></tr>
+      <tr><td class="name">Pilot gate (productivity ≥1.5×)</td><td>Primary AI playbook delivers ≥1.5× productivity uplift on first 2–3 OpCos in vertical</td><td>Bolt-on velocity sustained at 1 per quarter; second vertical sourcing begins</td></tr>
+      <tr><td class="name">Exit gate</td><td>Consolidated platform reaches scale + multiple expansion; PE-to-PE recap or strategic interest surfaces</td><td>Exit process opens; equity proceeds recycle back to bucket</td></tr>
+    </tbody>
+  </table>
 
+  <div class="src">Gate structure aligned with AI-Native Operating Holdco deep dive integration discipline and Pure HoldCo Decision Memo paid pilot mechanic → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-pure-holdco-positioning-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<h2>08 · What We Do</h2>
-<p class="action-title">One vertical roll-up cell per active vertical — 7 people, $1.875M/yr fully loaded. Stagger vertical launches as paid pilots clear the ≥1.5× gate.</p>
+<section class="page" id="s14">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">14</span>AI Operations</div>
+  <h1 class="action">Internal AI Engineering arm — productisation discipline, eval suite, observability. Margin-lift target by vertical follows reference operator benchmarks. AI cost 3–4% of revenue per fund-side model; conservative relative to documented benefit.</h1>
 
-<p>Conclusion of the funnel. Three structural archetypes filtered to one (AI-Native Operating Holdco). The V×C×A×B×M scoring map filters 1,012 NAICS codes to 3–5 acquisition-ready verticals. Replication unit is the vertical-specific playbook applied to each acquired OpCo. Legal structure is the three-entity skeleton (Fund / HoldCo / OpCos). One vertical roll-up cell per active vertical: 7 people, $1.875M/yr fully loaded. First vertical (HomeCare, Hell-Yes verified) launches Q3 2026; second vertical activates when pilot in HomeCare clears ≥1.5× gate.</p>
+  <h3 class="sub">AI deployment economics — vertical benchmarks</h3>
+  <table class="mck">
+    <thead><tr><th style="width:18%">Vertical</th><th class="num" style="width:18%">Pre-AI EBITDA margin</th><th class="num" style="width:18%">AI uplift target (bps)</th><th>Reference evidence</th></tr></thead>
+    <tbody>
+      <tr><td class="name">HOA / Property Mgmt</td><td class="num">15–25%</td><td class="num">+200–400</td><td>Long Lake 25–30% per-FTE productivity; 10× sales pipeline via AI lead-gen</td></tr>
+      <tr><td class="name">CPA / Accounting</td><td class="num">25–35%</td><td class="num">+300–500</td><td>Current Tax AI 31% time savings, 98% accuracy on 7,000 returns; OpenAI/Thrive Tax AI 25→97% accuracy</td></tr>
+      <tr><td class="name">MSP</td><td class="num">18–25%</td><td class="num">+250–450</td><td>Shield Tech 9 MSPs at $100M+ ARR; specific per-OpCo uplift not publicly verified</td></tr>
+      <tr><td class="name">P&amp;C brokerage</td><td class="num">15–35%</td><td class="num">+200–400</td><td>Quote-to-bind cycle compression; fraud detection; broker placement automation</td></tr>
+      <tr><td class="name">Home care</td><td class="num">17–20%</td><td class="num">+150–300</td><td>CMS reimbursement caps limit upside; lower documented uplift</td></tr>
+    </tbody>
+  </table>
 
-<table>
-<thead><tr><th style="width:14%">Role</th><th style="width:10%">FTE</th><th style="width:24%">Fully loaded ($K/yr)</th><th style="width:52%">Function in IEC stack</th></tr></thead>
-<tbody>
-<tr><td><b>Vertical Lead</b></td><td>1</td><td>$415K</td><td>Owns vertical P&amp;L; co-leads playbook build with AI Engineering arm; signs L3 acquisitions; becomes platform Chairman post-acquisition</td></tr>
-<tr><td><b>AI Engineers (FDE)</b></td><td>2</td><td>$650K (2 × $325K)</td><td>Build Vertical AI Product inside operator workflow during L2 pilot; refine playbook quarterly; deploy validated stack across acquired OpCos</td></tr>
-<tr><td><b>M&amp;A Associates</b></td><td>2</td><td>$520K (2 × $260K)</td><td>Source operator-partners in target vertical, run $25K scoping engagements, structure L2 pilot terms, run acquisition diligence post-pilot</td></tr>
-<tr><td><b>Integration Lead</b></td><td>1</td><td>$130K</td><td>Manage L2 pilot delivery inside operator workflow; post-acquisition deploys validated AI stack to OpCo + tuck-in OpCos</td></tr>
-<tr><td><b>Data Analyst</b></td><td>1</td><td>$160K</td><td>Pilot productivity measurement; acquisition diligence support; post-acquisition OpCo dashboard maintenance</td></tr>
-<tr style="background:rgba(46,119,128,0.08);"><td colspan="2"><b>Cell total</b></td><td><b>$1,875K / yr</b></td><td><b>Funded by Fund operating budget; ROI delivered through acquisition multiple arbitrage, not services revenue</b></td></tr>
-</tbody>
-</table>
+  <h3 class="sub">AI cost structure (fund-model assumption)</h3>
+  <ul class="body">
+    <li><b>AI cost ≈ 3–4% of revenue</b> per s16vc Case Analysis assumptions: $15–250/user/month SaaS tools + implementation + central AI Lab overhead.</li>
+    <li><b>Automatable share</b> by vertical: Accounting 50% (Bookkeeping.ai conservative; full claim 95%); Legal 40% (ABA 2025 shows 31% adoption); Property Management 45% (Morgan Stanley: 37% of all RE tasks automatable today).</li>
+    <li><b>Revenue uplift</b>: organic 10–15% from freed capacity → more billable work/clients served; new services 5–8% via AI-native advisory, analytics, 24/7 digital services.</li>
+  </ul>
+  <div class="src">AI cost and automation assumptions from AI Roll-Up Case Analysis Sources &amp; Assumptions sheet → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/AI-Roll-Up-Case-Analysis-vF-2026-06-14.xlsx">download XLSX</a>.</div>
 
-<h3>24-month sequencing — vertical roll-up cells stagger as pilots clear the ≥1.5× gate</h3>
+  <h3 class="sub">Failure surface to monitor</h3>
+  <ul class="body">
+    <li><b>Pilot-to-production cliff</b>: 11–14% of enterprise AI agent pilots reach production at scale (IDC 2026). Mitigation: paid pre-acquisition pilots structured with ≥1.5× productivity gate before acquisition commitment.</li>
+    <li><b>AI uplift unverified at diligence</b>: PitchBook documents AI-services exits at 2.x MOIC where uplift unverified (vs 4× when verified). Mitigation: AI Engineering Lead at Day-Zero defines per-vertical KPIs; operator-in-residence validates against operating context.</li>
+    <li><b>Inference cost commoditisation</b>: token prices dropped ~80% from 2023 to 2025. Mitigation: operating uplift is durable (labour replaced); inference cost compression flows to OpCo margins.</li>
+  </ul>
+</section>
 
-<p>One vertical cell per active vertical. Vertical launches stagger so AI Engineering bandwidth remains usable across pilots and post-acquisition deployments simultaneously.</p>
+<section class="page" id="s15">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">15</span>Seven Day-Zero Levers — Composite Position</div>
+  <h1 class="action">Composite output from comparative analysis: vertical, LP base, operator structure, advisors, legal, capital, team and brand each take the documented winning position. Sensitivity to each lever is captured in the full memo.</h1>
 
-<table>
-<thead><tr><th style="width:12%">Quarter</th><th style="width:18%">Vertical</th><th style="width:18%">Operator-partner</th><th style="width:18%">Stage</th><th style="width:34%">Goal</th></tr></thead>
-<tbody>
-<tr><td>Q3 2026</td><td><b>HR Staffing</b> (Cyborg HR)</td><td>Adam Zoia / Glocap × Lusin (NY)</td><td>L2 pilot live</td><td>Validate ≥1.5× productivity on Lusin signal engine; acquire Glocap Q1 2027 if gate clears</td></tr>
-<tr><td>Q3 2026</td><td><b>HomeCare</b></td><td>Allan Gobbs / YCare (parallel pilot)</td><td>L2 pilot live</td><td>Validate ≥1.5× on matching + scheduling + RCM; acquire Q2 2027 if gate clears</td></tr>
-<tr><td>Q1 2027</td><td><b>Property Management</b></td><td>Sergey (Config B — operator with own software)</td><td>L2 / acquisition</td><td>Fold software into HoldCo; roll up via tuck-in acquisitions Q2–Q4 2027</td></tr>
-<tr><td>Q3 2027</td><td><b>P&amp;C Insurance Tier-2</b></td><td>Sourcing in progress</td><td>L1 / L2 pilot</td><td>Activate only if at least one of HR / HomeCare / PM platforms is on track; otherwise re-rank</td></tr>
-<tr><td>Q1 2028</td><td><b>Vertical 5</b></td><td>To be sourced from V×C×A×B×M scoring map</td><td>L1 / L2 pilot</td><td>Slot reserved for 5th vertical at end of Fund I deployment cycle</td></tr>
-</tbody>
-</table>
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:20%">Lever</th><th>Composite winning position</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">1</td><td class="name">Vertical</td><td>HOA / PM under default weights (4.30); CPA second (4.05); final pick contingent on hypothesis validation (Q1–Q5) and team-held vertical expertise</td></tr>
+      <tr><td class="idx">2</td><td class="name">LP base</td><td>Institutional-anchor-led (named anchor + strategic family offices + operator HNW); LPA includes Vintage 2 conversion option, ROFR, co-invest, key-person, European waterfall</td></tr>
+      <tr><td class="idx">3</td><td class="name">Operator partners</td><td>Majority-with-rollover: 60–75% cash / 20–25% rollover / 10–20% earn-out across 24–36 months; two-gate earn-out (EBITDA + AI uplift KPI); sub-brand retention</td></tr>
+      <tr><td class="idx">4</td><td class="name">Advisors and board</td><td>Vertical M&amp;A advisor on retainer; operator-in-residence (board observer); AI engineering advisor (quarterly review); independent director with Holdco PE precedent; compliance retained at first regulated transaction. Board: 2 founder GPs + 1 anchor LP rep + 1 operator + 1 independent</td></tr>
+      <tr><td class="idx">5</td><td class="name">Legal structure</td><td>Delaware LP + Delaware C-corp HoldCo (QSBS) + LLC OpCos (alliance where required). AI Engineering as internal department. ERA-exempt</td></tr>
+      <tr><td class="idx">6</td><td class="name">Capital structure</td><td>Balanced-diversified allocation across primary + bolt-ons + AI engineering + paid pilots + reserve; standard 55–65% LBO leverage; undeployed capital in T-bills</td></tr>
+      <tr><td class="idx">7</td><td class="name">Team and brand</td><td>2 GP partners (PE + operating mix); AI Engineering Lead from enterprise productisation; Vertical Lead per vertical from operator-CEO pool; distinct entity brand with dedicated domain; research-arm public artefacts</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Full lever-by-lever comparative analysis with scoring, sensitivity, and reference-operator evidence in Starting Position Maximization Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>.</div>
+</section>
 
-<p><b>Why two parallel pilots at Q3 2026 instead of one:</b> the AI Engineering arm has 3–5 FDE bandwidth at launch — two pilots is the upper limit before quality degrades. Two pilots also de-risk the case where one operator-partner stalls or the vertical thesis fails — the second pilot continues without interrupting the funnel.</p>
+<section class="page" id="s16">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">16</span>Financial Model — Fund-Side Inputs and Roll-up Bucket Scenarios</div>
+  <h1 class="action">Inputs from s16vc Fund 3 portfolio construction and AI Roll-Up Case Analysis. Roll-up bucket sized at $25.2M; modelled across Bear / Base / Upside scenarios with 5 verticals; coverage to Series A inclusive; then self-funding from operating cash flow.</h1>
 
-<h3>Fund-level 3-year capital allocation</h3>
-<table>
-<thead><tr><th style="width:36%">Line item</th><th style="width:16%">Year 1</th><th style="width:16%">Year 2</th><th style="width:16%">Year 3</th><th style="width:16%">3-yr total</th></tr></thead>
-<tbody>
-<tr><td>HoldCo cells + AI Engineering operating cost</td><td>$2.0M</td><td>$7.5M</td><td>$10.5M</td><td>$20.0M</td></tr>
-<tr><td>L2 pilot fees + management fees (offset)</td><td>($0.6M)</td><td>($2.4M)</td><td>($3.0M)</td><td>($6.0M)</td></tr>
-<tr style="background:rgba(46,119,128,0.08);"><td><b>Net HoldCo operating burn</b></td><td><b>$1.4M</b></td><td><b>$5.1M</b></td><td><b>$7.5M</b></td><td><b>$14.0M</b></td></tr>
-<tr><td>Acquisitions deployed (fund-side)</td><td>$0</td><td>$10M</td><td>$25M</td><td>$35M</td></tr>
-<tr><td>Reserves / follow-on / WC</td><td>$2M</td><td>$3M</td><td>$5M</td><td>$10M</td></tr>
-<tr><td><b>Cumulative fund spend</b></td><td>$2.7M</td><td>$15.7M</td><td>$45.7M</td><td><b>$45.7M of $52M committed</b></td></tr>
-</tbody>
-</table>
+  <h3 class="sub">Fund-side capital plan</h3>
+  <table class="mck">
+    <thead><tr><th style="width:30%">Item</th><th class="num" style="width:18%">Amount</th><th>Source / use</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Fund 3 total</td><td class="num">$100M</td><td>s16vc Fund 3 committed</td></tr>
+      <tr><td class="name">Venture portfolio (Pre-Seed + Core Bets)</td><td class="num">$58.8M</td><td>First checks $38.22M + pro-rata reserve $20.58M</td></tr>
+      <tr><td class="name">AI roll-up bucket</td><td class="num">$25.2M</td><td>30% of Fund 3; allocated across 5 verticals over 5-year investment period</td></tr>
+      <tr><td class="name">Pre-Series B cash invested (fund + co-invest)</td><td class="num">$52M</td><td>$25.2M fund + ~$26.8M co-invest stretched across portfolio to Series A inclusive</td></tr>
+      <tr><td class="name">Management fee</td><td class="num">2% × 8 years</td><td>Standard fund economics</td></tr>
+      <tr><td class="name">Target ownership at investment</td><td class="num">7%</td><td>Initial equity stake per portfolio company</td></tr>
+    </tbody>
+  </table>
+  <div class="src">Inputs from s16vc Fund 3 Portfolio Construction → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/s16vc-Fund-3-Portfolio-Construction-vF-2026-06-14.xlsx">download XLSX</a>.</div>
 
-<p><b>Against S16 base case (4.13× CoC on $52M):</b> the HoldCo's operating cost is funded inside the management fee budget. Returns are captured exclusively through acquisition multiple arbitrage (3–6× SMB → 8–14× platform). 7–8 platforms × $6–8M Fund equity per platform × 2.5–4.5× MOIC produces a fund-level 2.5–3.5× MOIC — top-tier for sector specialists per Cambridge Associates. The pure-HoldCo posture trades the optionality of a separate AI-Integration Co SaaS exit for the discipline of a single P&amp;L narrative and zero Section 206 friction.</p>
+  <h3 class="sub">Roll-up bucket — return scenarios</h3>
+  <table class="mck">
+    <thead><tr><th style="width:14%">Scenario</th><th class="num" style="width:18%">Roll-up bucket EqV</th><th class="num" style="width:18%">Roll-up bucket CoC</th><th class="num" style="width:18%">Fund 3 gross</th><th class="num" style="width:18%">Fund 3 net of carry</th><th>Outcome assumption</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Bear</td><td class="num">$190.5M</td><td class="num">0.7×</td><td class="num">1.60×</td><td class="num">1.48×</td><td>4 of 5 verticals fail; 1 returns 3×</td></tr>
+      <tr style="background:#E1F0EE"><td class="name"><b>Base</b></td><td class="num"><b>$2,032M</b></td><td class="num"><b>8.4×</b></td><td class="num"><b>4.92×</b></td><td class="num"><b>4.13×</b></td><td>2 of 5 fail; 3 succeed</td></tr>
+      <tr><td class="name">Upside</td><td class="num">$5,942M</td><td class="num">24.7×</td><td class="num">13.22×</td><td class="num">10.78×</td><td>All 5 succeed</td></tr>
+    </tbody>
+  </table>
+  <p class="body">Numbers are equity value of the roll-up bucket at exit, the bucket CoC return, and the consequent fund-level gross and net returns. The IRR on the Bear case is below fund target; Base case clears top-decile (4.13× net per fund-side benchmark); Upside is best-case-only.</p>
 
-<h2>Sources</h2>
-<p style="font-size:11.5px;color:#6b7785;margin:-4px 0 12px;">120+ verified references. SEC filings, law firm publications, Pitchbook, Crunchbase, company press releases, Carta compensation data, industry benchmark reports. Mark "Not Publicly Disclosed" where data is private.</p>
-<ol class="src-list">
-<li><a href="https://www.sourcery.vc/p/breaking-inside-general-catalysts">General Catalyst $1.5B AI Roll-Up — Sourcery VC</a></li>
-<li><a href="https://pitchbook.com/news/articles/general-catalysts-6-3b-amex-deal-puts-its-ai-roll-up-strategy-on-display">GC's $6.3B AMEX deal — PitchBook</a></li>
-<li><a href="https://www.generalcatalyst.com/stories/the-future-of-services">The Future of Services — General Catalyst</a></li>
-<li><a href="https://www.generalcatalyst.com/stories/our-investment-in-eudia">GC investment in Eudia</a></li>
-<li><a href="https://pe-insights.com/thrive-and-general-catalyst-embrace-pe-style-roll-ups-to-build-ai-native-platforms/">Thrive + GC PE-style roll-ups — PE Insights</a></li>
-<li><a href="https://techfundingnews.com/thrive-holdings-raises-2-billion-ai-services/">Thrive Holdings $2B raise — TFN</a></li>
-<li><a href="https://openai.com/index/thrive-holdings/">OpenAI stake in Thrive Holdings</a></li>
-<li><a href="https://www.businesswire.com/news/home/20260602293257/en/Crete-Professionals-Alliance-Rebrands-as-Current">Crete Professionals Alliance → Current</a></li>
-<li><a href="https://llmh.com/">Long Lake</a></li>
-<li><a href="https://www.distyl.ai/">Distyl AI</a></li>
-<li><a href="https://techstartups.com/2025/09/22/distyl-ai-secures-175m-at-1-8b-valuation-to-scale-ai-consulting-platform/">Distyl $175M @ $1.8B — Tech Startups</a></li>
-<li><a href="https://sacra.com/c/distyl-ai/">Sacra Distyl AI profile</a></li>
-<li><a href="https://sierra.ai/blog/outcome-based-pricing-for-ai-agents">Sierra Outcome-Based Pricing</a></li>
-<li><a href="https://sacra.com/c/sierra/">Sacra Sierra revenue/valuation</a></li>
-<li><a href="https://techcrunch.com/2025/11/21/bret-taylors-sierra-reaches-100m-arr-in-under-two-years/">Sierra $100M ARR — TechCrunch</a></li>
-<li><a href="https://fortune.com/2025/10/07/exclusive-evenup-raises-150-million-series-e-at-2-billion-valuation-as-ai-reshapes-personal-injury-law/">EvenUp $2B Series E — Fortune</a></li>
-<li><a href="https://www.evenuplaw.com/blog/introducing-ai-drafts-suite/">EvenUp per-case pricing</a></li>
-<li><a href="https://bindlegal.com/resources/comparisons/harvey-pricing-2026/">Harvey AI pricing breakdown 2026</a></li>
-<li><a href="https://fortune.com/2025/12/18/salients-quiet-ai-boom-how-this-two-year-old-startup-is-building-a-company-to-survive-the-bubble-burst/">Salient $25M ARR — Fortune</a></li>
-<li><a href="https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000004/a2025q4ex991earningsrelease.htm">Palantir SEC 8-K FY2025</a></li>
-<li><a href="https://www.mendix.com/pricing/">Mendix Pricing</a></li>
-<li><a href="https://select.dev/posts/snowflake-pricing">Snowflake Pricing Guide 2025</a></li>
-<li><a href="https://www.mckinsey.com/capabilities/quantumblack/how-we-help-clients">McKinsey QuantumBlack</a></li>
-<li><a href="https://gainshareai.com/">GainShare AI</a></li>
-<li><a href="https://aigainshare.com/">AI GainShare Solutions</a></li>
-<li><a href="https://velocityprocurement.com/what-is-gainshare-in-procurement/">Velocity Procurement Gainshare Guide</a></li>
-<li><a href="https://futureofconsulting.ai/ai-leadership/2026-consultings-ai-revolution-update/">McKinsey 25% outcome-based fees — 2026 Update</a></li>
-<li><a href="https://www.tsia.com/blog/ai-pricing-models-usage-based-outcome-based-hybrid">TSIA AI Pricing Models</a></li>
-<li><a href="https://www.lek.com/insights/tmt/us/ei/rise-outcome-based-pricing-saas-aligning-value-cost">L.E.K. Outcome-Based Pricing in SaaS</a></li>
-<li><a href="https://www.bvp.com/atlas/the-ai-pricing-and-monetization-playbook">Bessemer AI Pricing Playbook</a></li>
-<li><a href="https://practicalfounders.com/articles/outcome-based-pricing-with-ai-for-vertical-saas-companies/">Practical Founders Outcome-Based</a></li>
-<li><a href="https://pos.toasttab.com/pricing">Toast Pricing</a></li>
-<li><a href="https://finance.yahoo.com/news/toast-inc-tost-q4-2025-050116070.html">Toast Q4 2025 Earnings</a></li>
-<li><a href="https://procured.us/articles/servicetitan-pricing">ServiceTitan Pricing 2026</a></li>
-<li><a href="https://www.sec.gov/Archives/edgar/data/0001638826/000119312524260611/d577298ds1.htm">ServiceTitan S-1</a></li>
-<li><a href="https://www.appfolio.com/pricing">AppFolio Pricing</a></li>
-<li><a href="https://www.clio.com/pricing/">Clio Pricing</a></li>
-<li><a href="https://rallied.ai/blog/datto-rmm-pricing-what-msps-actually-pay/">Datto RMM Pricing 2026</a></li>
-<li><a href="https://www.colinkeeley.com/blog/mark-leonard-constellation-software-operating-manual">Constellation Operating Manual</a></li>
-<li><a href="https://www.colinkeeley.com/blog/robert-f-smith-vista-equity-partners-operating-manual">Vista Equity Operating Manual</a></li>
-<li><a href="https://www.vernehq.com/post/joe-liemandt-esw-capital-operating-manual-global-tech-sweatshop">Joe Liemandt / ESW Operating Manual</a></li>
-<li><a href="https://www.roadtooffer.com/blog/bain-capital-vs-bain-company">Bain Capital vs Bain & Company</a></li>
-<li><a href="https://newsroom.accenture.com/news/2026/accenture-to-acquire-faculty-to-scale-ai-capabilities">Accenture acquires Faculty</a></li>
-<li><a href="https://techcrunch.com/2025/05/23/khosla-ventures-among-vcs-experimenting-with-ai-infused-roll-ups-of-mature-companies/">Khosla AI Roll-ups — TechCrunch</a></li>
-<li><a href="https://techcrunch.com/2025/06/01/early-ai-investor-elad-gil-finds-his-next-big-bet-ai-powered-rollups/">Elad Gil AI Roll-ups — TechCrunch</a></li>
-<li><a href="https://carta.com/learn/private-funds/private-equity/pe-fund-structures/">PE Fund Structures — Carta</a></li>
-<li><a href="https://www.cbiz.com/insights/article/navigating-the-complex-terrain-of-accounting-for-warrants-to-customers">Warrant accounting — CBIZ</a></li>
-<li><a href="https://www.federalregister.gov/documents/2022/03/24/2022-03212/private-fund-advisers-documentation-of-registered-investment-adviser-compliance-reviews">SEC Private Fund Advisers Rule</a></li>
-<li><a href="https://businessmodelcanvastemplate.com/blogs/how-it-works/pioneer-square-labs-how-it-works">Pioneer Square Labs service-for-equity</a></li>
-<li><a href="https://www.bvp.com/atlas/the-state-of-ai-2025">Bessemer State of AI 2025</a></li>
-</ol>
+  <h3 class="sub">Acquisition multiples and exit assumptions in the fund-side model</h3>
+  <ul class="body">
+    <li><b>Entry multiples 4–8× EBITDA</b>; Base case mean 5.6× across V1–V5; Upside mean 5.4×; Bear mean 7.2× (stress-tests buying at the top of the range).</li>
+    <li><b>Reference comps</b> from fund-side Sources: Accounting 3–5× (FirmLever); Legal 3–5×; Property Management 3.76–4.17× (Peak Valuation). Model multiples sit above comps assuming tech-ready owner-operated SMEs command a quality premium.</li>
+    <li><b>Exit multiple 15× EBITDA</b> at consolidated platform — conservative relative to AppFolio ~30× and Constellation Software ~25× public market comps.</li>
+    <li><b>Holding and Agency layers</b> are toggled to zero in headline scenarios. They represent optional upside but are not part of our research conclusion (Solo HoldCo).</li>
+  </ul>
+  <div class="src">Scenario sheets, vertical-by-vertical assumptions, sources and underlying assumptions in AI Roll-Up Case Analysis → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/AI-Roll-Up-Case-Analysis-vF-2026-06-14.xlsx">download XLSX</a>.</div>
+</section>
+
+<section class="page" id="s17">
+  <div class="eyebrow"><span class="part">PART III · OPERATING MODEL</span><span class="num">17</span>90-Day Plan</div>
+  <h1 class="action">First 90 days execute Strategy lock-in, Hypotheses validation, and first anchor LOI conversation. Studio team formation, legal architecture, and one anchor platform pipeline opened.</h1>
+
+  <table class="mck">
+    <thead><tr><th style="width:14%">Period</th><th>Strategy</th><th>Hypotheses</th><th>Execution</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="name">Days 1–30</td>
+        <td>Lock Pure HoldCo posture; finalise vertical-method weighting; select 1–2 candidate verticals for hypothesis validation</td>
+        <td>Q1 entry multiples — engage 3+ vertical M&amp;A advisors. Q4 co-invest — open conversations with 3+ LPs / family offices.</td>
+        <td>Delaware LP + Delaware C-corp HoldCo formed (QSBS verified by tax counsel). Studio team: GP partners + AI Engineering Lead recruitment opens.</td>
+      </tr>
+      <tr>
+        <td class="name">Days 31–60</td>
+        <td>Vertical finalised based on Q1 / Q4 / Q3 signal; second vertical deferred or queued</td>
+        <td>Q2 debt — 2+ SBA lender / mid-market financer term sheets. Q3 searcher-CEO — 2+ qualified candidates evaluated.</td>
+        <td>AI Engineering Lead hired; Vertical Lead onboarded; vertical M&amp;A advisor on retainer. LP first-close at 50–60% of fund target.</td>
+      </tr>
+      <tr>
+        <td class="name">Days 61–90</td>
+        <td>Composite Day-Zero position locked across all seven levers; documented for LP communication</td>
+        <td>Q5 bolt-on self-funding — financial model on 2–3 candidate platforms. Decision gate: 4 of 5 hypotheses green/yellow → proceed.</td>
+        <td>First anchor platform LOI conversation opened; paid pre-acquisition pilot scoped. Operator-in-residence onboarded.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="src">Sequencing logic from Combinations Memo Section 13 and Starting Position Memo Section 13.</div>
+</section>
+
+<section class="page" id="sA">
+  <div class="eyebrow"><span class="part">APPENDIX A</span></div>
+  <h1 class="action">Appendix A · Other 12 Games Dismissed</h1>
+
+  <table class="mck">
+    <thead><tr><th style="width:5%">#</th><th style="width:24%">Archetype</th><th style="width:10%">Triple ×</th><th>Why dismissed</th></tr></thead>
+    <tbody>
+      <tr><td class="idx">01</td><td class="name">Vertical SaaS</td><td class="num">20</td><td>SMB are customers, not acquired — leaves SMB enabler idle; 7–12 year build; 15–25% founder ownership post-VC dilution</td></tr>
+      <tr><td class="idx">02</td><td class="name">Horizontal AI Platform</td><td class="num">20</td><td>Global enterprise customers; capital $200M–$20B+; 4–15% founder ownership. Treated as reserve alternative in <a href="#sB">Appendix B</a></td></tr>
+      <tr><td class="idx">03</td><td class="name">AI Agents-as-Workforce</td><td class="num">40</td><td>Mid-market preferred customer; SMB partial use; commoditisation risk on inference layer</td></tr>
+      <tr><td class="idx">04</td><td class="name">Data Network Compounder</td><td class="num">48</td><td>Strong economics but hard to engineer from standing start; SMB acquisition can be assembly motion (Stage 2 enhancement option per Combinations Memo, not standalone primary)</td></tr>
+      <tr><td class="idx">05</td><td class="name">Serial Software Acquirer</td><td class="num">45</td><td>Targets SMB software companies, not operators; Constellation-style; different acquisition discipline and capital base</td></tr>
+      <tr><td class="idx">07</td><td class="name">Permanent Capital Compounder</td><td class="num">75</td><td>No exit by design; requires permanent capital base ($500M+ start); inter-generational horizon. Optional Stage 3+ posture, not Vintage 1</td></tr>
+      <tr><td class="idx">08</td><td class="name">Classic PE Buy-Improve-Sell</td><td class="num">60</td><td>AI not structural to thesis; standard PE economics; loses the differentiation that AI uplift provides</td></tr>
+      <tr><td class="idx">09</td><td class="name">AI-Integration Services Co</td><td class="num">32</td><td>Multiple capped by services category (1–3× EBITDA); structural conflict with Pure HoldCo posture</td></tr>
+      <tr><td class="idx">10</td><td class="name">Tech-Enabled Services Roll-Up</td><td class="num">60</td><td>High enabler use but documented failure pattern (Smarter Tech / NMC); 0.5–2× revenue multiple</td></tr>
+      <tr><td class="idx">11</td><td class="name">Vertical Marketplace + AI</td><td class="num">64</td><td>Balanced enabler use; long-build software economics; 5–15% founder ownership; different team profile</td></tr>
+      <tr><td class="idx">12</td><td class="name">Franchise Operator Network</td><td class="num">45</td><td>Brand is the lever; AI enabler supportive but not transformative; 10–15 year horizon</td></tr>
+      <tr><td class="idx">13</td><td class="name">Venture Studio</td><td class="num">48</td><td>Variable outcomes per new co; multiple architecture similar but capital model different</td></tr>
+      <tr><td class="idx">14</td><td class="name">Search Fund</td><td class="num">60</td><td>Single asset limits AI scaling; classic search fund economics; serves as informing reference rather than primary game</td></tr>
+    </tbody>
+  </table>
+  <div class="src">One-paragraph profiles, capital requirements, time horizons, winners and cautionary cases for each in Game Selection Framework → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-analysis-game-selection-2026-06-12.html">download HTML</a>.</div>
+</section>
+
+<section class="page" id="sB">
+  <div class="eyebrow"><span class="part">APPENDIX B</span></div>
+  <h1 class="action">Appendix B · Horizontal AI Platform — Reserve Alternative Game</h1>
+
+  <p class="lead">Horizontal AI is treated as a distinct game with different economics, team, and capital model. It is held as the reserve alternative if the chosen-game thesis fails validation. The following is the brief operating-model summary.</p>
+
+  <h3 class="sub">Brief operating model</h3>
+  <ul class="body">
+    <li><b>Product:</b> Foundation model, agent framework, or orchestration layer sold as agentic AI products to enterprises across many industries from one common code path.</li>
+    <li><b>Sub-types:</b> Frontier model labs (Anthropic, OpenAI) and application-layer agent platforms (Sierra, Decagon, Glean, Harvey, Cresta).</li>
+    <li><b>Capital required to $100M ARR:</b> $200–600M for application-layer; $5–20B+ for frontier model labs.</li>
+    <li><b>Founder ownership at exit:</b> 4–15% application-layer; 0–8% frontier labs.</li>
+    <li><b>Exit multiples:</b> 15–40× ARR application-layer; 50–100× ARR model labs in private rounds.</li>
+    <li><b>Pilot-to-production cliff:</b> only 11–14% of enterprise AI pilots reach production at scale (IDC).</li>
+    <li><b>Failure mode:</b> reverse acqui-hire — Adept ($400M raised → Amazon talent absorption); Inflection ($1.5B+ → Microsoft $650M); Character.AI (Google).</li>
+  </ul>
+
+  <div class="callout warn">
+    <div class="h">Warning embedded in this appendix</div>
+    <p>A roll-up operator that drifts into selling AI services to non-portfolio customers without product discipline converges to a low-multiple consulting category (1–3× EBITDA, see Archetype 09). The risk is gradual: pilot fees → recurring contracts → subscription → undercapitalised SaaS. Each step lowers the multiple and locks in operating overhead. The Pure HoldCo posture exists specifically to prevent this drift.</p>
+  </div>
+
+  <div class="src">Full archetype profile, business model, replication unit, unit economics, GTM mechanics, capital structure, founder economics, risks, and preconditions in Horizontal AI Platform Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-horizontal-ai-platform-2026-06-13.html">download HTML</a>.</div>
+</section>
+
+<section class="page" id="sC">
+  <div class="eyebrow"><span class="part">APPENDIX C</span></div>
+  <h1 class="action">Appendix C · Reference Operator Profiles</h1>
+
+  <h3 class="sub">Long Lake Management Holdings</h3>
+  <p class="body">Founded 2023. Raised $1.28B from General Catalyst, Thrive Capital, Alpha Wave Global, Lightscape Partners. ~18–30 acquisitions across HOA, residential services, business services, infrastructure services. May 2026: announced $6.3B acquisition of NYSE-listed Amex GBT at $9.50/share (60% premium), with GC and Alpha Wave equity-supporting the take-private. Targets 3–5 year hold to outperform S&amp;P 500 via AI deployment across Amex GBT's marketplace. Documented AI uplift: 25–30% per-FTE productivity in HOA OpCos; sales pipeline 10× larger via AI lead generation.</p>
+
+  <h3 class="sub">GC Creation</h3>
+  <p class="body">$1.5B dedicated allocation inside General Catalyst's $8B Fund XII. Led by MD Marc Bhargava. Targets the $16T global services economy with AI-native NewCo companies that acquire legacy service providers in their vertical. Long Lake is the flagship Creation portfolio company; portfolio companies report doubling of EBITDA margins within 12 months and some hitting $100M EBITDA in &lt;2 years.</p>
+
+  <h3 class="sub">Shield Technology Partners</h3>
+  <p class="body">Launched June 2025 by Thrive Holdings + ZBS Partners. $100M initial + $100M Feb 2026 = $200M committed. Nine MSP partners as of Feb 2026; &gt;1,500 customers; $100M+ ARR. Acquires 60–90% stakes; sellers retain leadership and local brand. December 2025: OpenAI took equity in Thrive Holdings; Shield gains direct OpenAI talent and model access through anchor relationship.</p>
+
+  <h3 class="sub">Crete / Current</h3>
+  <p class="body">$500M committed for AI roll-up deployment. ~30 CPA firms organised under alliance structure (state-board ownership restrictions). $428M revenue. Tax AI 31% time savings; 98% accuracy across 7,000 returns in 2025 season. OpenAI / Thrive Tax AI partnership took accuracy from 25% to 97% in weeks via reinforcement learning on human corrections. Rebrand to Current June 2026. Citrin Cooperman sold to Blackstone in 2025 at ~15× EBITDA — first known PE-to-PE accounting sale at platform multiple.</p>
+
+  <h3 class="sub">Smarter Technologies / NMC — failure case</h3>
+  <p class="body">Formed May 2025 combining SmarterDx, Thoughtful.ai, Access Healthcare into AI-powered RCM platform under New Mountain. CEO Jeremy Delinsky stepped down December 2, 2025 via LinkedIn after 7 months; succeeded by President Michael Gao MD. Public framing: integration and leadership-fit failure under a tight time horizon. Documents the "buy first, AI later" pattern — even $1B+ raised and named AI-native portfolio companies cannot guarantee 12-month integration timelines without integration discipline at Day-Zero.</p>
+
+  <div class="src">Sources: PitchBook Long Lake profile; PYMNTS and Travel Weekly on Amex GBT take-private May 2026; General Catalyst "Future of Services" essay; Sourcery on GC Creation; MobiHealthNews on GC $8B Fund XII; BusinessWire on Shield launch June 2025; SiliconANGLE on Shield $100M Feb 2026; BusinessWire and Crypto Briefing on Crete / Current rebrand; The Finance Story on Crete $500M; Becker's Hospital Review and Modern Healthcare on Smarter Technologies CEO change December 2025.</div>
+</section>
+
+<section class="page" id="sD">
+  <div class="eyebrow"><span class="part">APPENDIX D</span></div>
+  <h1 class="action">Appendix D · Glossary</h1>
+
+  <table class="mck">
+    <thead><tr><th style="width:22%">Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td class="name">AI-Native Operating HoldCo</td><td>Holding company that acquires operating SMBs in fragmented service verticals and installs AI inside each company to lift margins or productivity. Operating companies remain decentralised; the HoldCo supplies capital, engineering, integration playbook, and shared functions.</td></tr>
+      <tr><td class="name">QSBS Section 1202</td><td>US Internal Revenue Code Section 1202 — qualified small business stock issued by a domestic C corporation can be excluded from federal capital gains tax up to 100% of the first $10M (or 10× basis, whichever greater) per shareholder per issuer for stock issued on or after September 28, 2010. Requires C-corp structure, ≤$50M gross assets at issuance, 5+ year hold, ≥80% active trade.</td></tr>
+      <tr><td class="name">Section 206(3)</td><td>SEC Investment Advisers Act provision governing related-party transactions where the adviser acts as principal. Documented enforcement: Apollo $52.7M (2016), TZP $500K+ (2025), Energy Capital and Insight Venture also settled.</td></tr>
+      <tr><td class="name">V × C × A × B × M</td><td>Vertical scoring formula: Value × Capture × Speed × Buyability × Multiple. V = replaceability of labour; C = fragmentation; A = AI adoption speed; B = industry size; M = multiple-arbitrage spread. Applied across 1,012 NAICS 6-digit cells.</td></tr>
+      <tr><td class="name">Hell-Yes vertical</td><td>NAICS cell where weighted V×C×A×B×M score ≥21,600 — passes the highest threshold for primary roll-up vertical eligibility.</td></tr>
+      <tr><td class="name">MOIC</td><td>Multiple on invested capital — ratio of total returned to total invested.</td></tr>
+      <tr><td class="name">CoC</td><td>Cash-on-cash return — alternative formulation of MOIC at portfolio or bucket level.</td></tr>
+      <tr><td class="name">IRR</td><td>Internal rate of return — annualised compound rate of return on invested capital.</td></tr>
+      <tr><td class="name">LBO</td><td>Leveraged buyout — acquisition financed materially with debt secured against the operating cash flow of the target.</td></tr>
+      <tr><td class="name">Anchor platform</td><td>First operating company acquired in a vertical; subsequent OpCos are bolt-ons consolidated under the anchor.</td></tr>
+      <tr><td class="name">Bolt-on</td><td>Smaller follow-on acquisition integrated into the anchor platform under the same legal structure.</td></tr>
+      <tr><td class="name">Searcher-CEO</td><td>Operator who runs an acquired platform under share + carry compensation, modelled on the search-fund tradition.</td></tr>
+      <tr><td class="name">L1 / L2 / L3</td><td>M&amp;A funnel stages: L1 source qualified pipeline; L2 paid pre-acquisition pilot 60–90 days; L3 acquire under standard LOI structure.</td></tr>
+      <tr><td class="name">Pilot KPI / productivity gate</td><td>Acquisition-trigger metric on pilot deliverables: ≥1.5× productivity uplift on operator-partner workflows during L2 pilot before LOI advances.</td></tr>
+      <tr><td class="name">European waterfall</td><td>Carry distribution scheme where GP carry is paid only after the entire fund clears the LP preferred return — LP-friendly, standard for emerging managers.</td></tr>
+      <tr><td class="name">ERA</td><td>Exempt Reporting Adviser — SEC status for fund advisers managing under $150M AUM; light registration requirements.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page" id="sE">
+  <div class="eyebrow"><span class="part">APPENDIX E</span></div>
+  <h1 class="action">Appendix E · Sources and Downloadable Materials</h1>
+
+  <h3 class="sub">Our analysis trail — downloadable HTML</h3>
+  <p class="src">Game Selection Framework (June 12, 2026) → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-analysis-game-selection-2026-06-12.html">download HTML</a>. AI-Native Operating Holdco Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-ai-native-operating-holdco-2026-06-13.html">download HTML</a>. Horizontal AI Platform Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-horizontal-ai-platform-2026-06-13.html">download HTML</a>. Permanent Capital Compounder Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-permanent-capital-compounder-2026-06-13.html">download HTML</a>. Data Network Compounder Archetype Deep Dive → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-deep-dive-data-network-compounder-2026-06-13.html">download HTML</a>. Pure HoldCo Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-pure-holdco-positioning-2026-06-14.html">download HTML</a>. Archetype Combinations and Sequencing Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-archetype-combinations-2026-06-14.html">download HTML</a>. Starting Position Maximization Decision Memo → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/analysis/roll-ups-decision-memo-starting-position-2026-06-14.html">download HTML</a>. Live V×C×A×B×M scoring map across 1,012 NAICS 6-digit cells → <a href="https://lisaivanchikova.github.io/rollup-economy/6digit/">rollup-economy.com/6digit</a>.</p>
+
+  <h3 class="sub">Fund-side financial documents</h3>
+  <p class="src">s16vc Fund 3 Portfolio Construction → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/s16vc-Fund-3-Portfolio-Construction-vF-2026-06-14.xlsx">download XLSX</a>. AI Roll-Up Case Analysis (Bear / Base / Upside × 5 verticals × Holding × Agency layers) → <a href="https://github.com/bobroff-cap/roll-ups/blob/main/raw/AI-Roll-Up-Case-Analysis-vF-2026-06-14.xlsx">download XLSX</a>.</p>
+
+  <h3 class="sub">External public sources cited</h3>
+  <p class="src">Reference operator filings and coverage: PitchBook Long Lake profile; PYMNTS and Travel Weekly on Amex GBT take-private May 2026; General Catalyst "Future of Services" essay; Sourcery on GC Creation; MobiHealthNews on GC $8B Fund XII; BusinessWire on Shield Technology Partners launch June 2025; SiliconANGLE on Shield $100M Feb 2026; BusinessWire and Crypto Briefing on Crete / Current rebrand; The Finance Story on Crete $500M; Becker's Hospital Review and Modern Healthcare on Smarter Technologies / NMC CEO change December 2025; Berkshire Hathaway 2024 Annual Report; Markel Group 2024 Annual Report; Brookfield Corporation 2024 Investor Day Transcript. Vertical M&amp;A advisor and benchmark sources: Mertz Taggart Q1 2026 home-based care M&amp;A report; FOCUS Bankers home health EBITDA multiples 2026; IBBA Market Pulse Q2 and Q3 2025; BizBuySell 2025 Year in Review; Aventis Advisors and Solganick MSP 2025; PeakValue MSP 12× multiples 2025; Auxo accounting firm multiples 2026; FirmLever on accounting; Marsh Berry and Insurance Journal Broker Valuations 2026; Capstone Partners Insurance Services Update June 2025. Fund structure, tax, and waterfall sources: Internal Revenue Code Section 1202 (QSBS statute); IRS Publication 550 on QSBS; SEC Investment Advisers Act Section 206(3); Cambridge Associates Private Investment Fund Terms 2024; Sidley Austin and Davis Polk public alerts on Section 206 enforcement 2024–2025; Carta 2026 compensation benchmarks. Capital structure benchmarks: Bain Global PE Report 2025/2026; Axios Pro US LBO volume 2026 ($397.5B record); Chronograph Bain takeaways. Horizontal AI and Data Network reference points: Sacra profiles for Anthropic, OpenAI, Plaid; Verisk 10-K FY2024; Snowflake 10-K FY2024; MSCI 10-K FY2024; IDC enterprise AI pilot research 2026; VaaSBlock enterprise AI deployment gap 2026.</p>
+
+  <div class="src" style="margin-top:14px">Roll-up Studio · Strategy + Hypotheses + Execution · Prepared June 14, 2026 for internal review. Working document, open to revision after hypothesis validation.</div>
+</section>
 
 </body>
 </html>
